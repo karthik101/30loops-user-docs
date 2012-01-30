@@ -53,7 +53,7 @@ a resource without credentials the server challenges the request with a
 
 .. sourcecode:: http
 
-    HTTP/1.0 401 UNAUTHORIZED
+    HTTP/1.1 401 UNAUTHORIZED
     Content-Type: application/json; charset=UTF-8
     WWW-Authenticate: Basic realm=api@30loops.net
 
@@ -164,7 +164,7 @@ Creating Resources
 
     .. sourcecode:: http
 
-        HTTP/1.0 201 CREATED
+        HTTP/1.1 201 CREATED
         Content-Type: application/json; charset=UTF-8
         Location: https://api.30loops.net/1.0/30loops/repository/thirty-blog/
  
@@ -202,7 +202,7 @@ Showing Resources
 
     .. sourcecode:: http
 
-        HTTP/1.0 200 OK
+        HTTP/1.1 200 OK
         Content-Type: application/json; charset=UTF-8
 
         {
@@ -253,7 +253,7 @@ Updating Resources
 
     .. sourcecode:: http
 
-        HTTP/1.0 200 OK
+        HTTP/1.1 200 OK
         Content-Type: application/json; charset=UTF-8
 
         {
@@ -284,6 +284,40 @@ the resource.
 Deleting Resources
 ------------------
 
+.. http:delete:: /1.0/{account}/{label}/{resource}/
+
+    Delete the resource..
+
+    :param account: The name of a account, a short descriptive word.
+    :param label: The resource type, eg: repository, db, app
+    :param resource: The name of the resource.
+    :status 200: The resource was succesfully deleted.
+    :status 403: Request not permitted.
+    :status 404: Resource not found.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        DELETE /1.0/30loops/repository/thirty-blog/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+Sending a ``DELETE`` request to the URI of a resource deletes it.
+
+.. warning::
+
+    This operation **can't** be undone. Once the request returns succesfully, the
+    information associated with this resource has been removed on the server
+    side.
+
 .. _`Listing Application Environments`:
 
 Listing Application Environments
@@ -299,6 +333,57 @@ Creating Application Environments
 Showing Application Environments
 --------------------------------
 
+.. http:get:: /1.0/{account}/app/{resource}/environment/{environment}/
+
+    Show the details of this `environment`.
+
+    :param account: The name of a account, a short descriptive word.
+    :param resource: The name of the application.
+    :param environment: The name of the environment.
+    :status 200: Returns the environment as a JSON object.
+    :status 403: Request not permitted.
+    :status 404: Environment not found.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        GET /1.0/30loops/app/thirty-blog/environment/production/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "backends": [
+                {
+                    "count": 3,
+                    "region": "eu1"
+                }],
+            "database": {
+                "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-thirty-blog-production/",
+                "name": "30loops-app-thirty-blog-production",
+                "rel": "related"
+            },
+            "flavor": "django",
+            "install_setup_py": false,
+            "link": {
+                "href": "https://api.30loops.net/1.0/30loops/app/thirty-blog/environment/production/",
+                "rel": "self"
+            },
+            "name": "production",
+            "repo_branch": "master",
+            "repo_commit": "HEAD",
+            "requirements_file": "requirements"
+        }
+
+This retrieves details of an specific environment of an app resource.
+
 .. _`Updating Application Environments`:
 
 Updating Application Environments
@@ -312,10 +397,76 @@ Deleting Application Environmnets
 Resource Objects
 ================
 
+Every service that is hosted on 30loops is represented as a resource. A
+resource is always created for a certain account. The account is specified in
+the URI and does not show up in the JSON representation, neither when creatd
+nor when retrieved. Every resource can be retrieved as a JSON object. All
+resources have a few common attributes:
+
+**name**
+  The name of a resource functions as its identifier. A resource name must be
+  unique for an account and a resource label. It is possible for one account to
+  have a repository and an app named "thirty-blog", but not to have two apps
+  called that way. The name of a resource can't be changed with an update
+  request.
+
+**label**
+  Each resource has a certain type, that is defined by its label. A label is
+  specified in the URI of the resource, eg: /1.0/30loops/app/thirty-blog/,
+  where app would be the label. You don't have to specify the label in the JSON
+  request when creating a new resource. But the label is part of the
+  representation when retrieving the details of a resource.
+
+**variant**
+  Each resource type (label) has one or more variants. A variant specifies a
+  specific type of this rsource, eg: *postgresql* for databases or *git* for
+  repositories.
+
 .. _app-resource-api:
 
 App Resource
 ------------
+
+The app resource defines web applications that can be hosted on the 30loops
+platform. An app specifies a repository and a list of environments that is
+associated with this app.
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    GET /1.0/30loops/app/thirty-blog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+    Host: api.30loops.net
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=UTF-8
+
+    {
+        "environments": [
+            {
+                "href": "/1.0/30loops/app/thirty-blog/environment/production/",
+                "name": "production",
+                "rel": "item"
+            }
+        ],
+        "label": "app",
+        "link": {
+            "href": "/1.0/30loops/app/thirty-blog/",
+            "rel": "self"
+        },
+        "name": "thrity-blog",
+        "repository": {
+            "href": "/1.0/30loops/repository/thirty-blog/",
+            "name": "thirty-blog",
+            "rel": "related"
+        },
+        "variant": "python"
+    }
 
 .. _app-environment-api:
 
