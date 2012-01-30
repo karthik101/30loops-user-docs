@@ -20,16 +20,16 @@ Resource API
 ========================================================  =========  ==============================================
 URL                                                       HTTP Verb  Function
 ========================================================  =========  ==============================================
-/1.0/(account)/(label)/                                   GET        `Listing Resources`_
-/1.0/(account)/(label)/                                   POST       `Creating Resources`_
-/1.0/(account)/(label)/(resource)/                        GET        `Showing Resources`_
-/1.0/(account)/(label)/(resource)/                        PUT        `Updating Resources`_
-/1.0/(account)/(label)/(resource)/                        DELETE     `Deleting Resources`_
-/1.0/(account)/app/(resource)/environment/                GET        `Listing Application Environments`_
-/1.0/(account)/app/(resource)/environment/                POST       `Creating Application Environments`_
-/1.0/(account)/app/(resource)/environment/(environment)/  GET        `Showing Application Environments`_
-/1.0/(account)/app/(resource)/environment/(environment)/  PUT        `Updating Application Environments`_
-/1.0/(account)/app/(resource)/environment/(environment)/  DELETE     `Deleting Application Environments`_
+/1.0/{account}/{label}/                                   GET        `Listing Resources`_
+/1.0/{account}/{label}/                                   POST       `Creating Resources`_
+/1.0/{account}/{label}/{resource}/                        GET        `Showing Resources`_
+/1.0/{account}/{label}/{resource}/                        PUT        `Updating Resources`_
+/1.0/{account}/{label}/{resource}/                        DELETE     `Deleting Resources`_
+/1.0/{account}/app/{resource}/environment/                GET        `Listing Application Environments`_
+/1.0/{account}/app/{resource}/environment/                POST       `Creating Application Environments`_
+/1.0/{account}/app/{resource}/environment/{environment}/  GET        `Showing Application Environments`_
+/1.0/{account}/app/{resource}/environment/{environment}/  PUT        `Updating Application Environments`_
+/1.0/{account}/app/{resource}/environment/{environment}/  DELETE     `Deleting Application Environments`_
 ========================================================  =========  ==============================================
 
 Request Format
@@ -116,7 +116,7 @@ A detailed description of each resource object can be found in the
 Listing Resources
 -----------------
 
-.. http:get:: /1.0/(account)/(label)/
+.. http:get:: /1.0/{account}/{label}/
 
     Retrieve a list of all resources of the type `label` owned by this `account`.
 
@@ -133,7 +133,7 @@ Listing Resources
 Creating Resources
 ------------------
 
-.. http:post:: /1.0/(account)/(label)/
+.. http:post:: /1.0/{account}/{label}/
 
     Create a new resource of type `label`.
 
@@ -142,6 +142,8 @@ Creating Resources
     :param label: The resource type, eg: repository, db, app
     :type label: str
     :status 201: The resource has been succesfully created.
+    :status 400: The request could not be understood by the server.
+    :status 403: Request not permitted.
 
     **Example Request**:
 
@@ -169,15 +171,113 @@ Creating Resources
 When the creation succeeds, a ``201 CREATED`` response is returned, containing
 the ``Location`` header with the URI of the new resource.
 
+If the JSON_ input is not valid or isufficient to create a new resource, a
+``400 BAD REQUEST`` response is returned by the server.
+
 .. _`Showing Resources`:
 
 Showing Resources
 -----------------
 
+.. http:get:: /1.0/{account}/{label}/{resource}/
+
+    Show the details of this `resource`.
+
+    :param account: The name of a account, a short descriptive word.
+    :param label: The resource type, eg: repository, db, app
+    :param resource: The name of the resource.
+    :status 200: Returns the resource as a JSON object.
+    :status 403: Request not permitted.
+    :status 404: Resource not found.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        GET /1.0/30loops/repository/thirty-blog/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "label": "repository", 
+            "link": {
+                "href": "https://api.30loops.net/1.0/30loops/repository/thirty-blog/", 
+                "rel": "self"
+            }, 
+            "location": "https://github.com/30loops/thirty-blog/", 
+            "name": "thirty-blog", 
+            "variant": "git"
+        }
+
+Each resource can be retrieved by sending a GET request to the resource URI.
+The resource URI is returned either when a resources gets created in the
+``Location`` header, or in the resource listing of this type.
+
 .. _`Updating Resources`:
 
 Updating Resources
 ------------------
+
+.. http:put:: /1.0/{account}/{label}/{resource}/
+
+    Update the state of the resource instance.
+
+    :param account: The name of a account, a short descriptive word.
+    :param label: The resource type, eg: repository, db, app
+    :param resource: The name of the resource.
+    :status 200: Returns the updated resource as a JSON object.
+    :status 403: Request not permitted.
+    :status 404: Resource not found.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        PUT /1.0/30loops/repository/thirty-blog/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+        Content-Type: application/json
+
+        {
+            "location": "https://bitbucket.org/30loops/thirty-blog"
+        }
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "label": "repository", 
+            "link": {
+                "href": "/1.0/30loops/repository/thirty-blog/", 
+                "rel": "self"
+            }, 
+            "location": "https://bitbucket.org/30loops/thirty-blog", 
+            "name": "thirty-blog", 
+            "variant": "git"
+        }
+
+To update an existing resource, send a ``PUT`` request with a JSON message in
+the request body, containing the changed attributes. Only the attributes that
+need to be changed, have to be send in the body. On success, the response
+will contain a JSON message in the response body with the updated version of
+the resource.
+
+.. note::
+
+    The name of a resource functions as an identifier for this resource. It is
+    not possible to change the name of a resource. In that case you have to
+    create a new resource and then delete the old one.
 
 .. _`Deleting Resources`:
 
