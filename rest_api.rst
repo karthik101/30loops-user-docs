@@ -7,6 +7,14 @@ host on it. It lets you also manipulate your account and user, and in the
 future query all your metrics and log files. You can connect to this API and
 build your own client tools.
 
+.. note::
+
+    A resource on the 30loops platform specificially means a service that is
+    hosted on the platform, like databases, apps or repositories. To not
+    confuse URI resources and 30loops resources, we use different terminology.
+    If we use the term `resource` we mean a service hosted by 30loops, and if we
+    mean an URI resource, we call it an `object`.
+
 Quick Reference
 ===============
 
@@ -40,7 +48,7 @@ Request Format
 
 Authentication is currently implemented using `HTTP Basic Auth`_. When requesting
 a resource without credentials the server challenges the request with a
-`WWW-Authenticate: Basic realm=api@30loops.net` response header.
+``WWW-Authenticate: Basic realm=api@30loops.net`` response header.
 
 **Request:**
 
@@ -94,6 +102,131 @@ with more details.
     }
 
 .. _JSON: http://www.json.org/
+
+JSON Format
+===========
+
+The JSON_ format for all 30loops objects has a similar structure and
+implements a certain behaviour. The format and behaviour described is valid for
+all objects identified by an URI. Unless specified in the detailed description
+of each object, the rules of this section always apply.
+
+An object is always described as a flat key/value dictionary.
+
+.. code-block:: js
+
+    {
+        "name": "thirty-blog",
+        "label": "app",
+        "variant": "python
+    }
+
+Other objects are referenced again as nested key/value dictionaries.
+
+.. code-block:: js
+
+    {
+        "name": "thirty-blog",
+        "label": "app",
+        "variant": "python,
+        "repository": {
+            "name": "thirty-blog-repo",
+        }
+    }
+
+A collection of referenced objects is represented as a list of key/value
+dictionaries.
+
+.. code-block:: js
+
+    {
+        "name": "thirty-blog",
+        "label": "app",
+        "variant": "python,
+        "repository": {
+            "name": "thirty-blog-repo",
+        },
+        "environments": [
+            {"name": "production"},
+            {"name": "production"}
+        ]
+    }
+
+When creating a new object, and you want to reference an already existing
+object, its enough to specify the identifier in the JSON request.
+
+.. code-block:: js
+
+    {
+        "name": "thirtyloops-app",
+        "repository": {
+            "name": "thirtyloops-repo"
+        }
+    }
+
+If the referenced object with that identifier is not existing, the server
+application will try to create it. In that case you have to provide all
+necessary fields, as described in the detailed descriptions of the objects
+later on in this document. So you can for example create an app resource in the
+same moment than the repository resource (This example is shortened, see the
+detailed description of `App Resource`_ and `Repository Resource`_ for full
+examples).
+
+.. code-block:: js
+
+    {
+        "name": "thirtyloops-app",
+        "variant": "python",
+        "repository": {
+            "name": "thirtyloops-repo",
+            "variant": "git",
+            "location": "https://github.com/30loops/thirtyloops-repo/"
+        }
+    }
+
+Collections of objects behave the same way. If you specify items in a
+collection, the server application will first look for an existing object and
+otherwise creates a new one if sufficient input data is supplied.
+
+Referenced objects and collections of referenced objects are rendered in a
+short form. Single referenced objects are rendered as a related object, with
+the identifier and the URI of the object, and collections are rendered as a
+list of items, with the name and URI of the object.
+
+.. code-block:: js
+
+    {
+        "name": "thirtyloops-app",
+        "repository": {
+            "rel": "related",
+            "name": "thirtyloops-repo",
+            "href": "https://api.30loops.net/1.0/30loops/repository/thirtyloops-repos/"
+        },
+        "environments": [
+            {
+                "rel": "item",
+                "name": "production",
+                "href": "https://api.30loops.net/1.0/30loops/app/thirtyloops-app/environment/production/"
+                },
+            {
+                "rel": "item",
+                "name": "staging",
+                "href": "https://api.30loops.net/1.0/30loops/app/thirtyloops-app/environment/staging/"
+                }
+        ]
+    }
+
+Fields that are marked optional in the object descriptions can be omitted. They
+are not necessary for creating the object and mostly onyl represent additional
+functionality. Fields often also provide a default value. If the field is not
+specified in the request message, the server uses the default value instead.
+That means you can also omit to specify this field in the request, which saves
+badnwidth and typing. Every field except the identifier field (eg, *name* for
+resources) can be changed later on.
+
+Changing the object reference to another object **does not** delete the old
+object (eg, pointing an app to another repository). The delete has to be done
+manually if this is wanted.
 
 Resource API
 ============
@@ -403,24 +536,27 @@ the URI and does not show up in the JSON representation, neither when creatd
 nor when retrieved. Every resource can be retrieved as a JSON object. All
 resources have a few common attributes:
 
-**name**
-  The name of a resource functions as its identifier. A resource name must be
-  unique for an account and a resource label. It is possible for one account to
-  have a repository and an app named "thirty-blog", but not to have two apps
-  called that way. The name of a resource can't be changed with an update
-  request.
+:name:
 
-**label**
-  Each resource has a certain type, that is defined by its label. A label is
-  specified in the URI of the resource, eg: /1.0/30loops/app/thirty-blog/,
-  where app would be the label. You don't have to specify the label in the JSON
-  request when creating a new resource. But the label is part of the
-  representation when retrieving the details of a resource.
+    The name of a resource functions as its identifier. A resource name must be
+    unique for an account and a resource label. It is possible for one account
+    to have a repository and an app named "thirty-blog", but not to have two
+    apps called that way. The name of a resource can't be changed with an
+    update request.
 
-**variant**
-  Each resource type (label) has one or more variants. A variant specifies a
-  specific type of this rsource, eg: *postgresql* for databases or *git* for
-  repositories.
+:label:
+
+    Each resource has a certain type, that is defined by its label. A label is
+    specified in the URI of the resource, eg: /1.0/30loops/app/thirty-blog/,
+    where app would be the label. You don't have to specify the label in the
+    JSON request when creating a new resource. But the label is part of the
+    representation when retrieving the details of a resource.
+
+:variant: 
+
+    Each resource type (label) has one or more variants. A variant specifies a
+    specific type of this rsource, eg: *postgresql* for databases or *git* for
+    repositories.
 
 .. _app-resource-api:
 
