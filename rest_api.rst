@@ -585,19 +585,19 @@ associated with this app.
     {
         "environments": [
             {
-                "href": "/1.0/30loops/app/thirty-blog/environment/production/",
+                "href": "https://api.30loops.net/1.0/30loops/app/thirty-blog/environment/production/",
                 "name": "production",
                 "rel": "item"
             }
         ],
         "label": "app",
         "link": {
-            "href": "/1.0/30loops/app/thirty-blog/",
+            "href": "https://api.30loops.net/1.0/30loops/app/thirty-blog/",
             "rel": "self"
         },
         "name": "thrity-blog",
         "repository": {
-            "href": "/1.0/30loops/repository/thirty-blog/",
+            "href": "https://api.30loops.net/1.0/30loops/repository/thirty-blog/",
             "name": "thirty-blog",
             "rel": "related"
         },
@@ -609,10 +609,95 @@ associated with this app.
 App Environment
 ---------------
 
+**Example Request:**
+
+.. sourcecode:: http
+
+    GET /1.0/30loops/app/newapp58/environment/production/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.0 200 OK
+    Content-Type: application/json; charset=UTF-8
+
+    {
+        "backends": [
+            {
+                "count": 3, 
+                "region": "eu1"
+            }, 
+        ], 
+        "database": {
+            "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-newapp58-production/", 
+            "name": "30loops-app-newapp58-production", 
+            "rel": "related"
+        }, 
+        "flavor": "django", 
+        "install_setup_py": false, 
+        "link": {
+            "href": "https://api.30loops.net/1.0/30loops/app/newapp58/environment/production/", 
+            "rel": "self"
+        }, 
+        "name": "production", 
+        "repo_branch": "master", 
+        "repo_commit": "HEAD", 
+        "requirements_file": "requirements"
+    }
+
 .. _repository-resource-api:
 
 Repository Resource
 -------------------
+
+Every app must have a repository defined. When deploying the repository gets
+cloned. It provides the sourcecode for the webapplication.
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    GET /1.0/30loops/repository/thirty-blog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=UTF-8
+
+    {
+        "label": "repository",
+        "link": {
+            "href": "https://api.30loops.net/1.0/30loops/repository/thirty-blog/",
+            "rel": "self"
+        },
+        "location": "https://github.com/30loops/thirty-blog/",
+        "name": "thirty-blog",
+        "variant": "git"
+    }
+    
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**label** (static, default=repository)
+  The unique label of this resource.
+**variants** (default=git) 
+  - git
+**name** (identifier)
+  The name of this repository as identified by the 30loops platform.
+**location**
+  The full URI where to clone this repository from. This can be any valid
+  location identifier understood by your DCVS.
+**username** (optional)
+  Specify the username to use when connecting to the repository, in case it is
+  not publicly available.
+**password** (optional)
+  Specify the password to provide when cloning a repository and it is password
+  protected.
 
 .. _database-resource-api:
 
