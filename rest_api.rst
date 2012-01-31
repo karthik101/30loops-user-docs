@@ -116,7 +116,7 @@ An object is always described as a flat key/value dictionary.
 .. code-block:: js
 
     {
-        "name": "thirty-blog",
+        "name": "thirtyblog",
         "label": "app",
         "variant": "python
     }
@@ -126,11 +126,11 @@ Other objects are referenced again as nested key/value dictionaries.
 .. code-block:: js
 
     {
-        "name": "thirty-blog",
+        "name": "thirtyblog",
         "label": "app",
         "variant": "python,
         "repository": {
-            "name": "thirty-blog-repo",
+            "name": "thirtyblog-repo",
         }
     }
 
@@ -140,11 +140,11 @@ dictionaries.
 .. code-block:: js
 
     {
-        "name": "thirty-blog",
+        "name": "thirtyblog",
         "label": "app",
         "variant": "python,
         "repository": {
-            "name": "thirty-blog-repo",
+            "name": "thirtyblog-repo",
         },
         "environments": [
             {"name": "production"},
@@ -288,9 +288,9 @@ Creating Resources
         Content-Type: application/json
 
         {
-            "name": "thirty-blog",
+            "name": "thirtyblog",
             "variant": "git",
-            "location": "https://github.com/30loops/thirty-blog/"
+            "location": "https://github.com/30loops/thirtyblog/"
         }
 
     **Example Response:**
@@ -299,7 +299,7 @@ Creating Resources
 
         HTTP/1.1 201 CREATED
         Content-Type: application/json; charset=UTF-8
-        Location: https://api.30loops.net/1.0/30loops/repository/thirty-blog/
+        Location: https://api.30loops.net/1.0/30loops/repository/thirtyblog/
  
 When the creation succeeds, a ``201 CREATED`` response is returned, containing
 the ``Location`` header with the URI of the new resource.
@@ -327,7 +327,7 @@ Showing Resources
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/repository/thirty-blog/ HTTP/1.1
+        GET /1.0/30loops/repository/thirtyblog/ HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -341,11 +341,11 @@ Showing Resources
         {
             "label": "repository", 
             "link": {
-                "href": "https://api.30loops.net/1.0/30loops/repository/thirty-blog/", 
+                "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/", 
                 "rel": "self"
             }, 
-            "location": "https://github.com/30loops/thirty-blog/", 
-            "name": "thirty-blog", 
+            "location": "https://github.com/30loops/thirtyblog/", 
+            "name": "thirtyblog", 
             "variant": "git"
         }
 
@@ -373,13 +373,13 @@ Updating Resources
 
     .. sourcecode:: http
 
-        PUT /1.0/30loops/repository/thirty-blog/ HTTP/1.1
+        PUT /1.0/30loops/repository/thirtyblog/ HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
         Content-Type: application/json
 
         {
-            "location": "https://bitbucket.org/30loops/thirty-blog"
+            "location": "https://bitbucket.org/30loops/thirtyblog"
         }
 
     **Example Response:**
@@ -392,11 +392,11 @@ Updating Resources
         {
             "label": "repository", 
             "link": {
-                "href": "/1.0/30loops/repository/thirty-blog/", 
+                "href": "/1.0/30loops/repository/thirtyblog/", 
                 "rel": "self"
             }, 
-            "location": "https://bitbucket.org/30loops/thirty-blog", 
-            "name": "thirty-blog", 
+            "location": "https://bitbucket.org/30loops/thirtyblog", 
+            "name": "thirtyblog", 
             "variant": "git"
         }
 
@@ -432,7 +432,7 @@ Deleting Resources
 
     .. sourcecode:: http
 
-        DELETE /1.0/30loops/repository/thirty-blog/ HTTP/1.1
+        DELETE /1.0/30loops/repository/thirtyblog/ HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -481,7 +481,7 @@ Showing Application Environments
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/app/thirty-blog/environment/production/ HTTP/1.1
+        GET /1.0/30loops/app/thirtyblog/environment/production/ HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -499,14 +499,14 @@ Showing Application Environments
                     "region": "eu1"
                 }],
             "database": {
-                "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-thirty-blog-production/",
-                "name": "30loops-app-thirty-blog-production",
+                "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-thirtyblog-production/",
+                "name": "30loops-app-thirtyblog-production",
                 "rel": "related"
             },
             "flavor": "django",
             "install_setup_py": false,
             "link": {
-                "href": "https://api.30loops.net/1.0/30loops/app/thirty-blog/environment/production/",
+                "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/environment/production/",
                 "rel": "self"
             },
             "name": "production",
@@ -540,14 +540,14 @@ resources have a few common attributes:
 
     The name of a resource functions as its identifier. A resource name must be
     unique for an account and a resource label. It is possible for one account
-    to have a repository and an app named "thirty-blog", but not to have two
+    to have a repository and an app named "thirtyblog", but not to have two
     apps called that way. The name of a resource can't be changed with an
     update request.
 
 :label:
 
     Each resource has a certain type, that is defined by its label. A label is
-    specified in the URI of the resource, eg: /1.0/30loops/app/thirty-blog/,
+    specified in the URI of the resource, eg: /1.0/30loops/app/thirtyblog/,
     where app would be the label. You don't have to specify the label in the
     JSON request when creating a new resource. But the label is part of the
     representation when retrieving the details of a resource.
@@ -564,14 +564,16 @@ App Resource
 ------------
 
 The app resource defines web applications that can be hosted on the 30loops
-platform. An app specifies a repository and a list of environments that is
-associated with this app.
+platform. Every app needs to attach a repository. It can't be created with out
+it. The app itself is not doing too much by itself. To actualy deploy an app to
+the platform, you have to define an environment first. You can create an
+environment in the moment you create an app.
 
 **Example Request:**
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/app/thirty-blog/ HTTP/1.1
+    GET /1.0/30loops/app/thirtyblog/ HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -585,24 +587,77 @@ associated with this app.
     {
         "environments": [
             {
-                "href": "https://api.30loops.net/1.0/30loops/app/thirty-blog/environment/production/",
+                "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/environment/production/",
                 "name": "production",
                 "rel": "item"
             }
         ],
         "label": "app",
         "link": {
-            "href": "https://api.30loops.net/1.0/30loops/app/thirty-blog/",
+            "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/",
             "rel": "self"
         },
         "name": "thrity-blog",
         "repository": {
-            "href": "https://api.30loops.net/1.0/30loops/repository/thirty-blog/",
-            "name": "thirty-blog",
+            "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/",
+            "name": "thirtyblog",
             "rel": "related"
         },
         "variant": "python"
     }
+
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**label** (static, default=app)
+  The unique label of this resource.
+**variants** (default=python) 
+  - python
+**name** (identifier)
+  The name of this app as identified by the 30loops platform.
+**repository**
+  The referenced repository resource. See the `Repository Resource`_ section
+  for more information.
+**environments** (optional)
+  A collection of environments this app has. See the `App Environment`_ section
+  for more information.
+
+More Examples
+~~~~~~~~~~~~~
+
+**App Creation**
+
+This is an example of a miniam lapp creation, where we create the repository
+and one environment inline. The response contains a ``Location`` header with
+the URI of the newly created resource.
+
+.. sourcecode:: http
+
+    POST /1.0/30loops/app/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+
+    {
+        "name": "thirtyblog",
+        "variant": "python",
+        "repository": {
+            "name": "thirtyblog",
+            "variant": "git",
+            "location": "http://github.com/30loops/thirtyblog"
+        },
+        "environments": [{
+            "name": "production",
+            "flavor": "django",
+            "backends": [
+                {"region": "eu1", "count": 2}
+            ]}    
+            ]
+    }
+
+.. sourcecode:: http
+
+    HTTP/1.1 201 CREATED
+    Content-Type: application/json; charset=UTF-8
+    Location: https://api.30loops.net/1.0/30loops/app/thirtyblog/
 
 .. _app-environment-api:
 
@@ -613,32 +668,32 @@ App Environment
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/app/newapp58/environment/production/ HTTP/1.1
+    GET /1.0/30loops/app/thirtyblog/environment/production/ HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
 
 **Example Response:**
 
 .. sourcecode:: http
 
-    HTTP/1.0 200 OK
+    HTTP/1.1 200 OK
     Content-Type: application/json; charset=UTF-8
 
     {
         "backends": [
             {
-                "count": 3, 
+                "count": 2,
                 "region": "eu1"
-            }, 
-        ], 
+            },
+        ],
         "database": {
-            "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-newapp58-production/", 
-            "name": "30loops-app-newapp58-production", 
+            "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-thirtyblog-production/",
+            "name": "30loops-app-thirtyblog-production",
             "rel": "related"
-        }, 
-        "flavor": "django", 
-        "install_setup_py": false, 
+        },
+        "flavor": "django",
+        "install_setup_py": false,
         "link": {
-            "href": "https://api.30loops.net/1.0/30loops/app/newapp58/environment/production/", 
+            "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/environment/production/",
             "rel": "self"
         }, 
         "name": "production", 
@@ -646,6 +701,56 @@ App Environment
         "repo_commit": "HEAD", 
         "requirements_file": "requirements"
     }
+
+Resource Fields
+~~~~~~~~~~~~~~~
+
+.. note::
+
+    The app environment resource has no variant field. Instead you can choose a
+    flavor.
+
+**flavor** (default=wsgi)
+  A flavor of a python web application. Current choices are:
+
+  - wsgi
+  - django
+
+**install_setup_py** (default=False)
+  Specifies if the deploy mechanism should look for a setup.py file in the
+  source code root directory, and run a ``python setup.py install``.
+**requirements_file** (default=requirements)
+  Look for a file containing required package dependencies. This file is looked
+  for in the root directory of the source repository. See the `pip
+  documentation`_ for more information.
+**backends**
+  In order to deploy an app environment you have to tell the 30loops platform
+  where you want to do that and how many backends you plan on using. The format
+  of this collection breaks the standard format for 30loops collections
+  described in `JSON Format`_. Its a list of simple dictionaries containing two
+  fields:
+
+  - region
+  - count
+
+  Region is a unique identifier for an available zone on 30loops. Count
+  determines how many backends you want to deploy in that specific region. You
+  can specify more than one backend definition::
+
+    ...
+    "backends": [
+        {"region": "eu1", "count": 2},
+        {"region": "eu2", "count": 1},
+    ]
+    ...
+
+**database**
+  The database reference is created automaticaly when creating an app
+  environment for the first time. Users can't create those resources
+  themselves. They are also protected from updates. See the section
+  `Database Resource`_ for more information.
+
+.. _`pip documentation`: http://www.pip-installer.org/en/latest/requirements.html
 
 .. _repository-resource-api:
 
@@ -659,7 +764,7 @@ cloned. It provides the sourcecode for the webapplication.
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/repository/thirty-blog/ HTTP/1.1
+    GET /1.0/30loops/repository/thirtyblog/ HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
 
 **Example Response:**
@@ -672,11 +777,11 @@ cloned. It provides the sourcecode for the webapplication.
     {
         "label": "repository",
         "link": {
-            "href": "https://api.30loops.net/1.0/30loops/repository/thirty-blog/",
+            "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/",
             "rel": "self"
         },
-        "location": "https://github.com/30loops/thirty-blog/",
-        "name": "thirty-blog",
+        "location": "https://github.com/30loops/thirtyblog/",
+        "name": "thirtyblog",
         "variant": "git"
     }
     
@@ -698,6 +803,8 @@ Resource Fields
 **password** (optional)
   Specify the password to provide when cloning a repository and it is password
   protected.
+**ssh_key** (optional)
+  A ssh key to use when connecting to a repository.
 
 .. _database-resource-api:
 
