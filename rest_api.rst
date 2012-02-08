@@ -40,6 +40,25 @@ URL                                                       HTTP Verb  Function
 /1.0/{account}/app/{resource}/environment/{environment}/  DELETE     `Deleting Application Environments`_
 ========================================================  =========  ==============================================
 
+Actions API
+-----------
+
+=====================================  =========  ===========================
+URL                                    HTTP Verb  Function
+=====================================  =========  ===========================
+/1.0/{account}/{label}/{resource}/     POST       `Queue Action`_
+=====================================  =========  ===========================
+
+Logbook API
+-----------
+
+=====================================  =========  ===========================
+URL                                    HTTP Verb  Function
+=====================================  =========  ===========================
+/1.0/{account}/logbook/{uuid}/         GET        `Listing Action Logbook`_
+=====================================  =========  ===========================
+
+
 Request Format
 ==============
 
@@ -898,3 +917,118 @@ Webserver Resource
 
     Webserver resources currently can't be created by the user. For each app
     environment you create a webserver is configured for you automaticaly.
+
+Actions API
+===========
+
+.. _action-queue-api:
+
+Queue Action
+------------
+
+.. http:post:: /1.0/{account}/{label}/{resource}/
+
+    Queue an action for this resource.
+
+    :param account: The name of a account, a short descriptive word.
+    :param label: The resource type, eg: repository, db, app
+    :param resource: The name of the resource.
+    :status 202: The action was succesfully queued.
+    :status 403: Request not permitted.
+    :status 404: Resource not found.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        POST /1.0/30loops/app/thirtyloops/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+        {
+            "action": "deploy",
+            "options": {
+                "environment": "production"
+            }
+        }
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 202 OK
+        Content-Type: application/json; charset=UTF-8
+        Location: "http://api.30loops.net/1.0/30loops/logbook/1705af0e-5250-11e1-b660-568837fa3205/"
+
+The API for every action is the same. You describ the details of the action in
+a JSON message you supply in the request body.
+
+Logbook API
+===========
+
+Listing Action Logbook
+----------------------
+
+.. http:get:: /1.0/{account}/logbook/{uuid}/
+
+    Retrieve the whole logbook with that uuid.
+
+    :param account: The name of a account, a short descriptive word.
+    :param uuid: The UUID of the logbook.
+    :status 200: Returns the logbook as a JSON object.
+    :status 403: Request not permitted.
+    :status 404: Logbook not found.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        GET /1.0/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "action": "AppDeployAction", 
+            "link": {
+                "href": "/1.0/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205/", 
+                "rel": "self"
+            }, 
+            "messages": [
+                {
+                    "asctime": "2012-02-08T11:15:04", 
+                    "loglevel": 1, 
+                    "message": "Initiating AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]", 
+                    "node": "127.0.0.1"
+                }, 
+                {
+                    "asctime": "2012-02-08T11:15:05", 
+                    "loglevel": 1, 
+                    "message": "Prerun AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]", 
+                    "node": "127.0.0.1"
+                }, 
+                {
+                    "asctime": "2012-02-08T11:15:06", 
+                    "loglevel": 0, 
+                    "message": "Running AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]", 
+                    "node": "127.0.0.1"
+                }, 
+                {
+                    "asctime": "2012-02-08T11:15:06", 
+                    "loglevel": 1, 
+                    "message": "Computing stage: CreateVirtualenv of AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]", 
+                    "node": "127.0.0.1"
+                }, 
+            ]
+        }
+
+Every action you queue, creates a logbook that tracks the progress of the
+operation. Every step and result gets logged into this logbook. You can
+retrieve the logbook. The messages in the logbook are ordered ascending by a
+time stamp (``asctime``).
