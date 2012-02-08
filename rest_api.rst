@@ -512,7 +512,13 @@ Showing Application Environments
             "name": "production",
             "repo_branch": "master",
             "repo_commit": "HEAD",
-            "requirements_file": "requirements"
+            "requirements_file": "requirements",
+            "djangoflavor": {
+                "django_project_root": "project",
+                "django_settings_module": "production",
+                "auto_syncdb": false,
+                "inject_db": true
+                }
         }
 
 This retrieves details of an specific environment of an app resource.
@@ -699,7 +705,13 @@ App Environment
         "name": "production", 
         "repo_branch": "master", 
         "repo_commit": "HEAD", 
-        "requirements_file": "requirements"
+        "requirements_file": "requirements",
+        "djangoflavor": {
+            "django_project_root": "project",
+            "django_settings_module": "production",
+            "auto_syncdb": false,
+            "inject_db": true
+            }
     }
 
 Resource Fields
@@ -716,6 +728,9 @@ Resource Fields
   - wsgi
   - django
 
+  Each flavor can define some more fields, that are only valid for that
+  specific flavor. See the section about `App Flavors`_ for more information.
+    
 **install_setup_py** (default=False)
   Specifies if the deploy mechanism should look for a setup.py file in the
   source code root directory, and run a ``python setup.py install``.
@@ -749,6 +764,64 @@ Resource Fields
   environment for the first time. Users can't create those resources
   themselves. They are also protected from updates. See the section
   `Database Resource`_ for more information.
+
+App Flavors
+~~~~~~~~~~~
+
+Python application can come in two flavors. Regular WSGI and django
+applications. For each flavor you have to define a few more fields. Specify the
+flavor options as a referenced resource inside the environment resource.
+
+
+WSGI Flavor
++++++++++++
+
+WSGI apps are configured by specifying the application entry point::
+
+    ...
+    "wsgiflavor": {
+        "wsgi_entry_point": "wsgi:app",
+        "wsgi_project_root": "project"
+    }
+
+**wsgi_entry_point**
+  The format of the string should be in the way of module:callable. The module
+  must be on the python path, and the callable that gets called for the
+  incoming request.
+
+**wsgi_project_root** (default=project)
+  Specify the root directory of your wsgi app. This path gets added to the
+  python path and is relative to your repository root.
+
+Django Flavor
++++++++++++++
+
+Django apps have a few more specific fields::
+
+    ...
+    "djangoflavor": {
+        "django_project_root": "project",
+        "django_settings_module": "production",
+        "auto_syncdb": false,
+        "inject_db": true
+    }
+
+**django_project_root** (default=project)
+  Specify the root directory of your django app. Thos path gets added to the
+  python path and is relative to your repository root.
+
+**django_settings_module** (default=settings)
+  Specify the module path to your settings file. The settings module must be
+  found on the python path. 
+
+**auto_syncdb** (default=False)
+  Run automaticaly at the end of a deploy a syncdb command. The default is not
+  to, but you can change the behaviour by setting this value to ``True``.
+
+**inject_db** (default=True)
+  When deploying an app, the database settings will be automatically appendend
+  to the end of your settings file. You can turn this behaviour off by setting
+  this field to ``False``.
 
 .. _`pip documentation`: http://www.pip-installer.org/en/latest/requirements.html
 
