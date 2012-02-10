@@ -247,6 +247,24 @@ Changing the object reference to another object **does not** delete the old
 object (eg, pointing an app to another repository). The delete has to be done
 manually if this is wanted.
 
+Time and Date Formats
+=====================
+
+All time and dates that are provided either in a HTTP header or in the body of
+a JSON message are given in the following format::
+
+    YYYY-MM-DDTHH:MM:SS
+
+eg::
+
+    2012-02-08T11:15:06
+
+It follows roughly `RFC 3339`_. All times are given in Amsterdam local time,
+and have an UTC offset of +1 hour.
+
+.. _`RFC 3339`: http://ietfreport.isoc.org/idref/rfc3339/
+    
+
 Resource API
 ============
 
@@ -995,7 +1013,8 @@ Listing Action Logbook
         Content-Type: application/json; charset=UTF-8
 
         {
-            "action": "AppDeployAction", 
+            "action": "AppDeployAction",
+            "status": "running",
             "link": {
                 "href": "/1.0/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205/", 
                 "rel": "self"
