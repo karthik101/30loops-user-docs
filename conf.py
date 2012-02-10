@@ -220,7 +220,7 @@ html_theme = '30loops'
 
 # (Optional) Use a shorter name to conserve nav. bar space.
 html_short_title = "Demo"
-html_add_permalinks = False
+#html_add_permalinks = False
 # (Optional) Logo. Should be exactly 32x32 px to fit the nav. bar.
 # Path should be relative to the html_static_path setting (e.g.,
 # "_static") in source.
