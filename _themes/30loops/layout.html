@@ -91,6 +91,7 @@
 			(min-width: 1200px) {
 				.fixedsidebar {
 					position: fixed;
+					width: 280px;
 				}
 				.content {
 					padding-left: 300px;
@@ -219,11 +220,9 @@ href="{{ pathto('genindex') }}"/>
 				{% trans sphinx_version=sphinx_version|e %}Created using <a
 					href="http://sphinx.pocoo.org/">Sphinx</a> {{ sphinx_version }}
 				.{% endtrans %}
-				Theme <a href="https://github.com/scotch/sphinx-bootstrap">Sphinx-Bootstrap</a>
-				adapted from
+				Theme adapted from
 				<a href="http://twitter.github.com/bootstrap/">Twitter's
-					Bootstrap</a> by <a href="http://www.scotchmedia.com">Scotch
-					Media</a>
+					Bootstrap</a>
 				{%- endif %}
 			</div>
 		</div>
@@ -284,29 +283,14 @@ href="{{ pathto('genindex') }}"/>
 <script type="text/javascript" src="_static/js/bootstrap-collapse.js"></script>
 <script>
 $(document).ready(function() {
-  $('a[href*=#]').bind('click', function(e) {
-     if($(this).attr('href').indexOf("#") == 0) {
-	e.preventDefault(); //prevent the "normal" behaviour which would be a "hard" jump
-
-	var target = $(this).attr("href"); //Get the target
-
-	// perform animated scrolling by getting top-position of target-element and set it as scroll target
-	$('html, body').stop().animate({ scrollTop: $(target).offset().top- $('.navbar').height() }, 500, function() {
-	     location.hash = target;  //attach the hash (#jumptarget) to the pageurl
-	});
-
-	return false;
-}
-   });
-
-
    $('table.docutils').attr("cellspacing", 0);
    $('table.docutils').attr("cellpadding", 0);
    $("table.docutils").attr("border", 0);
    $("table.docutils").addClass("table table-striped");
    $("a[href='#']").attr('href', '#rest-api');
-
-});  
+   $(".section").css("margin-top", "40px");
+   $(".section").css("padding-top", "40px");
+});
 </script>
 </body>
 </html>

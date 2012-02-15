@@ -3,14 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to 30loops User Documentation's documentation!
-======================================================
+Welcome to 30loops User Documentation!
+======================================
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
+   quickstart
    rest_api
 
 Indices and tables
