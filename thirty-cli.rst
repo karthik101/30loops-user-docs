@@ -141,9 +141,10 @@ show
 
 ::
 
-    thirty show <lable> <resource_name>
+    thirty show <lable> <resource_name> [environment]
 
-Show the details of a resource.
+Show the details of a resource. If ``[environment]`` is given it will show the
+details of a specific app environment instead of the app itself.
 
 **Example:**
 
@@ -166,14 +167,43 @@ Show the details of a resource.
 create
 ~~~~~~
 
+::
+
+    thirty create <lable> <resource_name> [environment]
+
+Create a new resource. If ``[environment]`` is given it will create a new app
+environment instead of the app itself. Not all resources can be created that
+way. Database resources for example are created automatically when creating an
+app environment.
+
 update
 ~~~~~~
+
+::
+
+    thirty update <lable> <resource_name> [environment]
+
+Update the details of a resource. If ``[environment]`` is given it will update the
+details of a specific app environment instead of the app itself.
 
 delete
 ~~~~~~
 
+::
+
+    thirty delete <lable> <resource_name> [environment]
+
+Delete a resource. If ``[environment]`` is given it will delete the app
+environement instead of the app itself.
+
 deploy
 ~~~~~~
+
+::
+
+    thirty deploy <app> <environment>
+
+Deploy a specific app environment. 
 
 runcmd
 ~~~~~~
