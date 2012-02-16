@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    quickstart
+   thirty-cli
    rest_api
 
 Indices and tables

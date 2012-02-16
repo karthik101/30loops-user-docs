@@ -1018,10 +1018,10 @@ Queue Action
         Location: http://api.30loops.net/1.0/30loops/logbook/1705af0e-5250-11e1-b660-568837fa3205/
 
 Actions
--------
+=======
 
 App Deploy Action
-~~~~~~~~~~~~~~~~~
+-----------------
 
 After you configured an application and an environment for the application, you
 can deploy it to the platform.
@@ -1033,6 +1033,23 @@ can deploy it to the platform.
 - environment (string)
 
   The name of the environment to deploy.
+
+App Runcommand Action
+---------------------
+
+You can execute single commands in the context of your application.
+
+**actions:** runcommand
+
+**options:**
+
+- environment (string)
+
+  The name of the environment to use.
+
+- command (string)
+
+- occurence (string)
 
 .. _`logbook-api`:
 
