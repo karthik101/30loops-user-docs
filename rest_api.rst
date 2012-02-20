@@ -1060,7 +1060,34 @@ can deploy it to the platform.
 App Runcommand Action
 ---------------------
 
-You can execute single commands in the context of your application.
+You can execute single commands in the context of your application. The command
+is executed with your repository as working directory, so if in the root of
+your respository you have a file called ``init_db.py`` you can call it with the
+command: ``python init_db.py``. 
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    POST /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+    Host: api.30loops.net
+
+    {
+        "action": "runcommand",
+        "options": {
+            "environment": "dev",
+            "command": "python init_db.py --initial"
+        }
+    }
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 202 ACCEPTED
+    Content-Type: application/json; charset=UTF-8
+    Location: https://api.30loops.net/1.0/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-1a09507dbcf2/
 
 **actions:** runcommand
 
@@ -1072,7 +1099,52 @@ You can execute single commands in the context of your application.
 
 - command (string)
 
-- occurence (string)
+  The full command to execute.
+
+App Django Management Action
+----------------------------
+
+Run a django management command in the context of your django project root. The
+working directory of this call is your django project root. You don't have to
+specify ``python manage.py`` or a ``--settings`` argument, this happens
+automatically for you. So to run ``python manage.py syncdb --settings
+production`` you just specify the follwing command: ``syncdb``.
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    POST /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+    Host: api.30loops.net
+
+    {
+        "action": "djangocommand",
+        "options": {
+            "environment": "dev",
+            "command": "syncdb"
+        }
+    }
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 202 ACCEPTED
+    Content-Type: application/json; charset=UTF-8
+    Location: https://api.30loops.net/1.0/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-1a09507dbcf2/
+
+**actions:** djangocommand
+
+**options:**
+
+- environment (string)
+
+  The name of the environment to use.
+
+- command (string)
+
+  The django management command to execute.
 
 .. _`logbook-api`:
 
