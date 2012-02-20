@@ -1026,6 +1026,29 @@ App Deploy Action
 After you configured an application and an environment for the application, you
 can deploy it to the platform.
 
+**Example Request:**
+
+.. sourcecode:: http
+
+    POST /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+    Host: api.30loops.net
+
+    {
+        "action": "deploy",
+        "options": {
+            "environment": "dev"
+        }
+    }
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 202 ACCEPTED
+    Content-Type: application/json; charset=UTF-8
+    Location: https://api.30loops.net/1.0/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-1a09507dbcf2/
+
 **action:** deploy
 
 **options:**
