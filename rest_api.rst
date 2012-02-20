@@ -547,6 +547,11 @@ Showing Application Environments
                 "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/environment/production/",
                 "rel": "self"
             },
+            "cname_records": [
+                {
+                    "record": "alt.example.org"
+                }
+            ],
             "name": "production",
             "repo_branch": "master",
             "repo_commit": "HEAD",
@@ -802,6 +807,14 @@ Resource Fields
   environment for the first time. Users can't create those resources
   themselves. They are also protected from updates. See the section
   `Database Resource`_ for more information.
+
+**cname_records**
+  A list of cname records that are used to configure the load balancer::
+
+    ...
+    "cname_records": [
+        {"record": "cname.example.org"}
+    ]
 
 App Flavors
 ~~~~~~~~~~~

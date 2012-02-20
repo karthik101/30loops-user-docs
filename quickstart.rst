@@ -100,11 +100,50 @@ Applications on 30loops are deployed using a pull mechanism. This means,
 30loops will connect to your code repository, fetch the code, and deploy it on
 the platform.
 
+You can create these resources seperately are all together in one request. We
+first create them seperated, and give you an example of creating an app in one
+go leter on.
+
+Creating a repository resource
+------------------------------
+
+To create a repository resource run the following command::
+
+    thirty create repository myrepo
+
+The only field that you have to provide for a repository is its ``name`` and
+its ``location``. Fill in the location when the editor opens::
+
+    {
+        "name": "myrepo",
+        "location": "git://github.com/bastichelaar/Django-CMS-30loops.git",
+        "variant": "git"
+    }
+
+Save and quit the editor, and the repository resource gets created. To verify,
+run::
+
+    thirty show repository myrepo
+    
+It will output something like:
+
+.. code-block:: js
+
+    {
+        "link": {
+            "href": "http://api.30loops.net/1.0/30loops/repository/myrepo/", 
+            "rel": "self"
+        }, 
+        "location": "git://github.com/bastichelaar/Django-CMS-30loops.git", 
+        "variant": "git", 
+        "name": "myrepo", 
+        "label": "repository"
+    }
+
 Creating an app resource
 ------------------------
 
-Run the following command (replace myrepo with the desired name of the
-repository)::
+Create an app with the following command::
 
     thirty create app myapp
 
@@ -123,13 +162,25 @@ This will open up the previously specified editor, with the following contents:
         "environments": []
     }
 
-As you can see, the repository details are already included. To create separate
-repository resources, see the dedicated chapter.
+As you can see, there is a template for a repository already included. You can
+either create here a new repository or use the repository we created before.
+You could already create the first environment here. But for the purpose of
+this example we will do this in a seperate step. We provide later examples for
+a complete app, that is created in one step. We fill in the fields in the
+following way, save and quit the editor.
 
-Enter the name and the location of your repository, for example ``myrepo`` and
-``http://github.com/bastichelaar/Django-CMS-30loops.git``, and save the file.
-It will send the JSON message to the api. To verify if the app resource is
-created correctly, you can run the follewing command::
+.. code-block:: js
+
+    {
+        "name": "myapp",
+        "variant": "python",
+        "repository": {
+                "name": "myrepo"
+                },
+        "environments": []
+    }
+
+You can see the configuration of your app so far using the following command::
 
     thirty show app myapp
 
@@ -153,30 +204,14 @@ It will output something like:
         }
     }
 
-Additionally, the repository resource is also created. To verify, run::
-
-    thirty show repository myrepo
-    
-It will output something like:
-
-.. code-block:: js
-
-    {
-        "link": {
-            "href": "http://api.30loops.net/1.0/30loops/repository/myrepo/", 
-            "rel": "self"
-        }, 
-        "location": "http://github.com/bastichelaar/Django-CMS-30loops.git", 
-        "variant": "git", 
-        "name": "myrepo", 
-        "label": "repository"
-    }
-
 The app resource is now created. We will continue with creating the application
 environment.
 
 Creating an environment
 -----------------------
+
+We support right now two different flavors of python web apps: django and wsgi.
+The details to create an app environment differ a little bit between those two.
 
 For this example, we are using the Django template. You can specify different templates in the future.
 Run the following command (replace production with the desired name of the environment):
