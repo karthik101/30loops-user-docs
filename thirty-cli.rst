@@ -203,10 +203,41 @@ deploy
 
     thirty deploy <app> <environment>
 
-Deploy a specific app environment. 
+Deploy a specific app environment. It queues a new deployment of that
+environment. See :doc:`REST API guide <rest_api>` for more information about
+deploys.
 
 runcmd
 ~~~~~~
 
+::
+
+    thirty runcmd <app> <environment> "<command>"
+
+Run a command in the context of your app environment. The full command is
+specified enclosed by ``"``. The working directory of this command is the root
+of your repository. 
+
+**Example:**
+
+::
+
+    thirty runcmd thirtyblog production "python init_db.py"
+
 djangocmd
 ~~~~~~~~~
+
+::
+
+    thirty djangocmd <app> <environment> "<management command>"
+
+Run a django management command in the context of your django project. The full
+command is specified enclosed by ``"``. The working directory of this command
+is the root of your repository. You don't have to specify any settings module
+or start the command with ``python manage.py``.
+
+**Example:**
+
+::
+
+    thirty djangocmd thirtyblog production "syncdb"
