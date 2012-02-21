@@ -194,7 +194,7 @@ delete
     thirty delete <lable> <resource_name> [environment]
 
 Delete a resource. If ``[environment]`` is given it will delete the app
-environement instead of the app itself.
+environment instead of the app itself.
 
 deploy
 ~~~~~~

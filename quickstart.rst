@@ -12,7 +12,9 @@ The 30loops platform abstracts all services you can manage as resources.
 Your app is a resource, so is your database or the repository you connect to a
 resource. A resource is represented as a json message and has different fields.
 You can consult the :doc:`REST API guide <rest_api>` for a detailed description
-of each resource. Each resource has at least the following fields:
+of each resource.
+
+Each resource has at least the following fields:
 
 - **name**
 
@@ -89,6 +91,20 @@ running::
 
 Creating an application
 =======================
+
+.. note::
+
+    At the moment the client will enable you to edit your resources using a
+    text editor. You have to edit valid json messages. A common error is to
+    leave a ``,`` after the last field, which doesn't validates as correct
+    json. Try to avoid the following::
+
+        {
+            "name": "appname",
+            "field": "value",  // <-- Note the trailing comma, it will raise an
+                               //     error. Avoid a trailing coma after the last
+                               //     field.
+        }
 
 An application on 30loops consists of the following components:
 
@@ -210,77 +226,148 @@ environment.
 Creating an environment
 -----------------------
 
-We support right now two different flavors of python web apps: django and wsgi.
-The details to create an app environment differ a little bit between those two.
+You can create one or more environments per app. So it is normal to have a
+development, a staging and a production environment. Use the following command
+to create an environment::
 
-For this example, we are using the Django template. You can specify different templates in the future.
-Run the following command (replace production with the desired name of the environment):
+    thirty create app thirtyblog production
 
-    ``thirty --template django create app myapp production``
-
-This will open up the previously specified editor, with the following contents:
-
-.. code-block:: js
+The editor will open up and you'll see something like that::
 
     {
-        "requirements_file": "requirements.txt", 
-        "name": "production", 
-        "flavor": "django", 
+        "backends": [],
+        "cname_records": [],
+        "name": "production",
+        "repo_branch": "master",
+        "repo_commit": "HEAD",
+        "requirements_file": "requirements",
+        "install_setup_py": false,
+        "flavor": "wsgi",
         "djangoflavor": {
-            "inject_db": true, 
-            "django_project_root": "mycms", 
-            "django_settings_module": "settings", 
-            "auto_syncdb": false
-        }, 
-        "repo_branch": "master", 
-        "backends": [
-            {
-                "count": 1, 
-                "region": "eu1"
-            }
-        ], 
-        "install_setup_py": false, 
-        "repo_commit": "HEAD"
+            "auto_syncdb": false,
+            "django_project_root": "project",
+            "django_settings_module": "settings",
+            "inject_db": true
+        },
+        "wsgiflavor": {
+            "wsgi_entrypoint": "",
+            "wsgi_project_root": "project"
+        }
     }
 
-The different variables are explained in the REST api documentation, but are quite self-explaining. the 
-``requirements_file`` contains the requirements that will be installed using ``pip``. The ``django_project_root`` is
-the directory where your actual Django application (the manage.py) lives. The ``django_settings_module`` is the 
-settings module of your application (used for example in ``python manage.py syncdb --settings settings``).
+All fields are defined in detail in the :doc:`REST API guide <rest_api>`. We
+concentrate here on the important ones, which have to be defined at this point.
 
-The backends contains the number of backends per zone. At this moment we have two zones:
+The ``backends`` fields contains the number of backends per zone. At this
+moment we have the following zone:
 
-1. **eu1**, the default zone in Amsterdam
-2. **eu2**, the zone in Germany
+#) **eu1**, the default zone in Amsterdam
 
-Note that the database will be automatically created, and will be created in zone **eu1** for now.
+The format of defining a zone is the following::
 
-If you save this file after filling in the correct variables, it will be validated and sent to the api. To verify if 
-your environment is created correctly, run:
+    ...
+    "backends": [{"region": "eu1", "count": 1}]
+    ...
 
-    ``thirty show app myapp production``
+We support two ways of installing application dependencies. You can specify a
+requirements file, that is used by ``pip`` to install requirements. See the
+`pip website`_ for more information on the format of the requriements file. You
+have to specify the requirements with the relative path from the root of your
+repository.
 
-As you can see, the database resource is automatically created. Your application is now ready for deployment.
+You can also provide a setup.py file and specify all dependencies there. The
+deploy action will run a ``python setup.py install`` that installs all your
+requirements. To enable this behaviour set::
+
+    ...
+    "install_setup_py": True
+    ...
+
+We support right now two different flavors of python web apps: Django and WSGI.
+The details to create an app environment differ a little bit between those two.
+Pick from your choice of flavor. Note that frameworks like flask are run as
+WSGI apps, and no special support is available at this moment. You have to
+choose one of the two flavors and configure its flavor section accordingly.
+Set the ``flavor`` field to the right type.
+
+- `Creating a WSGI flavor`_
+- `Creating a Django flavor`_
+
+.. _`pip website`: http://www.pip-installer.org/en/latest/requirements.html
+
+Creating a WSGI flavor
+~~~~~~~~~~~~~~~~~~~~~~
+
+To create a wsgi based web application edit the environment resource the
+following::
+
+    ...
+    "flavor": "wsgi",
+    "wsgiflavor": {
+        "wsgi_entrypoint": "",
+        "wsgi_project_root": "project"
+    }
+
+The ``wsgi_entrypoint`` field tells us which callable is your entry point for
+the webserver. The format is ``module.path:callable``. The
+``wsgi_project_root`` field tells us which path relative to the repository root
+the application is stored in. 
+
+Creating a Django flavor
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    ...
+    "flavor": "django",
+    "djangoflavor": {
+        "auto_syncdb": false,
+        "django_project_root": "project",
+        "django_settings_module": "settings",
+        "inject_db": true
+    }
+
+The ``django_project_root`` is the directory where your actual Django
+application (the manage.py) lives. The ``django_settings_module`` is the
+settings module of your application (used for example in ``python manage.py
+syncdb --settings settings``). You can choose to auto inject at the bottom of
+your settings file the ``DATABASE`` configuration. If you set ``auto_syncdb``
+to true, the deploy script runs automatically a ``python manage.py syncdb``
+during your deploy. Otherwise you can run the command manually and keep control
+over it.
+
+If you save this file after filling in the correct variables, it will be
+validated and sent to the api. To verify if your environment is created
+correctly, run::
+
+    thirty show app thirtyblog production
+
+As you can see, the database resource is automatically created. Your
+application is now ready for deployment.
 
 Deploying an application
 ========================
 
-Deploying an application is quite simple and fast, just run the following command:
+Deploying an application is quite simple and fast, just run the following
+command::
 
-    ``thirty deploy myapp production``
+    thirty deploy myapp production
 
-This will start the deployment on the number of backends you specified. The output of the logbook will be fetched and 
-renewed every 10 seconds. You can also access the logbook manually by running:
+This will start the deployment on the number of backends you specified. The
+output of the logbook will be fetched and renewed every 10 seconds. You can
+also access the logbook manually by running::
 
-    ``thirty logbook UUID``
+    thirty logbook UUID
 
 Where UUID is the ID of the deployment task.
 
-After a successfull deploy, your application will be available on the specified DNS name and on 30loops.net, for 
-example ``http://30loops-app-myapp-production.30loops.net``.
+After a successfull deploy, your application will be available on the specified
+DNS name and on 30loops.net, for example
+``http://30loops-app-myapp-production.30loops.net``.
 
 Additional support
 ==================
 
-If you have any questions, please log in on ``http://help.30loops.net`` and submit a ticket. You can also chat with us
-on #30loops at irc.freenode.net or mail us at support@30loops.net.
+If you have any questions, please log in on ``http://help.30loops.net`` and
+submit a ticket. You can also chat with us on #30loops at irc.freenode.net or
+mail us at support@30loops.net.
