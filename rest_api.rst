@@ -1090,7 +1090,8 @@ command: ``python init_db.py``.
         "action": "runcommand",
         "options": {
             "environment": "dev",
-            "command": "python init_db.py --initial"
+            "command": "python init_db.py --initial",
+            "occurence": "all"
         }
     }
 
@@ -1114,6 +1115,12 @@ command: ``python init_db.py``.
 
   The full command to execute.
 
+- occurence (integer or string)
+
+  Specify on how many backends this command should run on. Can be either an
+  integer for the number of backends to run it on or ``all``. Defaults to
+  ``1``.
+
 App Django Management Action
 ----------------------------
 
@@ -1135,7 +1142,8 @@ production`` you just specify the follwing command: ``syncdb``.
         "action": "djangocommand",
         "options": {
             "environment": "dev",
-            "command": "syncdb"
+            "command": "syncdb",
+            "occurence": 4
         }
     }
 
@@ -1158,6 +1166,12 @@ production`` you just specify the follwing command: ``syncdb``.
 - command (string)
 
   The django management command to execute.
+
+- occurence (integer or string)
+
+  Specify on how many backends this command should run on. Can be either an
+  integer for the number of backends to run it on or ``all``. Defaults to
+  ``1``.
 
 .. _`logbook-api`:
 

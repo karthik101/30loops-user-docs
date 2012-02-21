@@ -63,26 +63,26 @@ configure a `thirty.cfg Configuration File`_ to specify those values. Global
 options specified on the command line take precedence over options specified in
 the config file.
 
--u, --username *<username>*
+``-u, --username`` *<username>*
   Specify the username to use when authenticating a request to the API
   endpoints.
 
--p, --password *<password>*
+``-p, --password`` *<password>*
   Specify the password to use when authenticating a request to the API
   endpoints.
 
--a, --account *<account>*
+``-a, --account`` *<account>*
   Specify the account name when sending a request to the API endpoint.
 
--r, --uri *<uri>*
+``-r, --uri`` *<uri>*
   Specify the API URI to use for the request. The default API URI is
   ``https://api.30loops.net/``. You can override the default URI here.
 
--i, --api *<api>* (string)
+``-i, --api`` *<api>*
   Specify the default API version to use when making a request. The default is
   ``1.0``. You can override the default API version here.
 
--R, --raw
+``-R, --raw``
   Use a raw mode for printing output. The raw mode prints JSON messages as
   returned from the server, with out any indendation. This is handy if you want
   to use the ``thirty`` tool in scripts.
@@ -224,6 +224,12 @@ of your repository.
 
     thirty runcmd thirtyblog production "python init_db.py"
 
+**Options:**
+
+``--occurence``
+  Specifies on how many backends this command should be executed on. You can
+  either specify a number or ``all``. Defaults to ``1``.
+
 djangocmd
 ~~~~~~~~~
 
@@ -241,3 +247,9 @@ or start the command with ``python manage.py``.
 ::
 
     thirty djangocmd thirtyblog production "syncdb"
+
+**Options:**
+
+``--occurence``
+  Specifies on how many backends this command should be executed on. You can
+  either specify a number or ``all``. Defaults to ``1``.
