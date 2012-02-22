@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    quickstart
+   wsgi
    guide
    thirty-cli
    rest_api
