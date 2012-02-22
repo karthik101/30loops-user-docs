@@ -16,15 +16,13 @@ of each resource.
 
 Each resource has at least the following fields:
 
-- **name**
-
+**name**
   The name is a unique identifier. Each resource must have a unique name
   together with the label for this account, eg: You can have an app and a
   repository that both have the name ``blog``. But not two apps, with the same
   name.
 
-- **label**
-
+**label**
   Each resource is of a certain type, and each type has a label. For now we
   support the following resource types:
 
@@ -32,8 +30,7 @@ Each resource has at least the following fields:
   - repository
   - database
 
-- **variant**
-
+**variant**
   Each resource type can be of a variant. For now this is simple since we offer
   for each resource one variant. But this will change in the near future. 
 
@@ -118,7 +115,7 @@ the platform.
 
 You can create these resources seperately are all together in one request. We
 first create them seperated, and give you an example of creating an app in one
-go leter on.
+go later on.
 
 Creating a repository resource
 ------------------------------
@@ -261,7 +258,8 @@ concentrate here on the important ones, which have to be defined at this point.
 The ``backends`` fields contains the number of backends per zone. At this
 moment we have the following zone:
 
-#) **eu1**, the default zone in Amsterdam
+**eu1**
+  The default zone situated in Amsterdam.
 
 The format of defining a zone is the following::
 
@@ -354,8 +352,8 @@ command::
     thirty deploy myapp production
 
 This will start the deployment on the number of backends you specified. The
-output of the logbook will be fetched and renewed every 10 seconds. You can
-also access the logbook manually by running::
+client starts polling the logbook immediately. You can also access the logbook
+manually by running::
 
     thirty logbook UUID
 
@@ -368,6 +366,6 @@ DNS name and on 30loops.net, for example
 Additional support
 ==================
 
-If you have any questions, please log in on ``http://help.30loops.net`` and
+If you have any questions, please log in on http://help.30loops.net and
 submit a ticket. You can also chat with us on #30loops at irc.freenode.net or
 mail us at support@30loops.net.
