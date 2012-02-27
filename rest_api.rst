@@ -573,7 +573,7 @@ Updating Application Environments
 
 .. _`Deleting Application Environments`:
 
-Deleting Application Environmnets
+Deleting Application Environments
 ---------------------------------
 
 Resource Objects
