@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    quickstart
+   django
    wsgi
    guide
    thirty-cli
