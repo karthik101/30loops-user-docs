@@ -113,9 +113,10 @@ Applications on 30loops are deployed using a pull mechanism. This means,
 30loops will connect to your code repository, fetch the code, and deploy it on
 the platform.
 
-You can create these resources seperately are all together in one request. We
-first create them seperated, and give you an example of creating an app in one
-go later on.
+.. note::
+
+    Right now prevents a bug that you can create all resources in one go. We
+    are aware of it and will fix it as soon as possible.
 
 Creating a repository resource
 ------------------------------

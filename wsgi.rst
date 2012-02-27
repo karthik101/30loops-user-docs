@@ -39,22 +39,7 @@ app and an environment
     $ thirty create app wsgiapp
 
     {
-        "environments": [
-            {
-                "backends": [{"region": "eu1", "count": 1}],
-                "cname_records": [],
-                "flavor": "wsgi", 
-                "install_setup_py": false, 
-                "name": "dev", 
-                "repo_branch": "master", 
-                "repo_commit": "HEAD",
-                "requirements_file": "",            
-                "wsgiflavor": {
-                    "wsgi_entrypoint": "wsgiapp.main:application",
-                    "wsgi_project_root": "wsgiapp"
-                }
-            }   
-        ],
+        "environments": [],
         "name": "wsgiapp",
         "repository": {
             "location": "git://github.com/crito/wsgiapp.git",
@@ -63,6 +48,23 @@ app and an environment
         },
         "variant": "python"
     }
+
+    $ thirty create app wsgiapp dev
+
+    {
+        "backends": [{"region": "eu1", "count": 1}],
+        "cname_records": [],
+        "flavor": "wsgi", 
+        "install_setup_py": false, 
+        "name": "dev", 
+        "repo_branch": "master", 
+        "repo_commit": "HEAD",
+        "requirements_file": "",            
+        "wsgiflavor": {
+            "wsgi_entrypoint": "wsgiapp.main:application",
+            "wsgi_project_root": "wsgiapp"
+        }
+    }   
 
 Now we deploy the application environment::
 

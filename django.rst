@@ -7,7 +7,7 @@ we will install a typical django application and discuss all needed
 configuration options.
 
 We will install a Django-CMS application. You can find our django app in our
-`example repository`_ on github. 
+`example repository`_ on github.
 
 Our repository looks like this::
 
@@ -46,19 +46,19 @@ an environment for it::
     {
         "backends": [{"region": "eu1", "count": 1}],
         "cname_records": [],
-        "flavor": "django", 
-        "install_setup_py": false, 
-        "name": "production", 
-        "repo_branch": "master", 
+        "flavor": "django",
+        "install_setup_py": false,
+        "name": "production",
+        "repo_branch": "master",
         "repo_commit": "HEAD",
-        "requirements_file": "requirements.txt",            
+        "requirements_file": "requirements.txt",
         "djangoflavor": {
-            "inject_db": false, 
-            "django_project_root": "mycms", 
-            "django_settings_module": "production", 
+            "inject_db": false,
+            "django_project_root": "mycms",
+            "django_settings_module": "production",
             "auto_syncdb": false
         }
-    }   
+    }
 
 The Django flavor knows the following options:
 
