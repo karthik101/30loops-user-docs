@@ -36,6 +36,7 @@ For WSGI apps this is similar::
 
     +--> src
          +--> myawesomeblog
+              +--> __init__.py
               +--> app.py
 
 By setting ``wsgi_project_root`` to ``src/myawsomeblog/``, the right directory
