@@ -136,3 +136,36 @@ Web Stack
 
 Python Libraries
 ================
+
+Post Installation script
+========================
+
+After each deploy the script ``postinstall`` gets executed. This script needs
+to be in the root of your repository, and must be executable. This script can
+be any language, just provide the right shebang:
+
+For Python code:
+
+.. code-block:: py
+
+    #!/usr/bin/env python
+    run_some_function()
+
+Or for example some BASH code:
+
+.. code-block:: bash
+
+    #!/bin/sh
+    cp someimagefile /app/static
+
+This would also be the correct place to run a syncdb after each deploy:
+
+.. code-block:: bash
+
+    #!/bin/sh
+    python manage.py syncdb --noinput
+
+.. note::
+
+    The postinstall command is ran on one instance only, to run a command on
+    more instances you need to manually run a command using the client.

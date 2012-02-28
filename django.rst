@@ -76,3 +76,36 @@ The Django flavor knows the following options:
 
 .. _`Django`: http://djangoproject.com
 .. _`example repository`: https://github.com/30loops/django-cms-30loops
+
+Creating a Super User
+=====================
+
+To automatically create a superuser after the deploy, you need to use the 
+``postinstall`` script. This is further explained in the Platform Guide. To 
+create a superuser, create the following script:
+
+``createadmin.py``
+
+.. code-block:: py
+
+  #!/usr/bin/env python
+  from django.contrib.auth.models import User
+  u, created = User.objects.get_or_create(username='admin')
+  if created:
+      u.set_password('password')
+      u.is_superuser = True
+      u.is_staff = True
+      u.save()
+
+``postinstall``
+
+.. code-block:: bash
+
+  #!/bin/bash
+  python manage.py syncdb --noinput
+  python createadmin.py
+
+This will create a user ``admin`` with password ``password``. Of course, replace
+these with the desired username and password. Remember to make the postinstall
+script executable in your repository, and delete it from any public 
+repositories!
