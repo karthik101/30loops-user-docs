@@ -107,5 +107,5 @@ create a superuser, create the following script:
 
 This will create a user ``admin`` with password ``password``. Of course, replace
 these with the desired username and password. Remember to make the postinstall
-script executable in your repository, and delete it from any public 
-repositories!
+script executable in your repository, and delete the createadmin.py from any 
+public repositories!
