@@ -2,21 +2,21 @@
 WSGI Flavor Guide
 =================
 
-Using the WSGI flavor, you can host any python web application following the
-`WSGI standard`_. This includes a lot of frameworks like flask, web.py and
-others.  We offer special support for Django applications.
+Using the WSGI flavor, you can deploy any python web application following the
+`WSGI standard`_. This includes frameworks like Flask, web.py and others.  We 
+offer special support for Django applications.
 
-Lets start creating an example WSGI app. We will create an app as you can see
-on our `example repository`_ on github.
+Let's create a very simple WSGI app. The app is available on our 
+`example repository`_ on Github.
 
-Our repository looks like this at the moment::
+The structure of the repository looks like this::
 
     +--> wsgiapp
          +--> __init__.py
          +--> main.py
 
-The following code is a very basic example for a WSGI app. Edit
-``wsgiapp/main.py`` and insert the following code.
+The code is a very basic example of a WSGI app. Edit ``wsgiapp/main.py`` and 
+insert the following code.
 
 .. code-block:: py
 
@@ -26,13 +26,13 @@ The following code is a very basic example for a WSGI app. Edit
         start_response(status, response_headers)
         return ['Hello world!\n']
 
-This function serves as an entrypoint for the app server. It is called for each
-incoming request. WSGI entrypoints have to be specified in the following
-format: ``python.module.path:callable``. In our case thats
-``wsgiapp.main:application``.
+This function serves as an entrypoint for the app server. Each incoming 
+request will be routed to this function. WSGI entrypoints have to be specified 
+in the following format: ``python.module.path:callable``. In this example this 
+is ``wsgiapp.main:application``.
 
-So lets create our application on 30loops and deploy it. First create the new
-app and an environment
+So let's create the application and deploy it. First create the new app and 
+create an environment:
 
 ::
 

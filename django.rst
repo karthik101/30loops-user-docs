@@ -2,15 +2,16 @@
 Django Flavor Guide
 ===================
 
-You can host any `Django`_ application using the Django flavor. In this guide
-we will install a typical django application and discuss all needed
-configuration options.
+You can deploy any `Django`_ application using the Django flavor. In this guide
+we will install a typical django application and discuss all the needed
+configuration options in more detail.
 
-We will install a Django-CMS application. You can find our django app in our
-`example repository`_ on github.
+The example application is a Django-CMS application. You can find our Django 
+app in our `example repository`_ on github.
 
 Our repository looks like this::
 
+    +--> postinstall
     +--> requirements.txt
     +--> mycms
          +--> __init__.py
@@ -20,10 +21,10 @@ Our repository looks like this::
          +--> urls.py
          +--> templates
 
-As you can see this is a very simple Django application, nothing fancy. We have
+As you can see this is a simple Django application, nothing fancy. We have
 two settings files, ``settings.py`` is used for local development and contains
 most settings and ``production.py`` is the settings file we use on the 30loops
-platform. We define all our requirements in ``requirements.txt``.
+platform. We define all the requirements in ``requirements.txt``.
 
 So lets create our application and deploy it. First we create the app and then
 an environment for it::
@@ -63,16 +64,17 @@ an environment for it::
 The Django flavor knows the following options:
 
 ``inject_db``
-  Tells the server to automaticaly inject db settings when deploying. The db
-  settings are injected at the end of the settings file you specify.
+  This tells the server to automaticaly inject the database settings during the
+  deploy. The database settings are injected at the bottom of the settings file 
+  you specified.
 
 ``django_project_root``
-  The relative path to your django project folder. Thats the folder that
-  contains your ``manage.py`` and most likely your ``urls.py``.
+  This is the relative path to your Django project folder. This is the folder 
+  that contains the ``manage.py`` and most likely the ``urls.py``.
 
 ``django_settings_module``
-  The python module path to your settings file. This has to be specified in a
-  dotted syntax, eg: ``module.settings``.
+  This is the python module path to your settings file. This has to be 
+  specified in a dotted syntax, for example: ``module.settings``.
 
 .. _`Django`: http://djangoproject.com
 .. _`example repository`: https://github.com/30loops/django-cms-30loops
@@ -80,9 +82,10 @@ The Django flavor knows the following options:
 Creating a Super User
 =====================
 
-To automatically create a superuser after the deploy, you need to use the 
-``postinstall`` script. This is further explained in the Platform Guide. To 
-create a superuser, create the following script:
+To automatically create a superuser after the deploy, you can use a 
+``postinstall`` script. This is further explained in more detail in the 
+:doc:`Platform Guide <platform_guide>`. To create a superuser, create the 
+following script:
 
 ``createadmin.py``
 
