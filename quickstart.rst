@@ -86,6 +86,16 @@ running::
 
    set EDITOR=c:/winnt/notepad.exe
 
+.. note::
+   
+    If you are using Mac OSX and VIM, make sure you turn of the backup files,
+    otherwise the configuration file will not be updated. You can do so by 
+    typing::
+
+      :set nowritebackup
+
+    when you have VIM open.
+
 Creating an application
 =======================
 
