@@ -88,7 +88,7 @@ running::
 
 .. note::
    
-    If you are using Mac OSX and VIM, make sure you turn of the backup files,
+    If you are using Mac OSX and VIM, make sure you turn of the writebackup,
     otherwise the configuration file will not be updated. You can do so by 
     typing::
 
