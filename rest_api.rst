@@ -921,14 +921,18 @@ Resource Fields
 **location**
   The full URI where to clone this repository from. This can be any valid
   location identifier understood by your DCVS.
-**username** (optional)
+**username** (not fully implemented yet)
   Specify the username to use when connecting to the repository, in case it is
   not publicly available.
-**password** (optional)
+**password** (not fully implemented yet)
   Specify the password to provide when cloning a repository and it is password
   protected.
 **ssh_key** (optional)
-  A ssh key to use when connecting to a repository.
+  A ssh key to use when connecting to a repository. This field needs to be a 
+  base64 encoded string of your password-less private SSH key. Use the
+  following command to generate the string (under Linux)::
+
+    base64 -w 0 YOUR_SSH_KEY
 
 .. _database-resource-api:
 
