@@ -20,7 +20,18 @@ Quick Reference
 
 All API access is over HTTPS and can be accesed at ``https://api.30loops.net/``.
 The first element of the path indicates the version of the API, currently this
-defaults to ``/1.0/``. 
+defaults to ``/1.0/``.
+
+Account API
+-----------
+
+============================================  =========  ==============================================
+URL                                           HTTP Verb  Function
+============================================  =========  ==============================================
+/1.0/{account}/                               GET        `Showing Accounts`_
+/1.0/{account}/users/{username}/              GET        `Showing Users`_
+/1.0/{account}/users/{username}/password/     PUT        `Change User Password`_
+============================================  =========  ==============================================
 
 Resource API
 ------------
@@ -263,7 +274,70 @@ It follows roughly `RFC 3339`_. All times are given in Amsterdam local time,
 and have an UTC offset of +1 hour.
 
 .. _`RFC 3339`: http://ietfreport.isoc.org/idref/rfc3339/
-    
+
+.. _`account-api`:
+
+Account API
+===========
+
+Showing Accounts
+----------------
+
+.. http:get:: /1.0/{account}/
+
+    Show the details of `account`.
+
+    :param account: The name of a account, a short descriptive word.
+    :status 200: Returns the account as a json string.
+    :status 403: Request not permitted.
+    :status 404: Account not found.
+
+Showing Users
+-------------
+
+.. http:get:: /1.0/{account}/users/{username}/
+
+    Show the details of the user `username`.
+
+    :param account: The name of a account, a short descriptive word.
+    :param username: The name of the user.
+    :status 200: Returns the user as a json message.
+    :status 403: Request not permitted.
+    :status 404: User not found.
+
+Change User Password
+--------------------
+
+.. http:put:: /1.0/{account}/users/{username}/password/
+
+    Update the password for this user.
+
+    :param account: The name of a account, a short descriptive word.
+    :param username: The name of the user.
+    :status 204: The password was succesfully updated.
+    :status 403: Request not permitted.
+    :status 404: User not found.
+
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        PUT /1.0/30loops/users/crito/password/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+        Content-Type: application/json
+
+        {
+            "password": "new_password"
+        }
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 204 NO CONTENT
+        Content-Type: application/json; charset=UTF-8
+
 .. _`resource-api`:
 
 Resource API
@@ -319,7 +393,7 @@ Creating Resources
     **Example Request**:
 
     .. sourcecode:: http
-   
+
         POST /1.0/30loops/repository/ HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
@@ -338,7 +412,7 @@ Creating Resources
         HTTP/1.1 201 CREATED
         Content-Type: application/json; charset=UTF-8
         Location: https://api.30loops.net/1.0/30loops/repository/thirtyblog/
- 
+
 When the creation succeeds, a ``201 CREATED`` response is returned, containing
 the ``Location`` header with the URI of the new resource.
 
@@ -377,13 +451,13 @@ Showing Resources
         Content-Type: application/json; charset=UTF-8
 
         {
-            "label": "repository", 
+            "label": "repository",
             "link": {
-                "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/", 
+                "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/",
                 "rel": "self"
-            }, 
-            "location": "https://github.com/30loops/thirtyblog/", 
-            "name": "thirtyblog", 
+            },
+            "location": "https://github.com/30loops/thirtyblog/",
+            "name": "thirtyblog",
             "variant": "git"
         }
 
@@ -428,13 +502,13 @@ Updating Resources
         Content-Type: application/json; charset=UTF-8
 
         {
-            "label": "repository", 
+            "label": "repository",
             "link": {
-                "href": "/1.0/30loops/repository/thirtyblog/", 
+                "href": "/1.0/30loops/repository/thirtyblog/",
                 "rel": "self"
-            }, 
-            "location": "https://bitbucket.org/30loops/thirtyblog", 
-            "name": "thirtyblog", 
+            },
+            "location": "https://bitbucket.org/30loops/thirtyblog",
+            "name": "thirtyblog",
             "variant": "git"
         }
 
@@ -462,7 +536,7 @@ Deleting Resources
     :param account: The name of a account, a short descriptive word.
     :param label: The resource type, eg: repository, db, app
     :param resource: The name of the resource.
-    :status 200: The resource was succesfully deleted.
+    :status 204: The resource was succesfully deleted.
     :status 403: Request not permitted.
     :status 404: Resource not found.
 
@@ -478,7 +552,7 @@ Deleting Resources
 
     .. sourcecode:: http
 
-        HTTP/1.1 200 OK
+        HTTP/1.1 204 NO CONTENT
         Content-Type: application/json; charset=UTF-8
 
 Sending a ``DELETE`` request to the URI of a resource deletes it.
@@ -601,7 +675,7 @@ resources have a few common attributes:
     JSON request when creating a new resource. But the label is part of the
     representation when retrieving the details of a resource.
 
-:variant: 
+:variant:
 
     Each resource type (label) has one or more variants. A variant specifies a
     specific type of this rsource, eg: *postgresql* for databases or *git* for
@@ -660,7 +734,7 @@ Resource Fields
 
 **label** (static, default=app)
   The unique label of this resource.
-**variants** (default=python) 
+**variants** (default=python)
   - python
 **name** (identifier)
   The name of this app as identified by the 30loops platform.
@@ -698,7 +772,7 @@ the URI of the newly created resource.
             "flavor": "django",
             "backends": [
                 {"region": "eu1", "count": 2}
-            ]}    
+            ]}
             ]
     }
 
@@ -744,10 +818,10 @@ App Environment
         "link": {
             "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/environment/production/",
             "rel": "self"
-        }, 
-        "name": "production", 
-        "repo_branch": "master", 
-        "repo_commit": "HEAD", 
+        },
+        "name": "production",
+        "repo_branch": "master",
+        "repo_commit": "HEAD",
         "requirements_file": "requirements",
         "djangoflavor": {
             "django_project_root": "project",
@@ -773,7 +847,7 @@ Resource Fields
 
   Each flavor can define some more fields, that are only valid for that
   specific flavor. See the section about `App Flavors`_ for more information.
-    
+
 **install_setup_py** (default=False)
   Specifies if the deploy mechanism should look for a setup.py file in the
   source code root directory, and run a ``python setup.py install``.
@@ -863,7 +937,7 @@ Django apps have a few more specific fields::
 
 **django_settings_module** (default=settings)
   Specify the module path to your settings file. The settings module must be
-  found on the python path. 
+  found on the python path.
 
 **auto_syncdb** (default=False)
   Run automaticaly at the end of a deploy a syncdb command. The default is not
@@ -908,13 +982,13 @@ cloned. It provides the sourcecode for the webapplication.
         "name": "thirtyblog",
         "variant": "git"
     }
-    
+
 Resource Fields
 ~~~~~~~~~~~~~~~
 
 **label** (static, default=repository)
   The unique label of this resource.
-**variants** (default=git) 
+**variants** (default=git)
   - git
 **name** (identifier)
   The name of this repository as identified by the 30loops platform.
@@ -928,7 +1002,7 @@ Resource Fields
   Specify the password to provide when cloning a repository and it is password
   protected.
 **ssh_key** (optional)
-  A ssh key to use when connecting to a repository. This field needs to be a 
+  A ssh key to use when connecting to a repository. This field needs to be a
   base64 encoded string of your password-less private SSH key. Use the
   following command to generate the string (under Linux)::
 
@@ -983,7 +1057,7 @@ and varies only in the options provided.
     {
         "action": "deploy",
         "options": {
-            // your options here 
+            // your options here
         }
     }
 
@@ -1080,7 +1154,7 @@ App Runcommand Action
 You can execute single commands in the context of your application. The command
 is executed with your repository as working directory, so if in the root of
 your respository you have a file called ``init_db.py`` you can call it with the
-command: ``python init_db.py``. 
+command: ``python init_db.py``.
 
 **Example Request:**
 
@@ -1214,34 +1288,34 @@ Listing Action Logbook
             "action": "AppDeployAction",
             "status": "running",
             "link": {
-                "href": "/1.0/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205/", 
+                "href": "/1.0/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205/",
                 "rel": "self"
-            }, 
+            },
             "messages": [
                 {
-                    "asctime": "2012-02-08T11:15:04", 
-                    "loglevel": 1, 
-                    "message": "Initiating AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]", 
+                    "asctime": "2012-02-08T11:15:04",
+                    "loglevel": 1,
+                    "message": "Initiating AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]",
                     "node": "127.0.0.1"
-                }, 
+                },
                 {
-                    "asctime": "2012-02-08T11:15:05", 
-                    "loglevel": 1, 
-                    "message": "Prerun AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]", 
+                    "asctime": "2012-02-08T11:15:05",
+                    "loglevel": 1,
+                    "message": "Prerun AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]",
                     "node": "127.0.0.1"
-                }, 
+                },
                 {
-                    "asctime": "2012-02-08T11:15:06", 
-                    "loglevel": 0, 
-                    "message": "Running AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]", 
+                    "asctime": "2012-02-08T11:15:06",
+                    "loglevel": 0,
+                    "message": "Running AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]",
                     "node": "127.0.0.1"
-                }, 
+                },
                 {
-                    "asctime": "2012-02-08T11:15:06", 
-                    "loglevel": 1, 
-                    "message": "Computing stage: CreateVirtualenv of AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]", 
+                    "asctime": "2012-02-08T11:15:06",
+                    "loglevel": 1,
+                    "message": "Computing stage: CreateVirtualenv of AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]",
                     "node": "127.0.0.1"
-                }, 
+                },
             ]
         }
 
