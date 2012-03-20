@@ -2,6 +2,12 @@
 Quickstart guide
 ================
 
+.. note::
+
+    This guide is still a work in progress. Examples my differ from the actual
+    client output.
+
+
 This guide will provide some basic information about the platform and walk you 
 through the following steps:
 

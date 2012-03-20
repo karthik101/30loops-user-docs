@@ -53,7 +53,7 @@ Create a Django application
 So lets create our application and deploy it. First we create the app and an
 additional environment::
 
-    $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git --flavor django --root mycms --settings production
+    $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git --flavor django --root mycms --settings settings
     App djangocms created!
 
     $ thirty create app 30loops-cms dev --root mycms --settings dev
@@ -108,7 +108,7 @@ additional environment::
                 port:
             djangoflavor
                 inject_db: True
-                django_settings_module: production
+                django_settings_module: settings
             backends
                 count: 1
                 region: eu1
