@@ -5,50 +5,29 @@ Quickstart guide
 This guide will provide some basic information about the platform and walk you 
 through the following steps:
 
+#) Basics of the platform 
 #) Installing the 30loops client
 #) Creating an application
 #) Deploying an application
 
-On 30loops, every service is called a resource. Examples of resources are 
-databases, applications and repositories. A resource is represented as a json 
-message, and each resource has several keys and values. The resources are 
-described in detail in the :doc:`REST API guide <rest_api>`.
+30loops basics
+==============
 
-A resource has at least the following fields:
+An application on 30loops consists of the following components:
 
-**name**
-  The name is a unique identifier. Each resource must have a unique name
-  together with the label for this account, eg: You can have an app and a
-  repository that both have the name ``blog``, but not two apps or two
-  repositories.
+- A repository resource
+- An app resource
+- An environment
 
-**label**
-  A resource has a label. This label describes the service. At this moment we
-  support the following resource types:
+In this quickstart, we will create the application with a default environment
+and a single repository. You can create multiple environments per application,
+for example a staging, development and production environment. You can also
+create separate repository resources that you can connect to an application. We
+will go more indepth in the next chapters.
 
-  - app
-  - repository
-  - database
-
-**variant**
-  A resource can have a variant. At this moment we have only one variant per
-  resource, but this will change in the future.
-
-Working on the platform consists mainly of two tasks:
-
-#) Creating, editing and deleting resources
-
-   You can manipulate the configuration of your resources. This can be done by
-   sending valid JSON messages to the API. To simplify this a bit, you can
-   generate the messages by using the :doc:`thirty cli tool <thirty-cli>`.
-
-#) Queuing actions for a resource
-
-   This manipulates the physical state of your resources. You can deploy or run
-   commands in the context of your resource on the platform. Each resource
-   accepts different actions. The ``thirty`` cli tool supports all available
-   actions. In the :doc:`REST API guide <rest_api>` the actions are explained
-   in more detail.
+Applications on 30loops are deployed using a pull mechanism. This means,
+30loops will connect to your code repository, fetch the code, and deploy it on
+the platform. 
 
 To use the client, you need to have a valid, active account.
 
@@ -73,280 +52,65 @@ based system, you can run::
 
     apt-get install python-pip
 
-The client is still quite rough, right now it just opens an editor with a
-preformatted JSON message. You can change the fields, and when you save the
-message, it will be validated and sent to the API. To define the editor of your
-choice, you need to export the EDITOR in your environment. For linux, this can
-be done by running the following command::
-
-   export EDITOR=vim
-
-You can specify the editor of your choice. In Windows it can be done by
-running::
-
-   set EDITOR=c:/winnt/notepad.exe
-
-.. note::
-   
-    If you are using Mac OSX and VIM, make sure you turn of the writebackup,
-    otherwise the configuration file will not be updated. You can do so by 
-    typing::
-
-      :set nowritebackup
-
-    when you have VIM open.
-
 Creating an application
 =======================
 
-.. note::
-
-    At the moment the client will enable you to edit your resources using a
-    text editor. The result needs to be a valid JSON message. A common error is 
-    to leave a ``,`` after the last field, which doesn not validate as correct
-    JSON. Try to avoid the following::
-
-        {
-            "name": "appname",
-            "field": "value",  // <-- Note the trailing comma, it will raise an
-                               //     error. Avoid a trailing coma after the last
-                               //     field.
-        }
-
-An application on 30loops consists of the following components:
-
-- A repository resource
-- An app resource
-- An environment
-
-Applications on 30loops are deployed using a pull mechanism. This means,
-30loops will connect to your code repository, fetch the code, and deploy it on
-the platform. Currently only public repositories are supported. The code to 
-use a SSH key is already done, but needs more testing.
-
-.. note::
-
-    At this moment there is a known issue that prevents you from creating the
-    application and the environment at once using a single JSON message. We are 
-    aware of it and will fix it as soon as possible.
-
-Creating a repository resource
-------------------------------
-
-To create a repository resource run the following command::
-
-    thirty create repository myrepo
-
-The only fields that you have to provide for a repository is a ``name`` and
-a ``location``. Fill in the location when the editor opens::
-
-    {
-        "name": "myrepo",
-        "location": "git://github.com/bastichelaar/Django-CMS-30loops.git",
-        "variant": "git"
-    }
-
-Save and quit the editor, and the repository resource gets created. To verify
-it is created correctly, run::
-
-    thirty show repository myrepo
-    
-It will output something like:
-
-.. code-block:: js
-
-    {
-        "link": {
-            "href": "https://api.30loops.net/1.0/30loops/repository/myrepo/", 
-            "rel": "self"
-        }, 
-        "location": "git://github.com/bastichelaar/Django-CMS-30loops.git", 
-        "variant": "git", 
-        "name": "myrepo", 
-        "label": "repository"
-    }
-
-Creating an app resource
-------------------------
-
 Create an app with the following command::
 
-    thirty create app myapp
+    thirty create app <appname> <repository>
 
-This will open up the previously specified editor, with the following contents:
+Replace appname with the desired name for your application, and repository with
+the URL to your code repository. At the moment only Git repositories are
+supported. Every command has its own help function::
 
-.. code-block:: js
+    thirty help create app
 
-    {
-        "name": "myapp",
-        "variant": "python",
-        "repository": {
-                "location": "",
-                "name": "",
-                "variant": "git"
-                },
-        "environments": []
-    }
+This will show help for the ``create app`` subcommand. In this quickstart we
+will deploy a Django CMS. So our command looks like::
 
-As you can see, the template for the repository is already included. You can
-either use it to create a new repository, or use the repository we 
-created earlier. To do that, remove the location and the variant, and remove 
-the trailing slash after the name:
+    thirty create app djangocms git://github.com/bastichelaar/Django-CMS-30loops.git --flavor django
 
-.. code-block:: js
+This will automatically create an app named ``djangocms``, an environment (by 
+default named ``production``) and a repository named ``djangocms``. Note the 
+``--flavor`` option, this is required. Currently we support two flavors:
+``django`` and ``wsgi``.
 
-    {
-        "name": "myapp",
-        "variant": "python",
-        "repository": {
-                "name": "myrepo"
-                },
-        "environments": []
-    }
 
-To see the configuration of your app, use the following command:
+To see the configuration of the newly created app, use the following command::
 
-    thirty show app myapp
+    thirty show app djangocms
 
 It will output something like:
 
-.. code-block:: js
+.. code-block:: bash 
 
-    {
-        "name": "myapp", 
-        "repository": {
-            "href": "https://api.30loops.net/1.0/30loops/repository/myrepo/", 
-            "name": "myrepo", 
-            "rel": "related"
-        }, 
-        "variant": "python", 
-        "environments": [], 
-        "label": "app", 
-        "link": {
-            "href": "https://api.30loops.net/1.0/30loops/app/myapp/", 
-            "rel": "self"
-        }
-    }
+    name: production
+        flavor: django
+        requirements_file: requirements.txt
+        project_root: path
+        repo_branch: master
+        install_setup_py: False
+        repo_commit: HEAD
+    database
+        name: 30loops-app-djangocms-production
+        variant: postgresql
+        label: database
+        username: 30loops-app-djangocms-production
+        host: 192.168.0.53
+        password: M2MyNDFmZjg1
+        port: 9999
+    djangoflavor
+        inject_db: True
+        django_settings_module: settings
+    backends
+        count: 1
+        region: eu1
 
-The app resource is now created. We will continue with creating the application
-environment.
+The app resource is now created. If you want to change one of the options, use 
+the ``thirty update`` command. Note that most of the options are part of the
+environment, and not of the app resource itself.
 
-Creating an environment
------------------------
-
-You can create one or more environments per app. This allows you to separate
-your development, staging and production environment. Use the following command
-to create an environment::
-
-    thirty create app thirtyblog production
-
-The editor will open up and you will see something like::
-
-    {
-        "backends": [],
-        "cname_records": [],
-        "name": "production",
-        "repo_branch": "master",
-        "repo_commit": "HEAD",
-        "requirements_file": "requirements",
-        "install_setup_py": false,
-        "flavor": "wsgi",
-        "djangoflavor": {
-            "auto_syncdb": false,
-            "django_project_root": "project",
-            "django_settings_module": "settings",
-            "inject_db": true
-        },
-        "wsgiflavor": {
-            "wsgi_entrypoint": "",
-            "wsgi_project_root": "project"
-        }
-    }
-
-All fields are explained in more detail in the :doc:`REST API guide <rest_api>`. 
-In this quickstart we focus on the relevant entries, that are required to deploy
-the app.
-
-The ``backends`` field contains the number of backends per zone. At this
-moment we have only one zone:
-
-**eu1**
-  The default zone situated in Amsterdam.
-
-The format of the backends field is as following::
-
-    ...
-    "backends": [{"region": "eu1", "count": 1}]
-    ...
-
-We support two ways of installing application requirements. You can specify a
-requirements file, that is used by ``pip`` to install requirements. See the
-`pip website`_ for more information on the format of the requirements file. You
-have to specify the requirements with the relative path from the root of your
-repository.
-
-You can also provide a setup.py file. The deploy action will run a 
-``python setup.py install`` to install the requirements. To enable this 
-behaviour set::
-
-    ...
-    "install_setup_py": True
-    ...
-
-At this momentwe support two different flavors of python web apps: Django and 
-WSGI. Each flavor has its own set of fields. Pick from your choice of flavor. 
-Note that frameworks like flask are run as WSGI apps, and no special support is 
-available at this moment. You have to choose one of the two flavors and 
-configure its flavor section accordingly. Set the ``flavor`` field to the right 
-type:
-
-- `Creating a WSGI flavor`_
-- `Creating a Django flavor`_
-
-.. _`pip website`: http://www.pip-installer.org/en/latest/requirements.html
-
-Creating a WSGI flavor
-~~~~~~~~~~~~~~~~~~~~~~
-
-To create a WSGI web application configure the environment resource like this::
-
-    ...
-    "flavor": "wsgi",
-    "wsgiflavor": {
-        "wsgi_entrypoint": "",
-        "wsgi_project_root": "project"
-    }
-
-The ``wsgi_entrypoint`` field defines the entry point for the webserver. The 
-format is ``module.path:callable``. The ``wsgi_project_root`` field defines 
-the path relative to the repository root where the application is located. 
-
-Creating a Django flavor
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    ...
-    "flavor": "django",
-    "djangoflavor": {
-        "django_project_root": "project",
-        "django_settings_module": "settings",
-        "inject_db": true
-    }
-
-The ``django_project_root`` is the directory where the manage.py is located. 
-The ``django_settings_module`` is the settings module of the application 
-(used for example in ``python manage.py syncdb --settings settings``). 
-You can choose to auto inject the database details at the bottom of your 
-settings.py with the ``inject_db`` field.
-
-After saving the file, it will be validated and sent to the api. To verify if 
-your environment is created correctly, run::
-
-    thirty show app thirtyblog production
-
-As you can see, the database resource is automatically created. Your
-application is now ready for deployment.
+We will continue with deploying the newly created application.
 
 Deploying an application
 ========================
@@ -354,11 +118,10 @@ Deploying an application
 Deploying an application is quite simple and fast, just run the following
 command::
 
-    thirty deploy myapp production
+    thirty deploy djangocms
 
-This will start the deployment on the number of backends you specified. The
-client starts polling the logbook immediately. You can also access the logbook
-manually by running::
+This will start the deployment. The client starts polling the logbook 
+immediately. You can also access the logbook manually by running::
 
     thirty logbook UUID
 
@@ -366,7 +129,19 @@ Where UUID is the ID of the deployment task.
 
 After a successfull deploy, your application will be available on the specified
 DNS name and on 30loops.net, for example
-``http://30loops-app-myapp-production.30loops.net``.
+``http://30loops-app-djangocms-production.30loops.net``.
+
+Next steps
+==========
+
+We will go more indepth in the following chapters:
+
+- :doc:`django`
+- :doc:`wsgi`
+- :doc:`client`
+- :doc:`environments`
+
+.. _`pip website`: http://www.pip-installer.org/en/latest/requirements.html
 
 Additional support
 ==================

@@ -1,6 +1,6 @@
-=================
-WSGI Flavor Guide
-=================
+===========================
+Deploying WSGI applications
+===========================
 
 Using the WSGI flavor, you can deploy any python web application following the
 `WSGI standard`_. This includes frameworks like Flask, web.py and others.  We 
@@ -31,42 +31,26 @@ request will be routed to this function. WSGI entrypoints have to be specified
 in the following format: ``python.module.path:callable``. In this example this 
 is ``wsgiapp.main:application``.
 
+Command line options
+--------------------
+
+For common options, please read :doc:`client`.
+
+``--wsgi-entrypoint``
+  Set this option to point to the entrypoint created above.
+
+
+Create a WSGI application
+-------------------------
+
 So let's create the application and deploy it. First create the new app and 
 create an environment:
 
 ::
 
-    $ thirty create app wsgiapp
+    $ thirty create app wsgiapp git://github.com/crito/wsgiapp.git --flavor wsgi --root wsgiapp --wsgi-entrypoint wsgiapp.main:application
 
-    {
-        "environments": [],
-        "name": "wsgiapp",
-        "repository": {
-            "location": "git://github.com/crito/wsgiapp.git",
-            "name": "wsgiapp",
-            "variant": "git"
-        },
-        "variant": "python"
-    }
-
-    $ thirty create app wsgiapp dev
-
-    {
-        "backends": [{"region": "eu1", "count": 1}],
-        "cname_records": [],
-        "flavor": "wsgi", 
-        "install_setup_py": false, 
-        "name": "dev", 
-        "repo_branch": "master", 
-        "repo_commit": "HEAD",
-        "requirements_file": "",            
-        "wsgiflavor": {
-            "wsgi_entrypoint": "wsgiapp.main:application",
-            "wsgi_project_root": "wsgiapp"
-        }
-    }   
-
-Now we deploy the application environment::
+As you can see, we provided the flavor option, the root directory and the wsgi entrypoint. Now we deploy the application::
 
     $ thirty deploy wsgiapp dev
 
@@ -84,6 +68,8 @@ Now we deploy the application environment::
     Reloading the loadbalancers, this can take up to 30 seconds...
     Stage completed
     Your application is successfully deployed on http://30loops-app-wsgiapp-dev.30loops.net
+
+The application is now running on the specified URL.
 
 .. _`WSGI standard`: http://www.python.org/dev/peps/pep-0333/
 .. _`example repository`: https://github.com/crito/wsgiapp↑

@@ -12,10 +12,11 @@ Contents:
    :maxdepth: 2
 
    quickstart
+   client
    django
    wsgi
+   environments
    guide
-   thirty-cli
    rest_api
 
 Indices and tables
