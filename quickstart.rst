@@ -131,17 +131,20 @@ After a successfull deploy, your application will be available on the specified
 DNS name and on 30loops.net, for example
 ``http://30loops-app-djangocms-production.30loops.net``.
 
-Next steps
-==========
+Guides
+======
 
-We will go more indepth in the following chapters:
+We created a few guides with some sample applications. This will be extended in
+the future with more samples.
 
-- :doc:`django`
-- :doc:`wsgi`
-- :doc:`client`
-- :doc:`environments`
+Django
+------
+- :doc:`Django CMS <django>`
 
-.. _`pip website`: http://www.pip-installer.org/en/latest/requirements.html
+WSGI
+----
+- :doc:`Simple WSGI app <wsgi>`
+
 
 Additional support
 ==================
@@ -149,3 +152,5 @@ Additional support
 If you have any questions, please log in on http://help.30loops.net and
 submit a ticket. You can also chat with us on #30loops at irc.freenode.net or
 mail us at support@30loops.net.
+
+.. _`pip website`: http://www.pip-installer.org/en/latest/requirements.html
