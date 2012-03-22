@@ -48,7 +48,7 @@ create an environment:
 
 ::
 
-    $ thirty create app wsgiapp git://github.com/crito/wsgiapp.git --flavor wsgi --root wsgiapp --wsgi-entrypoint wsgiapp.main:application
+    $ thirty create app wsgiapp git://github.com/30loops/wsgiapp.git --flavor wsgi --requirements "" --root wsgiapp --wsgi-entrypoint wsgiapp.main:application
 
 As you can see, we provided the flavor option, the root directory and the wsgi entrypoint. Now we deploy the application::
 

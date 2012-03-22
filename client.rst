@@ -41,6 +41,8 @@ For help on a subcommand use::
 
   thirty help <command> <subcommand>
 
+.. _thirty-client-global-options:
+
 Global Options
 --------------
 
@@ -73,6 +75,8 @@ the config file.
   Use a raw mode for printing output. The raw mode prints JSON messages as
   returned from the server, with out any indendation. This is handy if you want
   to use the ``thirty`` tool in scripts.
+
+.. _thirty-client-configuration-file:
 
 ``thirty.cfg`` Configuration File
 ---------------------------------

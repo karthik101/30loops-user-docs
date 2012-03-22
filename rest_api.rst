@@ -627,11 +627,11 @@ Showing Application Environments
                 }
             ],
             "name": "production",
+            "project_root": "project",
             "repo_branch": "master",
             "repo_commit": "HEAD",
             "requirements_file": "requirements",
             "djangoflavor": {
-                "django_project_root": "project",
                 "django_settings_module": "production",
                 "auto_syncdb": false,
                 "inject_db": true
@@ -822,9 +822,9 @@ App Environment
         "name": "production",
         "repo_branch": "master",
         "repo_commit": "HEAD",
+        "project_root": "project",
         "requirements_file": "requirements",
         "djangoflavor": {
-            "django_project_root": "project",
             "django_settings_module": "production",
             "auto_syncdb": false,
             "inject_db": true
@@ -890,6 +890,11 @@ Resource Fields
         {"record": "cname.example.org"}
     ]
 
+**project_root** (default="")
+  Specify the root directory of your application. This path gets added to the
+  python path and is relative to your repository root.
+
+
 App Flavors
 ~~~~~~~~~~~
 
@@ -906,17 +911,12 @@ WSGI apps are configured by specifying the application entry point::
     ...
     "wsgiflavor": {
         "wsgi_entry_point": "wsgi:app",
-        "wsgi_project_root": "project"
     }
 
 **wsgi_entry_point**
   The format of the string should be in the way of module:callable. The module
   must be on the python path, and the callable that gets called for the
   incoming request.
-
-**wsgi_project_root** (default=project)
-  Specify the root directory of your wsgi app. This path gets added to the
-  python path and is relative to your repository root.
 
 Django Flavor
 +++++++++++++
@@ -925,15 +925,10 @@ Django apps have a few more specific fields::
 
     ...
     "djangoflavor": {
-        "django_project_root": "project",
         "django_settings_module": "production",
         "auto_syncdb": false,
         "inject_db": true
     }
-
-**django_project_root** (default=project)
-  Specify the root directory of your django app. Thos path gets added to the
-  python path and is relative to your repository root.
 
 **django_settings_module** (default=settings)
   Specify the module path to your settings file. The settings module must be

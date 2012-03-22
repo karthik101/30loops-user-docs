@@ -6,7 +6,7 @@ You can deploy any `Django`_ application using the Django flavor. In this guide
 we will install a typical django application and discuss all the needed
 configuration options in more detail.
 
-The example application is a Django-CMS application. You can find our Django 
+The example application is a Django-CMS application. You can find our Django
 app in our `example repository`_ on github.
 
 Our repository looks like this::
@@ -35,11 +35,11 @@ For a list of common options, please see :doc:`client`.
 
 ``--inject-db``
   This tells the server to automaticaly inject the database settings during the
-  deploy. The database settings are injected at the bottom of the settings file 
+  deploy. The database settings are injected at the bottom of the settings file
   you specified. By default, this option is set to ``true``.
 
 ``--django-settings-module``
-  This is the python module path to your settings file. This has to be 
+  This is the python module path to your settings file. This has to be
   specified in a dotted syntax, for example: ``module.settings``. By default
   this option is set to ``settings``.
 
@@ -53,10 +53,10 @@ Create a Django application
 So lets create our application and deploy it. First we create the app and an
 additional environment::
 
-    $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git --flavor django --root mycms --settings settings
+    $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git --flavor django --root mycms
     App djangocms created!
 
-    $ thirty create app 30loops-cms dev --root mycms --settings dev
+    $ thirty create app djangocms --env dev --root mycms --django-settings-module development
     Environment dev created!
 
     $ thirty show app djangocms
@@ -82,7 +82,7 @@ additional environment::
                 variant: postgresql
                 label: database
                 username:
-                host: 
+                host:
                 password:
                 port:
             djangoflavor
@@ -113,15 +113,11 @@ additional environment::
                 count: 1
                 region: eu1
 
-.. note::
-
-    We left the database information out on purpose
-
 As you can see, the application has been created with two environments, a
 production environment and a development environment. Each environment has its
 own database and settings, but they both are connected to the same application.
-This means they share the same repository, that is connected to the application.
-You can modify and deploy the environments independent from eachother.
+This means they share the same repository. You can modify and deploy the
+environments independent from eachother.
 
 To distinguish branches, use the options ``--repo-branch`` and ``--repo-commit``
 when creating an environment.
@@ -129,9 +125,9 @@ when creating an environment.
 Creating a Super User
 =====================
 
-To automatically create a superuser after the deploy, you can use a 
-``postinstall`` script. This is further explained in more detail in the 
-:doc:`Platform Guide <platform_guide>`. To create a superuser, create the 
+To automatically create a superuser after the deploy, you can use a
+``postinstall`` script. This is further explained in more detail in the
+:doc:`Platform Guide <platform_guide>`. To create a superuser, create the
 following script:
 
 ``createadmin.py``
@@ -157,8 +153,8 @@ following script:
 
 This will create a user ``admin`` with password ``password``. Of course, replace
 these with the desired username and password. Remember to make the postinstall
-script executable in your repository, and delete the createadmin.py from any 
-public repositories!
+script executable in your repository, and don't expose your admin credentials
+in any public repository.
 
 Deploying the Django application
 ================================
@@ -192,5 +188,5 @@ This will look similar to this::
   Stage completed
   Your application is successfully deployed on http://30loops-app-djangocms-dev.30loops.net
 
-Your application will be available on the specified URL (and on any cnames you 
+Your application will be available on the specified URL (and on any cnames you
 specified and pointed to this URL).
