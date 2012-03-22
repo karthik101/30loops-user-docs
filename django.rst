@@ -56,62 +56,61 @@ additional environment::
     $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git --flavor django --root mycms
     App djangocms created!
 
-    $ thirty create app djangocms --env dev --root mycms --django-settings-module development
-    Environment dev created!
+    $ thirty create environment djangocms dev --root mycms --django-settings-module development --flavor django
 
     $ thirty show app djangocms
 
+    name: djangocms
+    variant: python
+    label: app
+    repository
         name: djangocms
-        variant: python
-        label: app
-        repository
-            name: djangocms
-            variant: git
-            label: repository
-            location: git://github.com/bastichelaar/Django-CMS-30loops.git
-        environments
-          name: dev
-            flavor: django
-            requirements_file: requirements.txt
-            project_root: mycms
-            repo_branch: master
-            install_setup_py: False
-            repo_commit: HEAD
-            database
-                name: 30loops-app-djangocms-dev
-                variant: postgresql
-                label: database
-                username:
-                host:
-                password:
-                port:
-            djangoflavor
-                inject_db: True
-                django_settings_module: dev
-            backends
-                count: 1
-                region: eu1
-          name: production
-            flavor: django
-            requirements_file: requirements.txt
-            project_root: mycms
-            repo_branch: master
-            install_setup_py: False
-            repo_commit: HEAD
-            database
-                name: 30loops-app-djangocms-production
-                variant: postgresql
-                label: database
-                username:
-                host:
-                password:
-                port:
-            djangoflavor
-                inject_db: True
-                django_settings_module: settings
-            backends
-                count: 1
-                region: eu1
+        variant: git
+        label: repository
+        location: git://github.com/30loops/django-cms-30loops.git
+    environments
+     -- name: production
+        flavor: django
+        requirements_file: requirements.txt
+        project_root: mycms
+        repo_branch: master
+        install_setup_py: False
+        repo_commit: HEAD
+        database
+            name: 30loops-app-djangocms-production
+            variant: postgresql
+            label: database
+            username: 30loops-app-djangocms-production
+            host: 192.168.0.53
+            password: M2MyNDFmZjg1
+            port: 9999
+        djangoflavor
+            inject_db: True
+            django_settings_module: settings
+        backends
+            count: 1
+            region: eu1
+     -- name: dev
+        flavor: django
+        requirements_file: requirements.txt
+        project_root: mycms
+        repo_branch: master
+        install_setup_py: False
+        repo_commit: HEAD
+        database
+            name: 30loops-app-djangocms-dev
+            variant: postgresql
+            label: database
+            username: 30loops-app-djangocms-dev
+            host: 192.168.0.53
+            password: YmQxZmQ1MGQ5
+            port: 9999
+        djangoflavor
+            inject_db: True
+            django_settings_module: development
+        backends
+            count: 1
+            region: eu1
 
 As you can see, the application has been created with two environments, a
 production environment and a development environment. Each environment has its
@@ -171,22 +170,40 @@ environment, run::
 After executing the deploy command, the client will start polling the logbook.
 This will look similar to this::
 
-  $ thirty deploy wsgiapp dev
+    $ thirty deploy djangocms
 
-  Started deployment (logbook uuid: 8b932504-5e12-11e1-978ef-123b213121f)
-  Creating a virtualenv for your application, this can take up to 150 seconds...
-  Stage completed
-  Creating database, this can take up to 10 seconds...
-  Stage completed
-  Requesting instances, this can take up to 100 seconds...
-  Stage completed
-  Configuring instances, this can take up to 40 seconds...
-  Stage completed
-  Adding the instances to the monitoring systems, this can take up to 10 seconds...
-  Stage completed
-  Reloading the loadbalancers, this can take up to 30 seconds...
-  Stage completed
-  Your application is successfully deployed on http://30loops-app-djangocms-dev.30loops.net
+    Hi! We're now deploying app djangocms (environment: production) with the following details:
+
+    name: production
+    flavor: django
+    requirements_file: requirements.txt
+    project_root: mycms
+    repo_branch: master
+    install_setup_py: False
+    repo_commit: HEAD
+    database
+        name: 30loops-app-djangocms-production
+        variant: postgresql
+        label: database
+        username: 30loops-app-djangocms-production
+        host: 192.168.0.53
+        password: M2MyNDFmZjg1
+        port: 9999
+    djangoflavor
+        inject_db: True
+        django_settings_module: settings
+    backends
+        count: 1
+        region: eu1
+
+
+    --> Creating a virtualenv for your application, this can take up to 150 seconds.................done!
+    --> Creating database, this can take up to 10 secondsdone!
+    --> Requesting instances, this can take up to 100 seconds......done!
+    --> Configuring instances, this can take up to 40 seconds.....done!
+    --> Adding the instances to the monitoring systems, this can take up to 10 seconds...done!
+    --> Reloading the loadbalancers, this can take up to 30 seconds......done!
+    --> Your application is successfully deployed on http://30loops-app-djangocms-production.30loops.net
 
 Your application will be available on the specified URL (and on any cnames you
 specified and pointed to this URL).
