@@ -144,6 +144,15 @@ Create a new resource. Each resource has its own set of flags. Note that
 database resources cannot be created manually, but will be created when 
 creating an application environment.
 
+**Required arguments**
+
+``<label>``
+  The label defines the type of the resource. This can be ``app``, 
+  ``repository`` or ``environment``.
+
+``<name>``
+  The name you give the resource
+
 **flags**
 
 ``--root``
