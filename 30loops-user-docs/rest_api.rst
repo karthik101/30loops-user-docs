@@ -410,7 +410,7 @@ Creating Resources
 
     .. sourcecode:: http
 
- HTTP/1.1 201 CREATED
+        HTTP/1.1 201 CREATED
         Content-Type: application/json; charset=UTF-8
         Location: https://api.30loops.net/1.0/30loops/repository/thirtyblog/
 
