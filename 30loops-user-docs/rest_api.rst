@@ -149,7 +149,7 @@ An object is always described as a flat key/value dictionary.
     {
         "name": "thirtyblog",
         "label": "app",
-        "variant": "python
+        "variant": "python"
     }
 
 Other objects are referenced again as nested key/value dictionaries.
@@ -161,7 +161,7 @@ Other objects are referenced again as nested key/value dictionaries.
         "label": "app",
         "variant": "python,
         "repository": {
-            "name": "thirtyblog-repo",
+            "name": "thirtyblog-repo"
         }
     }
 
@@ -175,7 +175,7 @@ dictionaries.
         "label": "app",
         "variant": "python,
         "repository": {
-            "name": "thirtyblog-repo",
+            "name": "thirtyblog-repo"
         },
         "environments": [
             {"name": "production"},
@@ -410,7 +410,7 @@ Creating Resources
 
     .. sourcecode:: http
 
-        HTTP/1.1 201 CREATED
+ HTTP/1.1 201 CREATED
         Content-Type: application/json; charset=UTF-8
         Location: https://api.30loops.net/1.0/30loops/repository/thirtyblog/
 
@@ -870,12 +870,10 @@ Resource Fields
   determines how many backends you want to deploy in that specific region. You
   can specify more than one backend definition::
 
-    ...
     "backends": [
         {"region": "eu1", "count": 2},
-        {"region": "eu2", "count": 1},
+        {"region": "eu2", "count": 1}
     ]
-    ...
 
 **database**
   The database reference is created automaticaly when creating an app
@@ -886,7 +884,6 @@ Resource Fields
 **cname_records**
   A list of cname records that are used to configure the load balancer::
 
-    ...
     "cname_records": [
         {"record": "cname.example.org"}
     ]
@@ -909,9 +906,8 @@ WSGI Flavor
 
 WSGI apps are configured by specifying the application entry point::
 
-    ...
     "wsgiflavor": {
-        "wsgi_entry_point": "wsgi:app",
+        "wsgi_entry_point": "wsgi:app"
     }
 
 **wsgi_entry_point**
@@ -924,7 +920,6 @@ Django Flavor
 
 Django apps have a few more specific fields::
 
-    ...
     "djangoflavor": {
         "django_settings_module": "production",
         "auto_syncdb": false,

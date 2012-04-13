@@ -528,3 +528,5 @@ Django
 WSGI
 ----
 - :doc:`Simple WSGI app <wsgi>`
+
+.. include:: debugging.rst 

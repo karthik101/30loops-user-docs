@@ -304,3 +304,47 @@ or start the command with ``python manage.py``.
 ``--occurence``
   Specifies on how many backends this command should be executed on. You can
   either specify a number or ``all``. Defaults to ``1``.
+
+logs
+~~~~
+
+::
+    
+    thirty logs <app>
+
+Shows the logs of your application. All logs are collected centrally, so you 
+can get aggregated logs of all instances.
+
+**Example:**
+
+::
+
+    thirty logs thirtyblog --process nginx,gunicorn --limit 20
+
+**Options:**
+
+``--environment``
+  Specifies the environment of the application
+
+``--process``
+  A comma separated list of the processes to fetch the logs from. Currently
+  only ``nginx``, ``gunicorn`` and ``postgres`` are available. Notice that
+  ``postgres`` logs can only be fetched separately.
+
+``--limit``
+  Limit of the entries to fetch. By default this is set to 10.
+
+logbook
+~~~~~~~
+
+::
+
+    thirty logbook <uuid>
+
+Shows the logbook of an action, for example a deploy. The output is valid JSON.
+
+**Example:**
+
+::
+    thirty logbook e6418181-5b3f-483b-a1c5-c88a55f0550a
+
