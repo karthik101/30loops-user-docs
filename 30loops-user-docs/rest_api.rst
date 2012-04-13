@@ -159,7 +159,7 @@ Other objects are referenced again as nested key/value dictionaries.
     {
         "name": "thirtyblog",
         "label": "app",
-        "variant": "python,
+        "variant": "python",
         "repository": {
             "name": "thirtyblog-repo"
         }
@@ -173,7 +173,7 @@ dictionaries.
     {
         "name": "thirtyblog",
         "label": "app",
-        "variant": "python,
+        "variant": "python",
         "repository": {
             "name": "thirtyblog-repo"
         },
@@ -868,7 +868,9 @@ Resource Fields
 
   Region is a unique identifier for an available zone on 30loops. Count
   determines how many backends you want to deploy in that specific region. You
-  can specify more than one backend definition::
+  can specify more than one backend definition
+
+.. code-block:: js
 
     "backends": [
         {"region": "eu1", "count": 2},
@@ -882,7 +884,9 @@ Resource Fields
   `Database Resource`_ for more information.
 
 **cname_records**
-  A list of cname records that are used to configure the load balancer::
+  A list of cname records that are used to configure the load balancer
+
+.. code-block:: js
 
     "cname_records": [
         {"record": "cname.example.org"}
@@ -904,7 +908,9 @@ flavor options as a referenced resource inside the environment resource.
 WSGI Flavor
 +++++++++++
 
-WSGI apps are configured by specifying the application entry point::
+WSGI apps are configured by specifying the application entry point
+
+.. code-block:: js
 
     "wsgiflavor": {
         "wsgi_entry_point": "wsgi:app"
@@ -918,7 +924,9 @@ WSGI apps are configured by specifying the application entry point::
 Django Flavor
 +++++++++++++
 
-Django apps have a few more specific fields::
+Django apps have a few more specific fields
+
+.. code-block:: js
 
     "djangoflavor": {
         "django_settings_module": "production",
