@@ -514,6 +514,75 @@ or start the command with ``python manage.py``.
   Specifies on how many backends this command should be executed on. You can
   either specify a number or ``all``. Defaults to ``1``.
 
+Cronjobs
+========
+
+Every instance runs cron by default. So you can easily create cronjobs to run on
+one instance or on every instance. To do this, you need to create a cron file,
+for example ``mycrontab``:
+
+.. code-block:: bash
+    
+    $ cat mycrontab
+    0 * * * * python myscript.py
+
+To learn more about the format of the crontab file, see 
+http://en.wikipedia.org/wiki/Cron#Format.
+
+To install the cronjob, you need to add a line to either ``postinstall`` or
+``postinstall_all``, depending on if you want the cronjob to run a single 
+instance or on every instance. Example:
+
+.. code-block:: bash
+
+    $ cat postinstall
+    #!/bin/sh
+    crontab mycrontab
+
+This will install the cron after deploying your application.
+
+Running custom processes (unsupported!)
+=======================================
+
+It is possible to run your own custom processes. The processes will run as a
+non-privileged user. To create a custom process, you need to add a ``.init/``
+directory to your repository. In this ``.init/`` directory you need to create
+an upstart file, that will be started after the deploy of an instance.
+
+So the tree could look like:
+
+.. code-block:: bash
+
+    |-- .init
+    |   `-- myprocess.conf
+    |-- mycms
+    |-- requirements.txt 
+    `-- postinstall
+
+The process file is an upstart configuration file. A very simple example:
+
+.. code-block:: bash
+
+    $ cat .init/myprocess.conf
+    respawn
+
+    exec /app/mycms/mycms/mycustomprocess
+
+The process will not be started by default, so you need to add an additional 
+line to the ``postinstall`` script:
+
+.. code-block:: bash
+
+    $ cat postinstall
+    #!/bin/sh
+    crontab mycrontab
+    start myprocess
+
+For more information about upstart processes, read the Ubuntu Upstart Cookbook:
+http://upstart.ubuntu.com/cookbook/.
+
+Note: custom processes are completely unsupported!
+
 
 Guides
 ======
