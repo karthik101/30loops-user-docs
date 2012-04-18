@@ -121,10 +121,9 @@ python script that you maybe want to run. For a shell script you can source the
 ``.conf`` file. You can read the json file in any python script and load the
 string.
 
-::
+.. code-block:: bash
 
-    cat /app/conf/environment.conf
-
+    $ cat /app/conf/environment.conf
     export VIRTUAL_ENV="/app/env"
     export STATIC_ROOT="/app/static"
     export MEDIA_ROOT="/app/media"
@@ -147,10 +146,9 @@ Add to your script the following line.
     ...
     echo $DB_PORT
 
-::
+.. code-block:: bash
 
-    cat /app/conf/environment.json
-
+    $ cat /app/conf/environment.json
     {
         {'VIRTUAL_ENV': '/app/env'},
         {'STATIC_ROOT': '/app/static'},
@@ -179,33 +177,58 @@ For your python application you can use something like:
 Runtime environment
 -------------------
 
-The instances run on Ubuntu 12.04, and contain the following installed python
-packages::
+The instances run on Ubuntu 12.04 with Python 2.7.3, and contain the following 
+installed python system packages::
 
-    python-setuptools
-    python-pip
-    python-virtualenv
-    python-imaging
-    python-geoip
-    python-gdal
-    python-numpy
-    python-scipy
-    python-bcrypt
-    python-gdata
-    python-m2crypto
-    python-nltk
-    python-matplotlib
-    python-opencv
-    python-sqlalchemy
-    python-psycopg2
-    python-mysqldb
-    python-eventlet
-    python-gevent
-    python-lxml
-    python-geoip
-    python-setproctitle
-
-
+    python-bcrypt 0.1-1build2
+    python-bson 2.1-1
+    python-cairo 1.8.8-1ubuntu3
+    python-central 0.6.17
+    python-crypto 2.4.1-1
+    python-dateutil 1.5-1
+    python-egenix-mxdatetime 3.2.1-1ubuntu1
+    python-egenix-mxtools 3.2.1-1ubuntu1
+    python-eventlet 0.9.16-1ubuntu4
+    python-gdal 1.7.3-6ubuntu3
+    python-gdata 2.0.14-2
+    python-geoip 1.2.4-2ubuntu3
+    python-gevent 0.13.6-1ubuntu1
+    python-gi 3.2.0-3
+    python-glade2 2.24.0-3
+    python-gobject 3.2.0-3
+    python-gobject-2 2.28.6-10
+    python-greenlet 0.3.1-1ubuntu5
+    python-gridfs 2.1-1
+    python-gtk2 2.24.0-3
+    python-imaging 1.1.7-4
+    python-jinja2 2.6-1
+    python-lxml 2.3.2-1
+    python-m2crypto 0.21.1-2ubuntu2
+    python-markupsafe 0.15-1
+    python-matplotlib 1.1.0-1
+    python-matplotlib-data 1.1.0-1
+    python-minimal 2.7.2-9ubuntu6
+    python-mysqldb 1.2.3-1build1
+    python-nltk 2.0~b9-0ubuntu3
+    python-numpy 1:1.6.1-6ubuntu1
+    python-opencv 2.3.1-7
+    python-pip 1.0-1build1
+    python-pkg-resources 0.6.24-1ubuntu1
+    python-psutil 0.4.1-1ubuntu1
+    python-psycopg2 2.4.5-1
+    python-pymongo 2.1-1
+    python-pyparsing 1.5.2-2ubuntu1
+    python-scipy 0.9.0+dfsg1-1ubuntu1
+    python-setproctitle 1.0.1-1ubuntu1
+    python-setuptools 0.6.24-1ubuntu1
+    python-sqlalchemy 0.7.4-1
+    python-sqlalchemy-ext 0.7.4-1
+    python-support 1.0.14ubuntu2
+    python-tk 2.7.3-1
+    python-tz 2011k-0ubuntu5
+    python-virtualenv 1.7-1
+    python-yaml 3.10-2
+    python-zmq 2.1.11-1
 
 Static and Media files
 ----------------------
