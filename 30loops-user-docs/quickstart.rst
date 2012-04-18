@@ -51,19 +51,26 @@ Installing the 30loops client
 Communicating with the 30loops platform can be done using the documented REST
 api, or using the 30loops client, called thirty. The REST api is documented
 ::doc:`here <rest_api>`, in this quickstart we will focus on using the client.
-You can install the client using pip::
+You can install the client using pip:
 
-    pip install thirty-cli
+.. code-block:: bash
+
+    $ pip install thirty-cli
 
 If pip is not available on your system, you need to install it. On any Debian
-based system, you can run::
+based system, you can run:
 
-    apt-get install python-pip
+.. code-block:: bash
+
+    $ apt-get install python-pip
 
 You can also build it from source. Grab the latest copy from
-https://github.com/30loops/thirty-cli and build it the usual way::
+https://github.com/30loops/thirty-cli and build it the usual way:
 
-    python setup.py install
+.. code-block:: bash
+
+    $ git clone git://github.com/30loops/thirty-cli.git
+    $ python setup.py install
 
 Creating an application
 =======================

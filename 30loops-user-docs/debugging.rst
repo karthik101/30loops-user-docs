@@ -21,14 +21,18 @@ Logs
 The logs will help you debugging any errors in your application. This requires
 a successful deploy, because logfiles are generated from active instances.
 
-To show logs for an application, you can use the following command::
+To show logs for an application, you can use the following command:
 
-    thirty logs <app>
+.. code-block:: bash
+
+    $ thirty logs <app>
 
 This will show the logs of `gunicorn` and `nginx` by default. If you need logs 
-of a separate process, you can use the ``--process`` option::
+of a separate process, you can use the ``--process`` option:
 
-    thirty logs <app> --process nginx
+.. code-block:: bash
+
+    $ thirty logs <app> --process nginx
 
 Currently we capture logs from `nginx`, `gunicorn` and `postgres`. To 
 limit the number of returned log entries, use the ``--limit`` option.

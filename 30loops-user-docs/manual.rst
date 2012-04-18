@@ -491,7 +491,7 @@ update
 ~~~~~~
 .. code-block:: bash
 
-    thirty update {app, environment} <resource_name> --env <enviroment>
+  $ thirty update {app, environment} <resource_name> --env <enviroment>
 
 Update the details of a resource. If ``<environment>`` is given it will update the
 details of a specific app environment, otherwise it will update the default
@@ -540,7 +540,7 @@ runcmd
 
 .. code-block:: bash
 
-    thirty runcmd <app> --env <environment> [<command> [<command> ...]]
+    $ thirty runcmd <app> --env <environment> [<command> [<command> ...]]
 
 Run a command in the context of your app environment. The full command is
 specified enclosed by ``"``. The working directory of this command is the root
