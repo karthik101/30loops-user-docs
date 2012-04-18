@@ -288,9 +288,11 @@ Thirty client
 Installation
 ------------
 
-To install the ``thirty-cli`` run::
+To install the ``thirty-cli`` run:
 
-    pip install -U thirty-cli
+.. code-block:: bash
+
+    $ pip install -U thirty-cli
 
 This should install all necessary requirements:
 
@@ -299,26 +301,32 @@ This should install all necessary requirements:
 - requests
 - argparse
 
-If you don't have ``pip`` installed you can also use ``easy_install``::
+If you don't have ``pip`` installed you can also use ``easy_install``:
 
-    easy_install -U thirty-cli
+.. code-block:: bash
+
+    $ easy_install -U thirty-cli
 
 Basics
 ------
 
 The client is quite self-explaining. When you just type in ``thirty`` you will 
-get an overview of the various options. The basic structure of a command is::
+get an overview of the various options. The basic structure of a command is:
 
-    thirty <command> <subcommand> --flag1 somevariable --flag2 somevariable
+.. code-block:: bash
+
+    $ thirty <command> <subcommand> --flag1 somevariable --flag2 somevariable
 
 
 Help on commands
 ----------------
 
-You can get help of a function by running one of the following commands::
+You can get help of a function by running one of the following commands:
 
-    thirty help <command>
-    thirty help <command> <subcommand>
+.. code-block:: bash
+
+    $ thirty help <command>
+    $ thirty help <command> <subcommand>
 
 Each command has its own set of subcommands and flags.
 
@@ -359,9 +367,11 @@ the config file.
 ---------------------------------
 
 You can create a configuration file in your home directory called
-``.thirty.cfg``. Specify any global option there to save yourself the typing::
+``.thirty.cfg``. Specify any global option there to save yourself the typing:
 
-    cat ~/.thirty.cfg 
+.. code-block:: bash
+
+    $ cat ~/.thirty.cfg 
     [thirtyloops]
     username = crito
     password = secret
@@ -377,15 +387,15 @@ Commands
 list
 ~~~~
 
-::
+.. code-block:: bash
 
-    thirty list <label>
+    $ thirty list <label>
 
 List all resources with the given label.
 
 **Example:**
 
-::
+.. code-block:: bash
 
     $ thirty list app
     thirtyloops
@@ -394,16 +404,16 @@ List all resources with the given label.
 show
 ~~~~
 
-::
+.. code-block:: bash
 
-    thirty show <resource> <name> [environment]
+    $ thirty show <resource> <name> [environment]
 
 Show the details of a resource. If ``[environment]`` is given it will show the
 details of a specific app environment instead of the app itself.
 
 **Example:**
 
-::
+.. code-block:: bash
 
     $ thirty show repository djangocms
     name: djangocms
@@ -413,9 +423,9 @@ details of a specific app environment instead of the app itself.
 
 create 
 ~~~~~~
-::
+.. code-block:: bash
 
-    thirty create <label> <name> [location]
+    $ thirty create <label> <name> [location]
 
 Create a new resource. Each resource has its own set of flags. Note that 
 database resources cannot be created manually, but will be created when 
@@ -479,12 +489,13 @@ creating an application environment.
 
 update
 ~~~~~~
-::
+.. code-block:: bash
 
-    thirty update <lable> <resource_name> [environment]
+    thirty update {app, environment} <resource_name> --env <enviroment>
 
-Update the details of a resource. If ``[environment]`` is given it will update the
-details of a specific app environment instead of the app itself.
+Update the details of a resource. If ``<environment>`` is given it will update the
+details of a specific app environment, otherwise it will update the default
+environment (``production``).
 
 **Flags**
 
@@ -508,19 +519,17 @@ available on the ``update`` command:
 delete
 ~~~~~~
 
-::
+.. code-block:: bash
 
-    thirty delete <lable> <resource_name> [environment]
+    $ thirty delete {app,environment,repository} <resource_name> 
 
-Delete a resource. If ``[environment]`` is given it will delete the app
-environment instead of the app itself.
+Delete a resource or environment.
 
 deploy
 ~~~~~~
+.. code-block:: bash
 
-::
-
-    thirty deploy <app> <environment>
+    $ thirty deploy <app> --env <environment>
 
 Deploy a specific app environment. It queues a new deployment of that
 environment. See :doc:`REST API guide <rest_api>` for more information about
@@ -529,9 +538,9 @@ deploys.
 runcmd
 ~~~~~~
 
-::
+.. code-block:: bash
 
-    thirty runcmd <app> <environment> "<command>"
+    thirty runcmd <app> --env <environment> [<command> [<command> ...]]
 
 Run a command in the context of your app environment. The full command is
 specified enclosed by ``"``. The working directory of this command is the root
@@ -539,9 +548,9 @@ of your repository.
 
 **Example:**
 
-::
+.. code-block:: bash
 
-    thirty runcmd thirtyblog production "python init_db.py"
+    $ thirty runcmd thirtyblog python init_db.py
 
 **Options:**
 
@@ -552,9 +561,9 @@ of your repository.
 djangocmd
 ~~~~~~~~~
 
-::
+.. code-block:: bash
 
-    thirty djangocmd <app> <environment> "<management command>"
+    $ thirty djangocmd <app> --env <environment> [<command> [<command> ...]
 
 Run a django management command in the context of your django project. The full
 command is specified enclosed by ``"``. The working directory of this command
@@ -563,9 +572,9 @@ or start the command with ``python manage.py``.
 
 **Example:**
 
-::
+.. code-block:: bash
 
-    thirty djangocmd thirtyblog production "syncdb"
+    $ thirty djangocmd thirtyblog --env development "syncdb"
 
 **Options:**
 

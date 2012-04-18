@@ -46,14 +46,16 @@ Create a WSGI application
 So let's create the application and deploy it. First create the new app and
 create an environment:
 
-::
+.. code-block:: bash
 
-    $ thirty create app wsgiapp git://github.com/30loops/wsgiapp.git --flavor wsgi --root wsgiapp --wsgi-entrypoint wsgiapp.main:application
+    $ thirty create app wsgiapp git://github.com/30loops/wsgiapp.git \
+    --flavor wsgi --root wsgiapp --wsgi-entrypoint wsgiapp.main:application
 
-As you can see, we provided the flavor option, the root directory and the wsgi entrypoint. Now we deploy the application::
+As you can see, we provided the flavor option, the root directory and the wsgi entrypoint. Now we deploy the application:
+
+.. code-block:: bash
 
     $ thirty deploy wsgiapp production
-
     Hi! We're now deploying app wsgiapp (environment: production) with the following details:
 
     name: production
@@ -78,12 +80,14 @@ As you can see, we provided the flavor option, the root directory and the wsgi e
         region: eu1
 
 
-    --> Creating a virtualenv for your application, this can take up to 150 seconds......done!
-    --> Creating database, this can take up to 10 seconds..done!
-    --> Requesting instances, this can take up to 100 seconds....done!
-    --> Configuring instances, this can take up to 40 seconds.....done!
-    --> Adding the instances to the monitoring systems, this can take up to 10 seconds...done!
-    --> Reloading the loadbalancers, this can take up to 30 seconds......done!
+    --> Creating a virtualenv for your application, this can take up to 150 seconds.......
+    --> Creating postgresql database.
+    --> Requesting instances, this can take up to 30 seconds.....
+    --> Configuring instances, this can take up to 30 seconds.....
+    --> Running postinstall scripts (if any).
+    --> Adding the instances to the monitoring systems..
+    --> Reloading the loadbalancers..
+    --> Deployment finished in 37 seconds.
     --> Your application is successfully deployed on http://30loops-app-wsgiapp-production.30loops.net
 
 The application is now running on the specified URL.

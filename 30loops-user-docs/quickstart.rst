@@ -78,20 +78,26 @@ Creating an application
     of the document we assume you created yourself a configuration file to
     store your credentials.
 
-Create an app with the following command::
+Create an app with the following command:
 
-    thirty create app <appname> <repository>
+.. code-block:: bash
+
+    $ thirty create app <appname> <repository>
 
 Replace appname with the desired name for your application, and repository with
 the URL to your code repository. At the moment only Git repositories are
-supported. Every command has its own help function::
+supported. Every command has its own help function:
 
-    thirty help create app
+.. code-block:: bash
+
+    $ thirty help create app
 
 This will show help for the ``create app`` subcommand. In this quickstart we
-will deploy a Django CMS. So our command looks like::
+will deploy a Django CMS. So our command looks like:
 
-    thirty create app djangocms git://github.com/30loops/django-cms-30loops.git \
+.. code-block:: bash
+
+    $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git \
     --flavor django --root mycms
 
 This will automatically create an app named ``djangocms``, an environment (by
@@ -100,9 +106,11 @@ default named ``production``) and a repository named ``djangocms``. Note the
 ``django`` and ``wsgi``. The ``--root`` flag specifies the to your
 project root. The path is relative to your repository root.
 
-To see the configuration of the newly created app, use the following command::
+To see the configuration of the newly created app, use the following command:
 
-    thirty show app djangocms
+.. code-block:: bash
+
+    $ thirty show app djangocms
 
 It will output something like:
 
@@ -149,14 +157,18 @@ Deploying an application
 ========================
 
 Deploying an application is quite simple and fast, just run the following
-command::
+command:
 
-    thirty deploy djangocms
+.. code-block:: bash
+
+    $ thirty deploy djangocms
 
 This will start the deployment. The client starts polling the logbook
-immediately. You can also access the logbook manually by running::
+immediately. You can also access the logbook manually by running:
 
-    thirty logbook UUID
+.. code-block:: bash
+
+    $ thirty logbook UUID
 
 Where UUID is the ID of the deployment task.
 

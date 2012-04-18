@@ -51,7 +51,9 @@ Create a Django application
 ---------------------------
 
 So lets create our application and deploy it. First we create the app and an
-additional environment::
+additional environment:
+
+.. code-block:: bash
 
     $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git --flavor django --root mycms
     App djangocms created!
@@ -158,17 +160,23 @@ in any public repository.
 Deploying the Django application
 ================================
 
-To deploy the application, run::
+To deploy the application, run:
 
-  thirty deploy djangocms
+.. code-block:: bash
+
+  $ thirty deploy djangocms
 
 This will deploy the djangocms production environment. To deploy the development
-environment, run::
+environment, run:
 
-  thirty deploy djangocms --env dev
+.. code-block:: bash
+
+  $ thirty deploy djangocms --env dev
 
 After executing the deploy command, the client will start polling the logbook.
-This will look similar to this::
+This will look similar to this:
+
+.. code-block:: bash
 
     $ thirty deploy djangocms
 
@@ -197,13 +205,15 @@ This will look similar to this::
         region: eu1
 
 
-    --> Creating a virtualenv for your application, this can take up to 150 seconds.................done!
-    --> Creating database, this can take up to 10 secondsdone!
-    --> Requesting instances, this can take up to 100 seconds......done!
-    --> Configuring instances, this can take up to 40 seconds.....done!
-    --> Adding the instances to the monitoring systems, this can take up to 10 seconds...done!
-    --> Reloading the loadbalancers, this can take up to 30 seconds......done!
-    --> Your application is successfully deployed on http://30loops-app-djangocms-production.30loops.net
+    --> Starting deployment (logbook uuid: 3f4e180c-8946-11e1-9206-aa0000cd1530)
+    --> Creating a virtualenv for your application, this can take up to 150 seconds.........................
+    --> Requesting instances, this can take up to 30 seconds......
+    --> Configuring instances, this can take up to 30 seconds....
+    --> Running postinstall scripts (if any).......
+    --> Adding the instances to the monitoring systems..
+    --> Reloading the loadbalancers
+    --> Deployment finished in 57 seconds.
+    --> Visit your application at http://thirtyloops-app-djangocms-production.30loops.net!
 
 Your application will be available on the specified URL (and on any cnames you
 specified and pointed to this URL).
