@@ -57,11 +57,9 @@ additional environment:
 
     $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git --flavor django --root mycms
     App djangocms created!
-
     $ thirty create environment djangocms dev --root mycms --django-settings-module development --flavor django
-
+    Environment dev created!
     $ thirty show app djangocms
-
     name: djangocms
     variant: python
     label: app
@@ -178,42 +176,41 @@ This will look similar to this:
 
 .. code-block:: bash
 
-    $ thirty deploy djangocms
+  $ thirty deploy djangocms
 
-    Hi! We're now deploying app djangocms (environment: production) with the following details:
+  Hi! We're now deploying app djangocms (environment: production) with the following details:
 
-    name: production
-    flavor: django
-    requirements_file: requirements.txt
-    project_root: mycms
-    repo_branch: master
-    install_setup_py: False
-    repo_commit: HEAD
-    database
-        name: 30loops-app-djangocms-production
-        variant: postgresql
-        label: database
-        username: 30loops-app-djangocms-production
-        host: 192.168.0.53
-        password: M2MyNDFmZjg1
-        port: 9999
-    djangoflavor
-        inject_db: True
-        django_settings_module: settings
-    backends
-        count: 1
-        region: eu1
+  name: production
+  flavor: django
+  requirements_file: requirements.txt
+  project_root: mycms
+  repo_branch: master
+  install_setup_py: False
+  repo_commit: HEAD
+  database
+      name: 30loops-app-djangocms-production
+      variant: postgresql
+      label: database
+      username: 30loops-app-djangocms-production
+      host: 192.168.0.53
+      password: M2MyNDFmZjg1
+      port: 9999
+  djangoflavor
+      inject_db: True
+      django_settings_module: settings
+  backends
+      count: 1
+      region: eu1
 
-
-    --> Starting deployment (logbook uuid: 3f4e180c-8946-11e1-9206-aa0000cd1530)
-    --> Creating a virtualenv for your application, this can take up to 150 seconds.........................
-    --> Requesting instances, this can take up to 30 seconds......
-    --> Configuring instances, this can take up to 30 seconds....
-    --> Running postinstall scripts (if any).......
-    --> Adding the instances to the monitoring systems..
-    --> Reloading the loadbalancers
-    --> Deployment finished in 57 seconds.
-    --> Visit your application at http://thirtyloops-app-djangocms-production.30loops.net!
+  --> Starting deployment (logbook uuid: 3f4e180c-8946-11e1-9206-aa0000cd1530)
+  --> Creating a virtualenv for your application, this can take up to 150 seconds.........................
+  --> Requesting instances, this can take up to 30 seconds......
+  --> Configuring instances, this can take up to 30 seconds....
+  --> Running postinstall scripts (if any).......
+  --> Adding the instances to the monitoring systems..
+  --> Reloading the loadbalancers
+  --> Deployment finished in 57 seconds.
+  --> Visit your application at http://thirtyloops-app-djangocms-production.30loops.net!
 
 Your application will be available on the specified URL (and on any cnames you
 specified and pointed to this URL).
