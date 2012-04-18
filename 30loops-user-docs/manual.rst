@@ -176,6 +176,37 @@ For your python application you can use something like:
 
     print env['DB_PORT']
 
+Runtime environment
+-------------------
+
+The instances run on Ubuntu 12.04, and contain the following installed python
+packages::
+
+    python-setuptools
+    python-pip
+    python-virtualenv
+    python-imaging
+    python-geoip
+    python-gdal
+    python-numpy
+    python-scipy
+    python-bcrypt
+    python-gdata
+    python-m2crypto
+    python-nltk
+    python-matplotlib
+    python-opencv
+    python-sqlalchemy
+    python-psycopg2
+    python-mysqldb
+    python-eventlet
+    python-gevent
+    python-lxml
+    python-geoip
+    python-setproctitle
+
+
+
 Static and Media files
 ----------------------
 
@@ -193,14 +224,18 @@ app accordingly if needed.
 Postinstall hook
 ----------------
 
-After each deploy the script ``postinstall`` gets executed. This script needs
-to be in the root of your repository, and must be executable. This script can
-be any language, just provide the right shebang:
+After each deploy the scripts ``postinstall`` and ``postinstall_all`` are
+executed. The ``postinstall`` script runs only on the first created instance,
+while the ``postinstall_all`` script runs on every instance.
+
+The script needs to be in the root of your repository, and must be executable. 
+This script can be any language, just provide the right shebang:
 
 For Python code:
 
-.. code-block:: py
+.. code-block:: bash
 
+    $ cat postinstall
     #!/usr/bin/env python
     run_some_function()
 
@@ -208,6 +243,7 @@ Or for example some BASH code:
 
 .. code-block:: bash
 
+    $ cat postinstall_all
     #!/bin/sh
     cp someimagefile /app/static
 
@@ -220,8 +256,8 @@ This would also be the correct place to run a syncdb after each deploy:
 
 .. note::
 
-    The postinstall command is ran on one instance only, to run a command on
-    more instances you need to manually run a command using the client.
+    The deployment process will fail if the script ends with an error return 
+    code!
 
 Thirty client
 =============
@@ -553,11 +589,12 @@ So the tree could look like:
 
 .. code-block:: bash
 
-    |-- .init
-    |   `-- myprocess.conf
-    |-- mycms
-    |-- requirements.txt 
-    `-- postinstall
+    +--> .init
+    |    +--> myprocess.conf
+    +--> mycms
+    |    +--> ..
+    +--> requirements.txt 
+    +--> postinstall
 
 The process file is an upstart configuration file. A very simple example:
 
