@@ -30,7 +30,9 @@ Account API
 URL                                           HTTP Verb  Function
 ============================================  =========  ==============================================
 /1.0/{account}/                               GET        `Showing Accounts`_
+/1.0/{account}/users/                         POST       `Creating Users`_
 /1.0/{account}/users/{username}/              GET        `Showing Users`_
+/1.0/{account}/users/{username}/              DELETE     `Deleting Users`_
 /1.0/{account}/users/{username}/password/     PUT        `Change User Password`_
 ============================================  =========  ==============================================
 
@@ -293,6 +295,65 @@ Showing Accounts
     :status 403: Request not permitted.
     :status 404: Account not found.
 
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        GET /1.0/30loops/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "name": "30loops",
+            "link": {
+                "href": "https://api.30loops.net/1.0/30loops/",
+                "rel": "self"
+            }
+        }
+
+Creating Users
+------------
+
+.. http:post:: /1.0/{account}/users/
+
+    Create a new user.
+
+    :param account: The name of a account, a short descriptive word.
+    :status 201: The new user has been created.
+    :status 403: Request not permitted.
+    :status 400: You have to specify a password.
+    :status 405: User already exists.
+
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        POST /1.0/30loops/users/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+        {
+            "username": "crito",
+            "email": "crito@30loops.net",
+            "password": "secret"
+        }
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+        Location: https://api.30loops.net/1.0/30loops/users/crito/
+
+
 Showing Users
 -------------
 
@@ -305,6 +366,59 @@ Showing Users
     :status 200: Returns the user as a json message.
     :status 403: Request not permitted.
     :status 404: User not found.
+
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        GET /1.0/30loops/users/crito/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "username": "crito",
+            "is_active": true,
+            "email": "crito@30loops.net",
+            "link": {
+                "href": "https://api.30loops.net/1.0/30loops/users/crito/",
+                "rel": "self"
+            }
+        }
+
+Deleting Users
+--------------
+
+.. http:delete:: /1.0/{account}/users/{username}/
+
+    Delete a user.
+
+    :param account: The name of a account, a short descriptive word.
+    :param username: The name of the user.
+    :status 204: The user has been deleted.
+    :status 403: Request not permitted.
+    :status 404: User not found.
+
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        DELETE /1.0/30loops/users/crito/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 204 OK
+        Content-Type: application/json; charset=UTF-8
 
 Change User Password
 --------------------
@@ -444,7 +558,7 @@ Showing Resources
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
-    **Example Request:**
+    **Example Response:**
 
     .. sourcecode:: http
 
