@@ -84,7 +84,7 @@ the config file.
 You can create a configuration file in your home directory called
 ``.thirty.cfg``. Specify any global option there to save yourself the typing::
 
-    cat ~/.thirty.cfg 
+    cat ~/.thirty.cfg
     [thirtyloops]
     username = crito
     password = secret
@@ -94,11 +94,8 @@ The configuration file follows a simple INI style and collects all global
 options under a section called ``[thirtyloops]``. Global options specified on
 the command line take precedence over options specified in the config file.
 
-Subcommands
------------
-
 list
-~~~~
+----
 
 ::
 
@@ -115,7 +112,7 @@ List all resources with the given label.
     djangocms
 
 show
-~~~~
+----
 
 ::
 
@@ -134,20 +131,20 @@ details of a specific app environment instead of the app itself.
     label: repository
     location: git://github.com/bastichelaar/Django-CMS-30loops.git
 
-create 
-~~~~~~
+create
+------
 ::
 
     thirty create <label> <name> [location]
 
-Create a new resource. Each resource has its own set of flags. Note that 
-database resources cannot be created manually, but will be created when 
+Create a new resource. Each resource has its own set of flags. Note that
+database resources cannot be created manually, but will be created when
 creating an application environment.
 
 **Required arguments**
 
 ``<label>``
-  The label defines the type of the resource. This can be ``app``, 
+  The label defines the type of the resource. This can be ``app``,
   ``repository`` or ``environment``.
 
 ``<name>``
@@ -156,20 +153,20 @@ creating an application environment.
 **flags**
 
 ``--root``
-  This flag specifies where the root of your application is. By default this is 
+  This flag specifies where the root of your application is. By default this is
   set to the most upper directory.
 
 ``--flavor``
-  The flavor flag needs to be set for every application. Currently we have the 
+  The flavor flag needs to be set for every application. Currently we have the
   ``wsgi`` flavor and ``django`` flavor.
 
 ``--cname``
-  Use this option if you use a custom domain. Create a CNAME record for your 
+  Use this option if you use a custom domain. Create a CNAME record for your
   domain and point it to the default application name on 30loops (for example
   30loops-app-djangocms-production.30loops.net).
 
 ``--environment``
-  By default, the created environment will be named ``production``. You can 
+  By default, the created environment will be named ``production``. You can
   override this by specifying a custon environment name.
 
 ``--requirements``
@@ -178,7 +175,7 @@ creating an application environment.
 
 ``--install-setup-py``
   This flag enables or disables the ``python setup.py install`` command. If you
-  need to run this on deployment, please set it to ``true``. Default is 
+  need to run this on deployment, please set it to ``true``. Default is
   ``false``.
 
 ``--backends``
@@ -189,11 +186,11 @@ creating an application environment.
 
 ``--inject-db``
   This tells the server to automaticaly inject the database settings during the
-  deploy. The database settings are injected at the bottom of the settings file 
+  deploy. The database settings are injected at the bottom of the settings file
   you specified. By default, this option is set to ``true``.
 
 ``--django-settings-module``
-  This is the python module path to your settings file. This has to be 
+  This is the python module path to your settings file. This has to be
   specified in a dotted syntax, for example: ``module.settings``. By default
   this option is set to ``settings``.
 
@@ -204,13 +201,14 @@ creating an application environment.
 **WSGI specific options**
 
 ``--wsgi-entrypoint``
-  This flag specifies the entrypoint of your application. Each incoming 
-  request will be routed to this function. WSGI entrypoints have to be specified 
+  This flag specifies the entrypoint of your application. Each incoming
+  request will be routed to this function. WSGI entrypoints have to be specified
   in the following format: ``python.module.path:callable``, for example
   ``wsgiapp.main:application``.
 
 update
-~~~~~~
+------
+
 ::
 
     thirty update <lable> <resource_name> [environment]
@@ -238,7 +236,7 @@ available on the ``update`` command:
   This flag deletes a CNAME from the environment.
 
 delete
-~~~~~~
+------
 
 ::
 
@@ -248,7 +246,7 @@ Delete a resource. If ``[environment]`` is given it will delete the app
 environment instead of the app itself.
 
 deploy
-~~~~~~
+------
 
 ::
 
@@ -259,7 +257,7 @@ environment. See :doc:`REST API guide <rest_api>` for more information about
 deploys.
 
 runcmd
-~~~~~~
+------
 
 ::
 
@@ -267,7 +265,7 @@ runcmd
 
 Run a command in the context of your app environment. The full command is
 specified enclosed by ``"``. The working directory of this command is the root
-of your repository. 
+of your repository.
 
 **Example:**
 
@@ -282,7 +280,7 @@ of your repository.
   either specify a number or ``all``. Defaults to ``1``.
 
 djangocmd
-~~~~~~~~~
+---------
 
 ::
 
@@ -306,13 +304,13 @@ or start the command with ``python manage.py``.
   either specify a number or ``all``. Defaults to ``1``.
 
 logs
-~~~~
+----
 
 ::
-    
+
     thirty logs <app>
 
-Shows the logs of your application. All logs are collected centrally, so you 
+Shows the logs of your application. All logs are collected centrally, so you
 can get aggregated logs of all instances.
 
 **Example:**
@@ -335,7 +333,7 @@ can get aggregated logs of all instances.
   Limit of the entries to fetch. By default this is set to 10.
 
 logbook
-~~~~~~~
+-------
 
 ::
 
@@ -347,4 +345,3 @@ Shows the logbook of an action, for example a deploy. The output is valid JSON.
 
 ::
     thirty logbook e6418181-5b3f-483b-a1c5-c88a55f0550a
-
