@@ -34,6 +34,7 @@ URL                                           HTTP Verb  Function
 /1.0/{account}/users/{username}/              GET        `Showing Users`_
 /1.0/{account}/users/{username}/              DELETE     `Deleting Users`_
 /1.0/{account}/users/{username}/password/     PUT        `Change User Password`_
+/1.0/{account}/authcheck/                     GET        `Testing Credentials`_
 ============================================  =========  ==============================================
 
 Resource API
@@ -445,6 +446,34 @@ Change User Password
         {
             "password": "new_password"
         }
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 204 NO CONTENT
+        Content-Type: application/json; charset=UTF-8
+
+Testing Credentials
+-------------------
+
+.. http:get:: /1.0/{account}/authcheck/
+
+    Check the credentials of a user.
+
+    :param account: The name of a account, a short descriptive word.
+    :status 204: The credentials succesfully authenticated.
+    :status 403: The credentials didn't authenticate.
+    :status 404: User not found.
+
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        GET /1.0/30loops/authcheck/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+        Content-Type: application/json
 
     **Example Response:**
 
