@@ -320,7 +320,7 @@ Showing Accounts
         }
 
 Creating Users
-------------
+--------------
 
 .. http:post:: /1.0/{account}/users/
 
