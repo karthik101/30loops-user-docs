@@ -1430,7 +1430,7 @@ Listing Action Logbook
             "action": "AppDeployAction",
             "status": "running",
             "link": {
-                "href": "/1.0/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205/",
+                "href": "https://api.30loops.net/1.0/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205/",
                 "rel": "self"
             },
             "messages": [
@@ -1438,25 +1438,21 @@ Listing Action Logbook
                     "asctime": "2012-02-08T11:15:04",
                     "loglevel": 1,
                     "message": "Initiating AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]",
-                    "node": "127.0.0.1"
                 },
                 {
                     "asctime": "2012-02-08T11:15:05",
                     "loglevel": 1,
                     "message": "Prerun AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]",
-                    "node": "127.0.0.1"
                 },
                 {
                     "asctime": "2012-02-08T11:15:06",
                     "loglevel": 0,
                     "message": "Running AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]",
-                    "node": "127.0.0.1"
                 },
                 {
                     "asctime": "2012-02-08T11:15:06",
                     "loglevel": 1,
                     "message": "Computing stage: CreateVirtualenv of AppDeployAction [eb920556-5197-11e1-bf5b-568837fa3205]",
-                    "node": "127.0.0.1"
                 },
             ]
         }
@@ -1465,3 +1461,12 @@ Every action you queue, creates a logbook that tracks the progress of the
 operation. Every step and result gets logged into this logbook. You can
 retrieve the logbook. The messages in the logbook are ordered ascending by a
 time stamp (``asctime``).
+
+The logbook knows 6 different loglevels that are mapped to a numeric value:
+
+- *debug*: 0
+- *info*: 1
+- *warning*: 2
+- *error*: 3
+- *critical*: 4
+- *exception*: 5
