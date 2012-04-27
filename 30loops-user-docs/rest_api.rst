@@ -1,4 +1,5 @@
 :tocdepth: 2
+
 ========
 REST API
 ========
@@ -320,7 +321,7 @@ Showing Accounts
         }
 
 Creating Users
-------------
+--------------
 
 .. http:post:: /1.0/{account}/users/
 
