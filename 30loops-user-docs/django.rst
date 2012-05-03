@@ -44,7 +44,7 @@ For a list of common options, please see :doc:`client`.
   this option is set to ``settings``.
 
 .. _`Django`: http://djangoproject.com
-.. _`example repository`: https://github.com/30loops/django-cms-30loops
+.. _`example repository`: https://github.com/30loops/djangocms-on-30loops
 
 
 Create a Django application
@@ -55,7 +55,7 @@ additional environment:
 
 .. code-block:: bash
 
-    $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git --flavor django --root mycms
+    $ thirty create app djangocms git://github.com/30loops/djangocms-on-30loops.git --flavor django --root mycms
     App djangocms created!
     $ thirty create environment djangocms dev --root mycms --django-settings-module development --flavor django
     Environment dev created!
@@ -67,7 +67,7 @@ additional environment:
         name: djangocms
         variant: git
         label: repository
-        location: git://github.com/30loops/django-cms-30loops.git
+        location: git://github.com/30loops/djangocms-on-30loops.git
     environments
      -- name: production
         flavor: django

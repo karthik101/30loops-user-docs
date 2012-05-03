@@ -104,7 +104,7 @@ will deploy a Django CMS. So our command looks like:
 
 .. code-block:: bash
 
-    $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git \
+    $ thirty create app djangocms git://github.com/30loops/djangocms-on-30loops.git \
     --flavor django --root mycms
 
 This will automatically create an app named ``djangocms``, an environment (by
@@ -130,7 +130,7 @@ It will output something like:
         name: djangocms
         variant: git
         label: repository
-        location: git://github.com/30loops/django-cms-30loops.git
+        location: git://github.com/30loops/djangocms-on-30loops.git
     environments
      -- name: production
         flavor: django
@@ -196,6 +196,12 @@ Django
 WSGI
 ----
 - :doc:`Simple WSGI app <wsgi>`
+
+Github examples
+---------------
+
+On http://30loops.github.com we created a collection of sample apps and tutorials.
+Please check it out, and let us know if you have recommendations for new apps!
 
 
 Additional support

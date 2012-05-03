@@ -48,7 +48,7 @@ create an environment:
 
 .. code-block:: bash
 
-    $ thirty create app wsgiapp git://github.com/30loops/wsgiapp.git \
+    $ thirty create app wsgiapp git://github.com/30loops/wsgi-on-30loops.git \
     --flavor wsgi --root wsgiapp --wsgi-entrypoint wsgiapp.main:application
 
 As you can see, we provided the flavor option, the root directory and the wsgi entrypoint. Now we deploy the application:
@@ -93,4 +93,4 @@ As you can see, we provided the flavor option, the root directory and the wsgi e
 The application is now running on the specified URL.
 
 .. _`WSGI standard`: http://www.python.org/dev/peps/pep-0333/
-.. _`example repository`: https://github.com/30loops/wsgiapp↑
+.. _`example repository`: https://github.com/30loops/wsgi-on-30loops/
