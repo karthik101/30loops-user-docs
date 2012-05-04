@@ -750,11 +750,7 @@ Showing Application Environments
         Content-Type: application/json; charset=UTF-8
 
         {
-            "backends": [
-                {
-                    "count": 3,
-                    "region": "eu1"
-                }],
+            "backend_count": 1,
             "database": {
                 "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-thirtyblog-production/",
                 "name": "30loops-app-thirtyblog-production",
@@ -871,7 +867,8 @@ environment in the moment you create an app.
             "name": "thirtyblog",
             "rel": "related"
         },
-        "variant": "python"
+        "variant": "python",
+        "region": "ams1"
     }
 
 Resource Fields
@@ -879,16 +876,24 @@ Resource Fields
 
 **label** (static, default=app)
   The unique label of this resource.
+
 **variants** (default=python)
   - python
+
 **name** (identifier)
   The name of this app as identified by the 30loops platform.
+
 **repository**
   The referenced repository resource. See the `Repository Resource`_ section
   for more information.
+
 **environments** (optional)
   A collection of environments this app has. See the `App Environment`_ section
   for more information.
+
+**region** (default=ams1)
+  The region where to deploy the app to. See the documentation about zones for
+  more information.
 
 More Examples
 ~~~~~~~~~~~~~
@@ -915,10 +920,9 @@ the URI of the newly created resource.
         "environments": [{
             "name": "production",
             "flavor": "django",
-            "backends": [
-                {"region": "eu1", "count": 2}
-            ]}
-            ]
+            "backend_count": 1
+            ],
+        "region": "ams1"
     }
 
 .. sourcecode:: http
@@ -947,12 +951,7 @@ App Environment
     Content-Type: application/json; charset=UTF-8
 
     {
-        "backends": [
-            {
-                "count": 2,
-                "region": "eu1"
-            },
-        ],
+        "backend_count": 1,
         "database": {
             "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-thirtyblog-production/",
             "name": "30loops-app-thirtyblog-production",
@@ -996,30 +995,16 @@ Resource Fields
 **install_setup_py** (default=False)
   Specifies if the deploy mechanism should look for a setup.py file in the
   source code root directory, and run a ``python setup.py install``.
+
 **requirements_file** (default=requirements)
   Look for a file containing required package dependencies. This file is looked
   for in the root directory of the source repository. See the `pip
   documentation`_ for more information.
-**backends**
-  In order to deploy an app environment you have to tell the 30loops platform
-  where you want to do that and how many backends you plan on using. The format
-  of this collection breaks the standard format for 30loops collections
-  described in `JSON Format`_. Its a list of simple dictionaries containing two
-  fields:
 
-  - region
-  - count
-
-  Region is a unique identifier for an available zone on 30loops. Count
-  determines how many backends you want to deploy in that specific region. You
-  can specify more than one backend definition
-
-.. code-block:: js
-
-    "backends": [
-        {"region": "eu1", "count": 2},
-        {"region": "eu2", "count": 1}
-    ]
+**backends_count** (default=1)
+  Specify the amount of backends you wish to use for this environment. It
+  defaults to 1 backend. The backends are deployed in the region that you
+  specified during app creation.
 
 **database**
   The database reference is created automaticaly when creating an app
@@ -1131,19 +1116,25 @@ Resource Fields
 
 **label** (static, default=repository)
   The unique label of this resource.
+
 **variants** (default=git)
   - git
+
 **name** (identifier)
   The name of this repository as identified by the 30loops platform.
+
 **location**
   The full URI where to clone this repository from. This can be any valid
   location identifier understood by your DCVS.
+
 **username** (not fully implemented yet)
   Specify the username to use when connecting to the repository, in case it is
   not publicly available.
+
 **password** (not fully implemented yet)
   Specify the password to provide when cloning a repository and it is password
   protected.
+
 **ssh_key** (optional)
   A ssh key to use when connecting to a repository. This field needs to be a
   base64 encoded string of your password-less private SSH key. Use the

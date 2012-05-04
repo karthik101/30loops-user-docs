@@ -104,8 +104,7 @@ will deploy a Django CMS. So our command looks like:
 
 .. code-block:: bash
 
-    $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git \
-    --flavor django --root mycms
+    $ thirty create app djangocms git://github.com/30loops/django-cms-30loops.git --flavor django --root mycms
 
 This will automatically create an app named ``djangocms``, an environment (by
 default named ``production``) and a repository named ``djangocms``. Note the
