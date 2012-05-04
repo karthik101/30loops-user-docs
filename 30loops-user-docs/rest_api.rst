@@ -215,7 +215,7 @@ examples).
         "repository": {
             "name": "thirtyloops-repo",
             "variant": "git",
-            "location": "https://github.com/30loops/thirtyloops-repo/"
+            "location": "https://github.com/30loops/django-on-30loops/"
         }
     }
 

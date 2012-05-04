@@ -129,7 +129,7 @@ details of a specific app environment instead of the app itself.
     name: djangocms
     variant: git
     label: repository
-    location: git://github.com/bastichelaar/Django-CMS-30loops.git
+    location: git://github.com/30loops/djangocms-on-30loops.git
 
 create
 ------
@@ -195,7 +195,7 @@ creating an application environment.
   this option is set to ``settings``.
 
 .. _`Django`: http://djangoproject.com
-.. _`example repository`: https://github.com/30loops/django-cms-30loops
+.. _`example repository`: https://github.com/30loops/djangocms-on-30loops
 
 
 **WSGI specific options**
