@@ -49,11 +49,6 @@ URL                                                       HTTP Verb  Function
 /1.0/{account}/{label}/{resource}/                        GET        `Showing Resources`_
 /1.0/{account}/{label}/{resource}/                        PUT        `Updating Resources`_
 /1.0/{account}/{label}/{resource}/                        DELETE     `Deleting Resources`_
-/1.0/{account}/app/{resource}/environment/                GET        `Listing Application Environments`_
-/1.0/{account}/app/{resource}/environment/                POST       `Creating Application Environments`_
-/1.0/{account}/app/{resource}/environment/{environment}/  GET        `Showing Application Environments`_
-/1.0/{account}/app/{resource}/environment/{environment}/  PUT        `Updating Application Environments`_
-/1.0/{account}/app/{resource}/environment/{environment}/  DELETE     `Deleting Application Environments`_
 ========================================================  =========  ==============================================
 
 Actions API
@@ -493,10 +488,8 @@ platform. The type of a resource is determined by its `label`. Currently there
 are the following resources available on 30loops:
 
 - :ref:`App resource <app-resource-api>`
-- :ref:`App environment <app-environment-api>`
 - :ref:`Repository resource <repository-resource-api>`
 - :ref:`Database resource <database-resource-api>`
-- :ref:`Webserver resource <webserver-resource-api>`
 
 A detailed description of each resource object can be found in the
 `Resource Objects`_ section.
@@ -708,89 +701,6 @@ Sending a ``DELETE`` request to the URI of a resource deletes it.
     information associated with this resource has been removed on the server
     side.
 
-.. _`Listing Application Environments`:
-
-Listing Application Environments
---------------------------------
-
-.. _`Creating Application Environments`:
-
-Creating Application Environments
----------------------------------
-
-.. _`Showing Application Environments`:
-
-Showing Application Environments
---------------------------------
-
-.. http:get:: /1.0/{account}/app/{resource}/environment/{environment}/
-
-    Show the details of this `environment`.
-
-    :param account: The name of a account, a short descriptive word.
-    :param resource: The name of the application.
-    :param environment: The name of the environment.
-    :status 200: Returns the environment as a JSON object.
-    :status 403: Request not permitted.
-    :status 404: Environment not found.
-
-    **Example Request:**
-
-    .. sourcecode:: http
-
-        GET /1.0/30loops/app/thirtyblog/environment/production/ HTTP/1.1
-        Authorization: Basic Y3JpdG86c2VjcmV0
-        Host: api.30loops.net
-
-    **Example Response:**
-
-    .. sourcecode:: http
-
-        HTTP/1.0 200 OK
-        Content-Type: application/json; charset=UTF-8
-
-        {
-            "backend_count": 1,
-            "database": {
-                "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-thirtyblog-production/",
-                "name": "30loops-app-thirtyblog-production",
-                "rel": "related"
-            },
-            "flavor": "django",
-            "install_setup_py": false,
-            "link": {
-                "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/environment/production/",
-                "rel": "self"
-            },
-            "cname_records": [
-                {
-                    "record": "alt.example.org"
-                }
-            ],
-            "name": "production",
-            "project_root": "project",
-            "repo_branch": "master",
-            "repo_commit": "HEAD",
-            "requirements_file": "requirements",
-            "djangoflavor": {
-                "django_settings_module": "production",
-                "auto_syncdb": false,
-                "inject_db": true
-                }
-        }
-
-This retrieves details of an specific environment of an app resource.
-
-.. _`Updating Application Environments`:
-
-Updating Application Environments
----------------------------------
-
-.. _`Deleting Application Environments`:
-
-Deleting Application Environments
----------------------------------
-
 Resource Objects
 ================
 
@@ -849,13 +759,6 @@ environment in the moment you create an app.
     Content-Type: application/json; charset=UTF-8
 
     {
-        "environments": [
-            {
-                "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/environment/production/",
-                "name": "production",
-                "rel": "item"
-            }
-        ],
         "label": "app",
         "link": {
             "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/",
@@ -864,6 +767,11 @@ environment in the moment you create an app.
         "name": "thrity-blog",
         "repository": {
             "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/",
+            "name": "thirtyblog",
+            "rel": "related"
+        },
+        "database": {
+            "href": "https://api.30loops.net/1.0/30loops/database/thirtyblog/",
             "name": "thirtyblog",
             "rel": "related"
         },
@@ -883,26 +791,26 @@ Resource Fields
 **name** (identifier)
   The name of this app as identified by the 30loops platform.
 
+**region** (default=ams1)
+  The region where to deploy the app to. See the documentation about zones for
+  more information.
+
 **repository**
   The referenced repository resource. See the `Repository Resource`_ section
   for more information.
 
-**environments** (optional)
-  A collection of environments this app has. See the `App Environment`_ section
-  for more information.
-
-**region** (default=ams1)
-  The region where to deploy the app to. See the documentation about zones for
-  more information.
+**database** (optional)
+  A referenced database resource. See the `Database Resource`_ section for more
+  information.
 
 More Examples
 ~~~~~~~~~~~~~
 
 **App Creation**
 
-This is an example of a miniam lapp creation, where we create the repository
-and one environment inline. The response contains a ``Location`` header with
-the URI of the newly created resource.
+This is an example of a minimal app creation, where we create the repository
+inline. The response contains a ``Location`` header with the URI of the newly
+created resource.
 
 .. sourcecode:: http
 
@@ -917,11 +825,6 @@ the URI of the newly created resource.
             "variant": "git",
             "location": "http://github.com/30loops/thirtyblog"
         },
-        "environments": [{
-            "name": "production",
-            "flavor": "django",
-            "backend_count": 1
-            ],
         "region": "ams1"
     }
 
@@ -930,6 +833,27 @@ the URI of the newly created resource.
     HTTP/1.1 201 CREATED
     Content-Type: application/json; charset=UTF-8
     Location: https://api.30loops.net/1.0/30loops/app/thirtyblog/
+
+**Connecting a Database**
+
+We have a database resource, called `blogdb` and want to connect it to an app.
+
+.. sourcecode:: http
+
+    PUT /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+
+    {
+        "name": "thirtyblog",
+        "database": {
+            "name": "blogdb",
+        }
+    }
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=UTF-8
 
 .. _app-environment-api:
 
