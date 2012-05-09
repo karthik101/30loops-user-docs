@@ -176,9 +176,9 @@ dictionaries.
         "repository": {
             "name": "thirtyblog-repo"
         },
-        "environments": [
-            {"name": "production"},
-            {"name": "production"}
+        "cnames": [
+            {"record": "record1.30loops.net"},
+            {"record": "record2.30loops.net"}
         ]
     }
 
@@ -223,35 +223,15 @@ short form. Single referenced objects are rendered as a related object, with
 the identifier and the URI of the object, and collections are rendered as a
 list of items, with the name and URI of the object.
 
-.. code-block:: js
-
-    {
-        "name": "thirtyloops-app",
-        "repository": {
-            "rel": "related",
-            "name": "thirtyloops-repo",
-            "href": "https://api.30loops.net/1.0/30loops/repository/thirtyloops-repos/"
-        },
-        "environments": [
-            {
-                "rel": "item",
-                "name": "production",
-                "href": "https://api.30loops.net/1.0/30loops/app/thirtyloops-app/environment/production/"
-                },
-            {
-                "rel": "item",
-                "name": "staging",
-                "href": "https://api.30loops.net/1.0/30loops/app/thirtyloops-app/environment/staging/"
-                }
-        ]
-    }
+Some collections break this format if it helps the clarity, eg: cnames of an
+app.
 
 Fields that are marked optional in the object descriptions can be omitted. They
-are not necessary for creating the object and mostly onyl represent additional
+are not necessary for creating the object and mostly only represent additional
 functionality. Fields often also provide a default value. If the field is not
 specified in the request message, the server uses the default value instead.
 That means you can also omit to specify this field in the request, which saves
-badnwidth and typing. Every field except the identifier field (eg, *name* for
+bandwidth and typing. Every field except the identifier field (eg, *name* for
 resources) can be changed later on.
 
 Changing the object reference to another object **does not** delete the old
@@ -801,9 +781,7 @@ App Resource
 
 The app resource defines web applications that can be hosted on the 30loops
 platform. Every app needs to attach a repository. It can't be created with out
-it. The app itself is not doing too much by itself. To actualy deploy an app to
-the platform, you have to define an environment first. You can create an
-environment in the moment you create an app.
+it.
 
 **Example Request:**
 
@@ -862,15 +840,14 @@ Resource Fields
   for more information.
 
 **instances** (default=1)
-  Specify the amount of backends you wish to use for this environment. It
+  Specify the amount of instances you wish to use for this app. It
   defaults to 1 backend. The backends are deployed in the region that you
   specified during app creation.
 
 **database** (optional)
-  The database reference is created automaticaly when creating an app
-  environment for the first time. Users can't create those resources
-  themselves. They are also protected from updates. See the section
-  `Database Resource`_ for more information.
+  The database reference is created automaticaly when creating an app. Users
+  can't create those resources themselves. They are also protected from
+  updates. See the section `Database Resource`_ for more information.
 
 **dns_record** (read-only)
   The dns record under the 30loops.net domain that we provide for your app.
@@ -1010,8 +987,8 @@ Database Resource
 
 .. note::
 
-    Database resources currently can't be created by the user. For each app
-    environment you create a database is configured for you automaticaly.
+    Database resources currently can't be created by the user. For each app you
+    create a database is configured for you automaticaly.
 
 Actions API
 ===========
