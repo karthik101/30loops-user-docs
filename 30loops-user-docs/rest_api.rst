@@ -270,10 +270,8 @@ eg::
 
     2012-02-08T11:15:06
 
-It follows roughly `RFC 3339`_. All times are given in Amsterdam local time,
+It follows roughly :rfc:`3339`. All times are given in Amsterdam local time,
 and have an UTC offset of +1 hour.
-
-.. _`RFC 3339`: http://ietfreport.isoc.org/idref/rfc3339/
 
 .. _`account-api`:
 
@@ -732,6 +730,70 @@ resources have a few common attributes:
     specific type of this rsource, eg: *postgresql* for databases or *git* for
     repositories.
 
+Resource References
+-------------------
+
+Each resource acts as an independent entity. But you can reference different
+resources to each other, eg: an App **must** have a repository referenced, but
+**may** reference a Database. You can still use the database for your app if
+you dont reference it, but then we can't create the
+:ref:`instance-environment-label` for you.
+
+You can reference resources with each other by either
+
+#) create the referenced resources at the same time you create the resource
+   that holds the reference:
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        POST /1.0/30loops/app/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "label": "app",
+            "name": "thirty-blog",
+            "repository": {
+                "name": "thirtyblog",
+                "location": "http://github.com/30loops/thirtyblog"
+                "variant": "git",
+            },
+            "variant": "python",
+            "region": "ams1"
+        }
+
+#) or by setting the reference to the name of an existing resource:
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        POST /1.0/30loops/repository/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+
+        {
+            "name": "thirtyblog",
+            "variant": "git",
+            "location": "http://github.com/30loops/thirtyblog"
+        }
+
+    .. sourcecode:: http
+
+        POST /1.0/30loops/app/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+
+        {
+            "name": "thirtyblog",
+            "variant": "python",
+            "repository": {
+                "name": "thirtyblog",
+            },
+            "region": "ams1"
+        }
+
 .. _app-resource-api:
 
 App Resource
@@ -799,9 +861,31 @@ Resource Fields
   The referenced repository resource. See the `Repository Resource`_ section
   for more information.
 
+**instances** (default=1)
+  Specify the amount of backends you wish to use for this environment. It
+  defaults to 1 backend. The backends are deployed in the region that you
+  specified during app creation.
+
 **database** (optional)
-  A referenced database resource. See the `Database Resource`_ section for more
-  information.
+  The database reference is created automaticaly when creating an app
+  environment for the first time. Users can't create those resources
+  themselves. They are also protected from updates. See the section
+  `Database Resource`_ for more information.
+
+**dns_record** (read-only)
+  The dns record under the 30loops.net domain that we provide for your app.
+
+**cname_records** (optional)
+  A list of cname records that are used to configure the load balancer. Cnames
+  are optional. We create as a default a record for your app under the
+  30loops.net domain. You should point those cname records to the dns record we
+  provide.
+
+.. code-block:: js
+
+    "cname_records": [
+        {"record": "cname.example.org"}
+    ]
 
 More Examples
 ~~~~~~~~~~~~~
@@ -854,153 +938,6 @@ We have a database resource, called `blogdb` and want to connect it to an app.
 
     HTTP/1.1 200 OK
     Content-Type: application/json; charset=UTF-8
-
-.. _app-environment-api:
-
-App Environment
----------------
-
-**Example Request:**
-
-.. sourcecode:: http
-
-    GET /1.0/30loops/app/thirtyblog/environment/production/ HTTP/1.1
-    Authorization: Basic Y3JpdG86c2VjcmV0
-
-**Example Response:**
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Content-Type: application/json; charset=UTF-8
-
-    {
-        "backend_count": 1,
-        "database": {
-            "href": "https://api.30loops.net/1.0/30loops/database/30loops-app-thirtyblog-production/",
-            "name": "30loops-app-thirtyblog-production",
-            "rel": "related"
-        },
-        "flavor": "django",
-        "install_setup_py": false,
-        "link": {
-            "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/environment/production/",
-            "rel": "self"
-        },
-        "name": "production",
-        "repo_branch": "master",
-        "repo_commit": "HEAD",
-        "project_root": "project",
-        "requirements_file": "requirements",
-        "djangoflavor": {
-            "django_settings_module": "production",
-            "auto_syncdb": false,
-            "inject_db": true
-            }
-    }
-
-Resource Fields
-~~~~~~~~~~~~~~~
-
-.. note::
-
-    The app environment resource has no variant field. Instead you can choose a
-    flavor.
-
-**flavor** (default=wsgi)
-  A flavor of a python web application. Current choices are:
-
-  - wsgi
-  - django
-
-  Each flavor can define some more fields, that are only valid for that
-  specific flavor. See the section about `App Flavors`_ for more information.
-
-**install_setup_py** (default=False)
-  Specifies if the deploy mechanism should look for a setup.py file in the
-  source code root directory, and run a ``python setup.py install``.
-
-**requirements_file** (default=requirements)
-  Look for a file containing required package dependencies. This file is looked
-  for in the root directory of the source repository. See the `pip
-  documentation`_ for more information.
-
-**backends_count** (default=1)
-  Specify the amount of backends you wish to use for this environment. It
-  defaults to 1 backend. The backends are deployed in the region that you
-  specified during app creation.
-
-**database**
-  The database reference is created automaticaly when creating an app
-  environment for the first time. Users can't create those resources
-  themselves. They are also protected from updates. See the section
-  `Database Resource`_ for more information.
-
-**cname_records**
-  A list of cname records that are used to configure the load balancer
-
-.. code-block:: js
-
-    "cname_records": [
-        {"record": "cname.example.org"}
-    ]
-
-**project_root** (default="")
-  Specify the root directory of your application. This path gets added to the
-  python path and is relative to your repository root.
-
-
-App Flavors
-~~~~~~~~~~~
-
-Python application can come in two flavors. Regular WSGI and django
-applications. For each flavor you have to define a few more fields. Specify the
-flavor options as a referenced resource inside the environment resource.
-
-
-WSGI Flavor
-+++++++++++
-
-WSGI apps are configured by specifying the application entry point
-
-.. code-block:: js
-
-    "wsgiflavor": {
-        "wsgi_entry_point": "wsgi:app"
-    }
-
-**wsgi_entry_point**
-  The format of the string should be in the way of module:callable. The module
-  must be on the python path, and the callable that gets called for the
-  incoming request.
-
-Django Flavor
-+++++++++++++
-
-Django apps have a few more specific fields
-
-.. code-block:: js
-
-    "djangoflavor": {
-        "django_settings_module": "production",
-        "auto_syncdb": false,
-        "inject_db": true
-    }
-
-**django_settings_module** (default=settings)
-  Specify the module path to your settings file. The settings module must be
-  found on the python path.
-
-**auto_syncdb** (default=False)
-  Run automaticaly at the end of a deploy a syncdb command. The default is not
-  to, but you can change the behaviour by setting this value to ``True``.
-
-**inject_db** (default=True)
-  When deploying an app, the database settings will be automatically appendend
-  to the end of your settings file. You can turn this behaviour off by setting
-  this field to ``False``.
-
-.. _`pip documentation`: http://www.pip-installer.org/en/latest/requirements.html
 
 .. _repository-resource-api:
 
@@ -1076,16 +1013,6 @@ Database Resource
     Database resources currently can't be created by the user. For each app
     environment you create a database is configured for you automaticaly.
 
-.. _webserver-resource-api:
-
-Webserver Resource
-------------------
-
-.. note::
-
-    Webserver resources currently can't be created by the user. For each app
-    environment you create a webserver is configured for you automaticaly.
-
 Actions API
 ===========
 
@@ -1153,9 +1080,6 @@ Queue Action
 
         {
             "action": "deploy",
-            "options": {
-                "environment": "production"
-            }
         }
 
     **Example Response:**
@@ -1172,8 +1096,7 @@ Actions
 App Deploy Action
 -----------------
 
-After you configured an application and an environment for the application, you
-can deploy it to the platform.
+After you configured an application, you can deploy it to the platform.
 
 **Example Request:**
 
@@ -1185,9 +1108,6 @@ can deploy it to the platform.
 
     {
         "action": "deploy",
-        "options": {
-            "environment": "dev"
-        }
     }
 
 **Example Response:**
@@ -1201,10 +1121,6 @@ can deploy it to the platform.
 **action:** deploy
 
 **options:**
-
-- environment (string)
-
-  The name of the environment to deploy.
 
 App Runcommand Action
 ---------------------
@@ -1225,7 +1141,6 @@ command: ``python init_db.py``.
     {
         "action": "runcommand",
         "options": {
-            "environment": "dev",
             "command": "python init_db.py --initial",
             "occurence": "all"
         }
@@ -1242,10 +1157,6 @@ command: ``python init_db.py``.
 **actions:** runcommand
 
 **options:**
-
-- environment (string)
-
-  The name of the environment to use.
 
 - command (string)
 
@@ -1277,7 +1188,6 @@ production`` you just specify the follwing command: ``syncdb``.
     {
         "action": "djangocommand",
         "options": {
-            "environment": "dev",
             "command": "syncdb",
             "occurence": 4
         }
@@ -1294,10 +1204,6 @@ production`` you just specify the follwing command: ``syncdb``.
 **actions:** djangocommand
 
 **options:**
-
-- environment (string)
-
-  The name of the environment to use.
 
 - command (string)
 

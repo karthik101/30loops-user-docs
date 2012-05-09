@@ -49,6 +49,8 @@ Django Apps
 Wsgi Apps
 =========
 
+.. _instance-environment-label:
+
 Instance Environment
 ====================
 
