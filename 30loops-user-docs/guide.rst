@@ -65,20 +65,21 @@ Currently this file can contain three different sections:
 - **wsgi**: Configure your generic wsgi application.
 - **django**: Configure your django application.
 
+Every app needs an ``environment`` section, and then depending on your app, you
+have to define either a ``wsgi`` section or a ``django`` section.
+
 ``environment`` Section
 -----------------------
 
 In this section you configure your python environment. You have the following
 options available:
 
-- **python_version** (default: python2.7)
-
+**python_version** (default: python2.7)
   Choose the python version you want to use for your app. Currently only
   python2.7 is supported but we want to add support for python3 and pypy very
   soon.
 
-- **root** (default: .)
-
+**root** (default: .)
   You have to specify the root directory of your app relative to the root
   directory of your respository. If your repository looks like this::
 
@@ -87,10 +88,12 @@ options available:
 
   the root would look like this::
 
-    root = project
+    root = projectA
 
-- **requirements**
+  The default root directory of your project is ``.``, which is the root of the
+  repository.
 
+**requirements**
   Specify your requirements file as a relative to your repository root. If your
   repository looks like this::
 
@@ -113,6 +116,17 @@ options available:
 ``wsgi`` Section
 ----------------
 
+**wsgi**
+  WSGI entrypoints have to be specified in the following format:
+  ``python.module.path:callable``. If I have a repository structure like::
+
+    +--> wsgiapp
+         +--> __init__.py
+         +--> main.py
+
+  and ``main.py`` contains the callable ``app`` that serves as your WSGI entrypoint,
+  the full entrypoint is expressed as ``wsgiapp.main:app``.
+
 **Example**
 
 .. code-block:: ini
@@ -123,6 +137,30 @@ options available:
 ``django`` Section
 ------------------
 
+**settings** (default: settings)
+  The python path to your settings file from your project root.
+
+**inject_db** (default: False)
+  Whether to inject the database configuration into your django settings. The
+  injected database settings are placed at the end your settings file and
+  therefore override any previous defined database settings. The template used
+  looks like this::
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': '{{ db_name }}',
+            'USER': '{{ db_user }}',
+            'PASSWORD': '{{ db_password }}',
+            'HOST': '{{ db_host }}',
+            'PORT': '{{ db_port }}',
+        }
+    }
+
+  If you want more control over your database settings, you should use
+  :ref:`instance-environment-label` mechanism to write your settings.
+
+
 **Example**
 
 .. code-block:: ini
@@ -130,12 +168,6 @@ options available:
     [django]
     settings = settings.production
     inject_db = false
-
-Django Apps
-===========
-
-Wsgi Apps
-=========
 
 .. _instance-environment-label:
 
@@ -206,6 +238,8 @@ For your python script you can use something like that.
 
 Database
 ========
+
+
 
 Static and Media Files
 ======================
