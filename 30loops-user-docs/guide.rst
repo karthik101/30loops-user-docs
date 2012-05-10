@@ -6,7 +6,7 @@ App Project Structure
 =====================
 
 We tried to give you as much freedom as possible in setting up your repository
-structure. To make a succesfull deploy we need to know a few things though. 
+structure. To make a succesfull deploy we need to know a few things though.
 
 You have to specify the project root. This is a relative path from the root of
 your repository to where the actual project files are residing, eg: you django
@@ -14,7 +14,9 @@ project.
 
 For example the following directory layout is possible::
 
+    +--> thirty.ini
     +--> setup.py
+    +--> requirements.txt
     +--> django_project
     |    +--> manage.py
     |    +--> urls.py
@@ -26,22 +28,108 @@ For example the following directory layout is possible::
          +--> blog
               +--> ..
 
-You configure ``django_project_root`` to ``django_project`` and enable
-``install_setup_py`` by setting it to ``True``. The deploy runs a ``python
-setup.py install`` to install your apps into the python path. And the appserver
-and the ``djangocommand`` action know which directory hosts your actual
-project. 
+You configure the project root among other things by supplying a runtime
+configuration file in the root of your repository. See
+:ref:`runtime-configuration-label` for more information.
 
-For WSGI apps this is similar::
+The preferred way to install dependencies for your app is to supply a
+requirements file. The location of this file is again configured in your
+``thirty.ini`` file. But you can also write a ``setup.py`` for your app.  You
+can run any ``setup.py`` as part of the postinstall script. 
 
-    +--> src
-         +--> myawesomeblog
-              +--> __init__.py
-              +--> app.py
+.. _runtime-configuration-label:
 
-By setting ``wsgi_project_root`` to ``src/myawsomeblog/``, the right directory
-gets added to the python path. Import paths like ``from myawesomeblog.app
-import application`` are possible then.
+``thirty.ini`` Runtime Configuration
+====================================
+
+When you deploy an application, we will clone your repository and look for a
+``thirty.ini`` file in your repository root directory. This file is used to
+configure your runtime environment. We provide default values for almost all
+configuration options. So most of the time this file will be very short. But
+you can override any default we provide.
+
+The format of this file is ``key = value`` and is organized in different
+sections. This is an example config file.
+
+.. code-block:: ini
+
+    [environment]
+    root = .
+
+    [wsgi]
+    entrypoint = wsgi:application
+
+Currently this file can contain three different sections:
+
+- **environment**: Configure the general python runtime environment.
+- **wsgi**: Configure your generic wsgi application.
+- **django**: Configure your django application.
+
+``environment`` Section
+-----------------------
+
+In this section you configure your python environment. You have the following
+options available:
+
+- **python_version** (default: python2.7)
+
+  Choose the python version you want to use for your app. Currently only
+  python2.7 is supported but we want to add support for python3 and pypy very
+  soon.
+
+- **root** (default: .)
+
+  You have to specify the root directory of your app relative to the root
+  directory of your respository. If your repository looks like this::
+
+    +--> setup.py
+    +--> project      # This contains the root of your application.
+
+  the root would look like this::
+
+    root = project
+
+- **requirements**
+
+  Specify your requirements file as a relative to your repository root. If your
+  repository looks like this::
+
+    +--> setup.py
+    +--> requirements.txt
+
+  the option would be configured like this::
+
+    requirements = requirements.txt
+
+**Example**
+
+.. code-block:: ini
+
+    [environment]
+    python_version = python2.7
+    root = .
+    requirements = requirements.txt
+
+``wsgi`` Section
+----------------
+
+**Example**
+
+.. code-block:: ini
+
+    [wsgi]
+    entrypoint = main:app
+
+``django`` Section
+------------------
+
+**Example**
+
+.. code-block:: ini
+
+    [django]
+    settings = settings.production
+    inject_db = false
 
 Django Apps
 ===========
@@ -125,13 +213,13 @@ Static and Media Files
 Static content are files like css or javascript. They get placed with every
 deploy. Each instance has its own copies of those files. Media files are shared
 among all instances and stored on a mass storage device. They are not changed
-during a deploy and are meant for user generated content. 
+during a deploy and are meant for user generated content.
 
 Paths to static and media files is handled per convention right now. The
 webserver is configured to server static files from the path ``/static/`` and
 media files from the path ``/media/``. The path locations on the instance are
 ``/app/static`` and ``/app/media`` respectively. You have to configure your
-app accordingly if needed. 
+app accordingly if needed.
 
 Web Stack
 =========
