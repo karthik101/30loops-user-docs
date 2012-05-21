@@ -27,16 +27,17 @@ defaults to ``/1.0/``.
 Account API
 -----------
 
-============================================  =========  ==============================================
-URL                                           HTTP Verb  Function
-============================================  =========  ==============================================
-/1.0/{account}/                               GET        `Showing Accounts`_
-/1.0/{account}/users/                         POST       `Creating Users`_
-/1.0/{account}/users/{username}/              GET        `Showing Users`_
-/1.0/{account}/users/{username}/              DELETE     `Deleting Users`_
-/1.0/{account}/users/{username}/password/     PUT        `Change User Password`_
-/1.0/{account}/authcheck/                     GET        `Testing Credentials`_
-============================================  =========  ==============================================
+===================================================  =========  ==============================================
+URL                                                  HTTP Verb  Function
+===================================================  =========  ==============================================
+/1.0/{account}/                                      GET        `Showing Accounts`_
+/1.0/{account}/users/                                POST       `Creating Users`_
+/1.0/{account}/users/{username}/                     GET        `Showing Users`_
+/1.0/{account}/users/{username}/                     DELETE     `Deleting Users`_
+/1.0/{account}/users/{username}/change_password/     PUT        `Change User Password`_
+/1.0/{account}/users/{username}/reset_password/      POST       `Reset User Password`_
+/1.0/{account}/authcheck/                            GET        `Testing Credentials`_
+===================================================  =========  ==============================================
 
 Resource API
 ------------
@@ -66,7 +67,7 @@ Logbook API
 =====================================  =========  ===========================
 URL                                    HTTP Verb  Function
 =====================================  =========  ===========================
-/1.0/{account}/logbook/{uuid}/         GET        `Listing Action Logbook`_
+/1.0/{account}/logbook/{uuid}/         GET        `Showing Action Logbook`_
 =====================================  =========  ===========================
 
 
@@ -183,7 +184,9 @@ dictionaries.
     }
 
 When creating a new object, and you want to reference an already existing
-object, its enough to specify the identifier in the JSON request.
+object, its enough to specify the identifier in the JSON request. The
+identifier of a resource ususaly is the `name` of the resource, unless
+otherwise specified.
 
 .. code-block:: js
 
@@ -265,7 +268,7 @@ Showing Accounts
 
     Show the details of `account`.
 
-    :param account: The name of a account, a short descriptive word.
+    :param account: The name of a account.
     :status 200: Returns the account as a json string.
     :status 403: Request not permitted.
     :status 404: Account not found.
@@ -300,7 +303,7 @@ Creating Users
 
     Create a new user.
 
-    :param account: The name of a account, a short descriptive word.
+    :param account: The name of a account.
     :status 201: The new user has been created.
     :status 403: Request not permitted.
     :status 400: You have to specify a password.
@@ -336,7 +339,7 @@ Showing Users
 
     Show the details of the user `username`.
 
-    :param account: The name of a account, a short descriptive word.
+    :param account: The name of a account.
     :param username: The name of the user.
     :status 200: Returns the user as a json message.
     :status 403: Request not permitted.
@@ -374,7 +377,7 @@ Deleting Users
 
     Delete a user.
 
-    :param account: The name of a account, a short descriptive word.
+    :param account: The name of a account.
     :param username: The name of the user.
     :status 204: The user has been deleted.
     :status 403: Request not permitted.
@@ -398,11 +401,11 @@ Deleting Users
 Change User Password
 --------------------
 
-.. http:put:: /1.0/{account}/users/{username}/password/
+.. http:put:: /1.0/{account}/users/{username}/change_password/
 
     Update the password for this user.
 
-    :param account: The name of a account, a short descriptive word.
+    :param account: The name of a account.
     :param username: The name of the user.
     :status 204: The password was succesfully updated.
     :status 403: Request not permitted.
@@ -412,7 +415,7 @@ Change User Password
 
     .. sourcecode:: http
 
-        PUT /1.0/30loops/users/crito/password/ HTTP/1.1
+        PUT /1.0/30loops/users/crito/change_password/ HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
         Content-Type: application/json
@@ -420,6 +423,37 @@ Change User Password
         {
             "password": "new_password"
         }
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 204 NO CONTENT
+        Content-Type: application/json; charset=UTF-8
+
+Reset User Password
+-------------------
+
+.. http:post:: /1.0/{account}/users/{username}/reset_password/
+
+    Reset the password for this user. Note that this request needs no
+    authentication credentials. A new password will be set and emailed to the
+    email address that is associated with this user. See
+    `Change User Password`_ how to change your password afterwards.
+
+    :param account: The name of a account.
+    :param username: The name of the user.
+    :status 204: The password was succesfully reset.
+    :status 403: Request not permitted.
+    :status 404: User or Account not found.
+
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        POST /1.0/30loops/users/crito/reset_password/ HTTP/1.1
+        Host: api.30loops.net
+        Content-Type: application/json
 
     **Example Response:**
 
@@ -470,7 +504,11 @@ are the following resources available on 30loops:
 - :ref:`Database resource <database-resource-api>`
 
 A detailed description of each resource object can be found in the
-`Resource Objects`_ section.
+`Resource Objects`_ section. The following labels are currently recognized:
+
+- ``app``
+- ``database``
+- ``repository``
 
 .. _`Listing Resources`:
 
@@ -485,9 +523,46 @@ Listing Resources
     :type account: str
     :param label: The resource type, eg: repository, db, app
     :type label: str
-    :status 200: Returns a list of json objects (resources).
+    :status 200: Returns all resources of this label.
     :status 403: Request not permitted.
     :status 404: Account not found.
+
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        GET /1.0/30loops/repository/ HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+        Content-Type: application/json
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "items": [
+                {
+                    "label": "repository",
+                    "link": {
+                        "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/",
+                        "rel": "item"
+                    },
+                    "location": "git://github.com/30loops/thirtyblog.git",
+                    "name": "thirtyblog",
+                    "variant": "git"
+                },
+            ],
+            "link": {
+                "href": "https://api.30loops.net/1.0/30loops/repository/",
+                "rel": "self"
+            },
+            "size": 1
+        }
+
 
 .. _`Creating Resources`:
 
@@ -1197,7 +1272,7 @@ production`` you just specify the follwing command: ``syncdb``.
 Logbook API
 ===========
 
-Listing Action Logbook
+Showing Action Logbook
 ----------------------
 
 .. http:get:: /1.0/{account}/logbook/{uuid}/
