@@ -61,6 +61,15 @@ URL                                    HTTP Verb  Function
 /1.0/{account}/{label}/{resource}/     POST       `Queue Action`_
 =====================================  =========  ===========================
 
+Billing and Usage API
+---------------------
+
+=====================================  =========  ===========================
+URL                                    HTTP Verb  Function
+=====================================  =========  ===========================
+/1.0/{account}/app/{resource}/usage    GET        `Show App Usage`_
+=====================================  =========  ===========================
+
 Logbook API
 -----------
 
@@ -1266,6 +1275,51 @@ production`` you just specify the follwing command: ``syncdb``.
   Specify on how many backends this command should run on. Can be either an
   integer for the number of backends to run it on or ``all``. Defaults to
   ``1``.
+
+.. _`billing-usage-api`:
+
+Billing and Usage API
+=====================
+
+Showing App Usage
+-----------------
+
+.. http:get:: /1.0/{account}/app/{resource}/usage
+
+    Retrieve the usage statistics for an app. With no parameter given, the
+    request will return short usage stats for the current month.
+
+    :param account: The name of a account.
+    :param resource: The name of the app.
+    :query details: Can be `true`, to show a detailed listing.
+    :query month: The month as a number from 1-12. Show stats for this month.
+    :query year: The year as a number. Show stats for the month of that year.
+    :status 200: Returns the usage stats.
+    :status 403: Request not permitted.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        GET /1.0/30loops/app/thirtyblog/usage HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "app": "thirtyblog",
+            "usage": {
+                "150": {
+                    "total_hours": 47
+                },
+            }
+        }
 
 .. _`logbook-api`:
 
