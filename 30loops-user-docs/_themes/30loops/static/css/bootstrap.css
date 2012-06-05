@@ -103,8 +103,8 @@ textarea {
 }
 body {
   margin: 0;
-  font-family: "Abel", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
+  font-family: "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
   line-height: 18px;
   color: #333333;
   background-color: #ffffff;
@@ -287,9 +287,6 @@ a:hover {
 }
 p {
   margin: 0 0 9px;
-  font-family: "Abel", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
 }
 p small {
   font-size: 11px;
@@ -307,8 +304,9 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, serif;
   margin: 0;
-  font-weight: bold;
+  font-weight: normal;
   color: #333333;
   text-rendering: optimizelegibility;
 }

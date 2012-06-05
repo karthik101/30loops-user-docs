@@ -2,51 +2,33 @@
 Quickstart guide
 ================
 
+.. note::
+
+    This guide assumes that you are already familiar with the basic concepts
+    of our platform. If not, you should read :doc:`this <firststeps>` first.
+
 This guide will provide some basic information about the platform and walk you
 through the following steps:
 
-#) Basics of the platform
 #) Installing the 30loops client
 #) Creating an application
 #) Deploying an application
 
-We will configure and deploy an example app you can find in our `repository on
-github`_. Its a very simple cherrypy application. It already contains a
+We will configure and deploy an example app you can find in our `sample apps on 
+github`_. Its a very simple CherryPy application. It already contains a
 ``thirty.ini`` file, that configures the runtime environment. If you want to
-deploy your own apps, you have to provide your own ``thirty.ini`` file. But its
-very simple, you can find more information at :ref:`runtime-configuration-label`.
+deploy your own app, you have to provide your own ``thirty.ini`` file. The 
+syntax is very simple, you can find more information at 
+:ref:`runtime-configuration-label`.
 
-.. _`repository on github`: https://github.com/30loops/cherrypy-on-30loops
-
-30loops basics
-==============
-
-An application on 30loops consists of the following components:
-
-- A repository resource
-- An app resource
-
-In this quickstart, we will create the application and a repository. You can
-create multiple environments per application, for example a staging,
-development and production environment. You can also create separate repository
-resources that you can connect to an application. We will go more indepth in
-the next chapters.
-
-Resources are first configured. Once you have a resource configured you can
-issues actions on your resources like ``deploy``. Applications on 30loops are
-deployed using a pull mechanism. This means, 30loops will connect to your code
-repository, fetch the code, and deploy it on the platform.
-
-You can control every aspect of your application using a JSON API. We provide
-for now a command line tool, but feel free to access the API in any means
-suitable for you. To use the the platofrm, you need to have a valid, active account.
+.. _`sample apps on github`: https://30loops.github.com
 
 Installing the 30loops client
 =============================
 
 Communicating with the 30loops platform can be done using the documented REST
-api, or using the 30loops client, called thirty. The REST api is documented
-::doc:`here <rest_api>`, in this quickstart we will focus on using the client.
+api or using the 30loops client, called thirty. The REST api is documented
+:doc:`here <rest_api>`. In this quickstart we will focus on using the client.
 You can install the client using pip:
 
 .. code-block:: bash
@@ -68,8 +50,8 @@ https://github.com/30loops/thirty-cli and build it the usual way:
     $ git clone git://github.com/30loops/thirty-cli.git
     $ python setup.py install
 
-Creating an application
-=======================
+Creating an app
+===============
 
 .. note::
 
@@ -78,8 +60,8 @@ Creating an application
     by creating a ``.thirty.cfg`` in your home directory. See
     :ref:`thirty-client-global-options` and
     :ref:`thirty-client-configuration-file` for more information. For the rest
-    of the document we assume you created yourself a configuration file to
-    store your credentials.
+    of the quickstart we assume you have created a configuration file with
+    your credentials.
 
 Create an app with the following command:
 
@@ -102,8 +84,8 @@ will deploy a simple cherrypy application. So our command looks like:
 
     $ thirty create app git://github.com/30loops/cherrypy-on-30loops.git
 
-This will automatically create an app named ``cherrypyonloops`` and a
-repository named ``cherrypyonloops``.
+This will automatically create an app named ``cherrypyon30loops`` and a
+repository named ``cherrypyon30loops``.
 
 .. note:
 
@@ -115,47 +97,44 @@ To see the configuration of the newly created app, use the following command:
 
 .. code-block:: bash
 
-    $ thirty show app cherrypyonloops
+    $ thirty show app cherrypyon30loops
 
 It will output something like:
 
 .. code-block:: bash
 
-    name: cherrypyonloops
+    name: cherrypyon30loops
     variant: python
     label: app
     region: ams1
     repo_branch: master
     instances: 1
     repo_commit: HEAD
-    dns_record: 30loops-app-cherrypyonloops.30loops.net
+    dns_record: 30loops-app-cherrypyon30loops.30loops.net
     repository
         name: cherrypyonloops
         variant: git
         label: repository
         location: git://github.com/30loops/cherrypy-on-30loops.git
     database
-        name: 30loops-db-cherrypyonloops
+        name: 30loops-db-cherrypy30onloops
         variant: postgresql
         label: database
-        username: 30loops-db-cherrypyonloops
+        username: 30loops-db-cherrypyon30loops
         host: 192.168.0.53
         password: YzIyYTZjOWI2
         port: 9999
 
-The app resource is now configured.
+The app is now defined. We will continue with deploying the newly created app.
 
-We will continue with deploying the newly created application.
+Deploying an app
+================
 
-Deploying an application
-========================
-
-Deploying an application is quite simple and fast, just run the following
-command:
+Deploying an app is quite simple and fast, just run the following command:
 
 .. code-block:: bash
 
-    $ thirty deploy cherrypyonloops
+    $ thirty deploy cherrypyon30loops
 
 This will start the deployment. The client starts polling the logbook
 immediately. You can also access the logbook manually by running:
@@ -167,7 +146,7 @@ immediately. You can also access the logbook manually by running:
 Where UUID is the ID of the deployment task.
 
 After a succesfull deploy, your application will be availabl on the specified
-DNS record: ``http://30loops-app-cherrypyonloops.30loops.net``.
+DNS record: ``http://30loops-app-cherrypyon30loops.30loops.net``.
 
 Guides
 ======

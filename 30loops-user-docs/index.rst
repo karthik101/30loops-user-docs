@@ -11,6 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   firststeps
    quickstart
    manual
    rest_api
