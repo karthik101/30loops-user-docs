@@ -103,27 +103,28 @@ It will output something like:
 
 .. code-block:: bash
 
-    name: cherrypyon30loops
+    --> App cherrypyonloops is created!
+    --> Details of the app:
+
+    name: cherrypyonloops
     variant: python
     label: app
     region: ams1
     repo_branch: master
     instances: 1
     repo_commit: HEAD
-    dns_record: 30loops-app-cherrypyon30loops.30loops.net
+    dns_record: 30loops-app-cherrypyonloops.30loops.net
     repository
         name: cherrypyonloops
         variant: git
         label: repository
         location: git://github.com/30loops/cherrypy-on-30loops.git
     database
-        name: 30loops-db-cherrypy30onloops
-        variant: postgresql
+        name: 30loops-db-cherrypyonloops
+        variant: postgres
         label: database
-        username: 30loops-db-cherrypyon30loops
-        host: 192.168.0.53
-        password: YzIyYTZjOWI2
-        port: 9999
+        username: 30loops-db-cherrypyonloops
+        password: YzYyMTI1MmY3
 
 The app is now defined. We will continue with deploying the newly created app.
 
@@ -136,8 +137,9 @@ Deploying an app is quite simple and fast, just run the following command:
 
     $ thirty deploy cherrypyon30loops
 
-This will start the deployment. The client starts polling the logbook
-immediately. You can also access the logbook manually by running:
+This will start the deployment. Every action you run on your resources creates
+a logbook. The client starts polling the logbook immediately. You can also
+access the logbook manually by running:
 
 .. code-block:: bash
 
