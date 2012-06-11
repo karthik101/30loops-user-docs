@@ -256,14 +256,15 @@ Time and Date Formats
 All time and dates that are provided either in a HTTP header or in the body of
 a JSON message are given in the following format::
 
-    YYYY-MM-DDTHH:MM:SS
+    YYYY-MM-DDTHH:MM:SSZ
 
 eg::
 
-    2012-02-08T11:15:06
+    2012-02-08T11:15:06Z
+    2012-04-23T11:56:04+02:00
 
 It follows roughly :rfc:`3339`. All times are given in Amsterdam local time,
-and have an UTC offset of +1 hour.
+and have an UTC offset of +2 hour.
 
 .. _`account-api`:
 
