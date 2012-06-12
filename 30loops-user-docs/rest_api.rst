@@ -205,6 +205,8 @@ otherwise specified.
         }
     }
 
+.. _`reference-resources`:
+
 If the referenced object with that identifier is not existing, the server
 application will try to create it. In that case you have to provide all
 necessary fields, as described in the detailed descriptions of the objects
@@ -339,7 +341,7 @@ Showing Accounts
                 "href": "https://api.30loops.net/1.0/30loops/",
                 "rel": "self"
             },
-            "plan": "STANDARD", 
+            "plan": "STANDARD",
             "plan_upgrade_uri": "https://30loops.chargevault.com/update?key=345f4543334&code=30loops"
         }
 
@@ -575,6 +577,8 @@ are the following resources available on 30loops:
 - :ref:`App resource <app-resource-api>`
 - :ref:`Repository resource <repository-resource-api>`
 - :ref:`Database resource <database-resource-api>`
+- :ref:`Worker resource <worker-resource-api>`
+- :ref:`MongoDB resource <mongodb-resource-api>`
 
 A detailed description of each resource object can be found in the
 `Resource Objects`_ section. The following labels are currently recognized:
@@ -582,6 +586,8 @@ A detailed description of each resource object can be found in the
 - ``app``
 - ``database``
 - ``repository``
+- ``worker``
+- ``mongodb``
 
 .. _`Listing Resources`:
 
@@ -593,12 +599,8 @@ Listing Resources
     Retrieve a list of all resources of the type `label` owned by this `account`.
 
     :param account: The name of a account, a short descriptive word.
-    :type account: str
     :param label: The resource type, eg: repository, db, app
-    :type label: str
     :status 200: Returns all resources of this label.
-    :status 403: Request not permitted.
-    :status 404: Account not found.
 
     **Example Request**:
 
@@ -647,12 +649,8 @@ Creating Resources
     Create a new resource of type `label`.
 
     :param account: The name of a account, a short descriptive word.
-    :type account: str
     :param label: The resource type, eg: repository, db, app
-    :type label: str
     :status 201: The resource has been succesfully created.
-    :status 400: The request could not be understood by the server.
-    :status 403: Request not permitted.
 
     **Example Request**:
 
@@ -680,7 +678,7 @@ Creating Resources
 When the creation succeeds, a ``201 CREATED`` response is returned, containing
 the ``Location`` header with the URI of the new resource.
 
-If the JSON_ input is not valid or isufficient to create a new resource, a
+If the JSON_ input is not valid or incomplete to create a new resource, a
 ``400 BAD REQUEST`` response is returned by the server.
 
 .. _`Showing Resources`:
@@ -696,8 +694,6 @@ Showing Resources
     :param label: The resource type, eg: repository, db, app
     :param resource: The name of the resource.
     :status 200: Returns the resource as a JSON object.
-    :status 403: Request not permitted.
-    :status 404: Resource not found.
 
     **Example Request:**
 
@@ -726,7 +722,7 @@ Showing Resources
         }
 
 Each resource can be retrieved by sending a GET request to the resource URI.
-The resource URI is returned either when a resources gets created in the
+The resource URI is returned either when a resource gets created in the
 ``Location`` header, or in the resource listing of this type.
 
 .. _`Updating Resources`:
@@ -742,8 +738,6 @@ Updating Resources
     :param label: The resource type, eg: repository, db, app
     :param resource: The name of the resource.
     :status 200: Returns the updated resource as a JSON object.
-    :status 403: Request not permitted.
-    :status 404: Resource not found.
 
     **Example Request:**
 
@@ -801,8 +795,6 @@ Deleting Resources
     :param label: The resource type, eg: repository, db, app
     :param resource: The name of the resource.
     :status 204: The resource was succesfully deleted.
-    :status 403: Request not permitted.
-    :status 404: Resource not found.
 
     **Example Request:**
 
@@ -855,7 +847,7 @@ resources have a few common attributes:
 :variant:
 
     Each resource type (label) has one or more variants. A variant specifies a
-    specific type of this rsource, eg: *postgresql* for databases or *git* for
+    specific type of this rsource, eg: *postgres* for databases or *git* for
     repositories.
 
 Resource References
@@ -947,7 +939,13 @@ it.
     Content-Type: application/json; charset=UTF-8
 
     {
+        "cnames": [
+            {
+                "record": "dns1.example.com"
+            }
+        ],
         "label": "app",
+        "dns_record": "30loops-app-thirtyblog.30loops.net",
         "link": {
             "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/",
             "rel": "self"
@@ -964,6 +962,8 @@ it.
             "rel": "related"
         },
         "variant": "python",
+        "instances": 1,
+        "repo_commit": "HEAD",
         "region": "ams1"
     }
 
@@ -974,6 +974,7 @@ Resource Fields
   The unique label of this resource.
 
 **variants** (default=python)
+  - static
   - python
 
 **name** (identifier)
@@ -992,10 +993,22 @@ Resource Fields
   defaults to 1 backend. The backends are deployed in the region that you
   specified during app creation.
 
+**repo_commit** (default=HEAD)
+  Specify which commit you want to deploy. When deploying an app, this commit
+  will be checked out.
+
 **database** (optional)
   The database reference is created automaticaly when creating an app. Users
   can't create those resources themselves. They are also protected from
   updates. See the section `Database Resource`_ for more information.
+
+**worker** (optional)
+  Define a worker resource for your app. See `Worker Resource`_ for more
+  information.
+
+**mongodb** (optional)
+  Define a MongoDB database for your app. See `MongoDB Resource`_ for more
+  information.
 
 **dns_record** (read-only)
   The dns record under the 30loops.net domain that we provide for your app.
@@ -1113,14 +1126,6 @@ Resource Fields
   The full URI where to clone this repository from. This can be any valid
   location identifier understood by your DCVS.
 
-**username** (not fully implemented yet)
-  Specify the username to use when connecting to the repository, in case it is
-  not publicly available.
-
-**password** (not fully implemented yet)
-  Specify the password to provide when cloning a repository and it is password
-  protected.
-
 **ssh_key** (optional)
   A ssh key to use when connecting to a repository. This field needs to be a
   base64 encoded string of your password-less private SSH key. Use the
@@ -1135,8 +1140,196 @@ Database Resource
 
 .. note::
 
-    Database resources currently can't be created by the user. For each app you
-    create a database is configured for you automaticaly.
+    Database resources currently can't be created directly by the user. They
+    always have to defined within the context of an app. See `JSON Format`_
+    for more details.
+
+Currently we offer PostgreSQL as SQL possibility.
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    GET /1.0/30loops/database/thirtyblog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=UTF-8
+
+    {
+        "label": "postgres",
+        "link": {
+            "href": "https://api.30loops.net/1.0/30loops/database/30loops-db-thirtyblog/",
+            "rel": "self"
+        },
+        "name": "30loops-db-thirtyblog",
+        "password": "ERd56fZlY2Rh",
+        "username": "30loops-db-thirtyblog",
+        "variant": "postgres",
+        "host": "192.168.0.53",
+        "port": 9999
+    }
+
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**label** (static, default=database)
+  The unique label of this resource.
+
+**variants** (default=postgres)
+  - postgres
+
+**name** (identifier)
+  The name of this database as identified by the 30loops platform.
+
+**password** (read-only)
+  The password to access your postgresql database. The password is set by the API
+  and the database server is configured accordingly. The password is provided
+  within your environment file on your app and worker instances.
+
+**username** (read-only)
+  The username to access your postgresl database. The username is set byt the API
+  and the mongo server is configured accordingly. The username is provided
+  within your environment file on your app and worker instances.
+
+**host** (read-only)
+  The IP address of the host your database is deployd to. If the database
+  hasn't been physicaly deployed yet, it will say ``not deployed``. The host is
+  provided within your environment file on your app and worker instances.
+
+**port** (read-only)
+  The port of the postgresql server your database is deployd to. If the database
+  hasn't been physicaly deployed yet, it will say ``not deployed``. The port is
+  provided within your environment file on your app and worker instances.
+
+.. _worker-resource-api:
+
+Worker Resource
+---------------
+
+Worker resources are used to run different processes. They are in that sense
+similar to apps, only they dont run an webserver or application server. But you
+can use workers to run cronjobs in the background or for celery task queues.
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    GET /1.0/30loops/worker/thirtyblog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=UTF-8
+
+    {
+        "instances": 1,
+        "label": "worker",
+        "link": {
+            "href": "https://api.30loops.net/1.0/30loops/worker/thirtyblog/",
+            "rel": "self"
+        },
+        "name": "thirtyblog",
+        "variant": "python"
+    }
+
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**label** (static, default=worker)
+  The unique label of this resource.
+
+**variants** (default=python)
+  - python
+
+**name** (identifier)
+  The name of this worker as identified by the 30loops platform.
+
+**instances** (default=1)
+  Specify the amount of instances you wish to use for this worker. It
+  defaults to 1 backend. The backends are deployed in the region that you
+  specified during app creation.
+
+.. _mongodb-resource-api:
+
+MongoDB Resource
+----------------
+
+.. note::
+
+    MongoDB resources currently can't be created directly by the user. They
+    always have to defined within the context of an app. See `JSON Format`_
+    for more details.
+
+Next to a SQL based database you can also use a MongoDB. Currently instances of
+16MB are offered.
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    GET /1.0/30loops/mongodb/thirtyblog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=UTF-8
+
+    {
+        "label": "mongodb",
+        "link": {
+            "href": "https://api.30loops.net/1.0/30loops/mongodb/30loops-mongodb-thirtyblog/",
+            "rel": "self"
+        },
+        "name": "30loops-mongodb-thirtyblog",
+        "password": "OWQ3YjZlY2Rh",
+        "username": "30loops-mongodb-thirtyblog",
+        "variant": "16MB",
+        "host": "not deployed",
+        "port": "not deployed"
+    }
+
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**label** (static, default=mongodb)
+  The unique label of this resource.
+
+**variants** (default=16MB)
+  - 16MB
+
+**name** (identifier)
+  The name of this mongodb as identified by the 30loops platform.
+
+**password** (read-only)
+  The password to access your mongodb database. The password is set by the API
+  and the mongo server is configured accordingly. The password is provided
+  within your environment file on your app and worker instances.
+
+**username** (read-only)
+  The username to access your mongodb database. The username is set byt the API
+  and the mongo server is configured accordingly. The username is provided
+  within your environment file on your app and worker instances.
+
+**host** (read-only)
+  The ip address of the host your database is deployd to. If the database
+  hasn't been physicaly deployed yet, it will say ``not deployed``. The host is
+  provided within your environment file on your app and worker instances.
+
+**port** (read-only)
+  The port of the mongodb server your database is deployd to. If the database
+  hasn't been physicaly deployed yet, it will say ``not deployed``. The port is
+  provided within your environment file on your app and worker instances.
 
 Actions API
 ===========
@@ -1192,8 +1385,6 @@ Queue Action
     :param label: The resource type, eg: repository, db, app
     :param resource: The name of the resource.
     :status 202: The action was succesfully queued.
-    :status 403: Request not permitted.
-    :status 404: Resource not found.
 
     **Example Request:**
 
@@ -1233,6 +1424,9 @@ After you configured an application, you can deploy it to the platform.
 
     {
         "action": "deploy",
+        "options": {
+            "clean": True
+        }
     }
 
 **Example Response:**
@@ -1246,6 +1440,11 @@ After you configured an application, you can deploy it to the platform.
 **action:** deploy
 
 **options:**
+
+*clean* (default=False, boolean)
+  Perform a clean deploy when set to `True`. This means a new bundle will be
+  created. If set to False, the old bundle gets reused, and only the source
+  code gets updated.
 
 App Runcommand Action
 ---------------------
@@ -1283,12 +1482,10 @@ command: ``python init_db.py``.
 
 **options:**
 
-- command (string)
-
+*command* (string)
   The full command to execute.
 
-- occurence (integer or string)
-
+*occurence* (default=1, integer or string)
   Specify on how many backends this command should run on. Can be either an
   integer for the number of backends to run it on or ``all``. Defaults to
   ``1``.
@@ -1330,15 +1527,127 @@ production`` you just specify the follwing command: ``syncdb``.
 
 **options:**
 
-- command (string)
-
+*command* (string)
   The django management command to execute.
 
-- occurence (integer or string)
-
+*occurence* (default=1, integer or string)
   Specify on how many backends this command should run on. Can be either an
   integer for the number of backends to run it on or ``all``. Defaults to
   ``1``.
+
+Scale Instances Actions
+-----------------------
+
+You can scale a running app or worker. Scaling means to change the amount of
+instances that the app or worker is deployed to. This happens whithout
+interruption to the running instances. To pause an app or worker, you can scale
+it to 0 instances
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    POST /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+    Host: api.30loops.net
+
+    {
+        "action": "scale",
+        "options": {
+            "instances": 3
+        }
+    }
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 202 ACCEPTED
+    Content-Type: application/json; charset=UTF-8
+    Location: https://api.30loops.net/1.0/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-1a09507dbcf2/
+
+**actions:** scale
+
+**options:**
+
+*instances* (integer or string)
+  Specify the number of instances the app or worker should be scaled to. This
+  number is the target number of instances you want to end up with.
+
+.. _`logs-api`:
+
+Logs API
+========
+
+Showing Logs
+------------
+
+.. http:get:: /1.0/{account}/logs/{resource}/
+
+    Retrieve the logs for an app.
+
+    :param account: The name of the account.
+    :param resource: The name of the app.
+    :query limit: Limit the amount of logs to retrieve. Defaults to 10.
+    :query process: Limit the logs to these processes. Supply processes as a
+        string seperated by a `,`. The following processes can be supplied:
+
+        - nginx
+        - gunicorn
+        - postgres
+
+        Defaults to 'nginx,gunicorn'.
+    :status 200: Returns the log messages.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        GET /1.0/30loops/logs/thirtyblog/?limit=5,process=gunicorn,nginx HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "messages": [
+                {
+                    "message": " [error] 2318#0: 41 open() \"/app/static/dfgsdg\" failed (2: No such file or directory), client: 192.168.0.111, server: 30loops-cherrypyonloops-.30loops.net, request: \"GET /static/dfgsdg HTTP/1.1\", host: \"30loops-app-cherrypyonloops.30loops.net\"", 
+                    "program": "nginx", 
+                    "severity": "Error", 
+                    "timestamp": "2012-05-10T12:21:35.857585+00:00"
+                },
+                {
+                    "message": "  File \"/app/env/lib/python2.7/site-packages/gunicorn/arbiter.py\", line 488, in kill_workers", 
+                    "program": "gunicorn", 
+                    "severity": "Error", 
+                    "timestamp": "2012-05-22T15:58:54.375160+00:00"
+                }, 
+                {
+                    "message": "<module 'threading' from '/usr/lib/python2.7/threading.pyc'>", 
+                    "program": "gunicorn", 
+                    "severity": "Error", 
+                    "timestamp": "2012-05-22T15:58:54.376792+00:00"
+                }, 
+                {
+                    "message": ":", 
+                    "program": "gunicorn", 
+                    "severity": "Error", 
+                    "timestamp": "2012-05-22T15:58:54.376465+00:00"
+                }, 
+                {
+                    "message": " ignored", 
+                    "program": "gunicorn", 
+                    "severity": "Error", 
+                    "timestamp": "2012-05-22T15:58:54.376949+00:00"
+                }
+            ]
+        }
 
 .. _`billing-usage-api`:
 
@@ -1348,18 +1657,17 @@ Billing and Usage API
 Showing App Usage
 -----------------
 
-.. http:get:: /1.0/{account}/app/{resource}/usage
+.. http:get:: /1.0/{account}/app/{resource}/usage/
 
     Retrieve the usage statistics for an app. With no parameter given, the
     request will return short usage stats for the current month.
 
-    :param account: The name of a account.
+    :param account: The name of the account.
     :param resource: The name of the app.
     :query details: Can be `true`, to show a detailed listing.
     :query month: The month as a number from 1-12. Show stats for this month.
     :query year: The year as a number. Show stats for the month of that year.
     :status 200: Returns the usage stats.
-    :status 403: Request not permitted.
 
     **Example Request:**
 
@@ -1400,8 +1708,6 @@ Showing Action Logbook
     :param account: The name of a account, a short descriptive word.
     :param uuid: The UUID of the logbook.
     :status 200: Returns the logbook as a JSON object.
-    :status 403: Request not permitted.
-    :status 404: Logbook not found.
 
     **Example Request:**
 
@@ -1462,3 +1768,11 @@ The logbook knows 6 different loglevels that are mapped to a numeric value:
 - *error*: 3
 - *critical*: 4
 - *exception*: 5
+
+Further you can retrieve the status of your action from the logbook. An action
+can be in the following states:
+
+- *queued*: The action is queued and waiting to be processed.
+- *running*: The action is currently in progress.
+- *finished*: The action has succesfully finished.
+- *error*: The action stopped due to an error.
