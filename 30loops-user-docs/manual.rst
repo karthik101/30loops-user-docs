@@ -2,11 +2,6 @@
 30loops platform manual
 =======================
 
-.. note::
-
-    This manual is still a work in progress. Examples my differ from the actual
-    client output.
-
 Platform basics
 ===============
 

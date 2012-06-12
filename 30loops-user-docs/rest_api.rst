@@ -79,7 +79,6 @@ URL                                    HTTP Verb  Function
 /1.0/{account}/logbook/{uuid}/         GET        `Showing Action Logbook`_
 =====================================  =========  ===========================
 
-
 Request Format
 ==============
 
@@ -266,6 +265,44 @@ eg::
 It follows roughly :rfc:`3339`. All times are given in Amsterdam local time,
 and have an UTC offset of +2 hour.
 
+.. _`error-codes`:
+
+Error Messages
+==============
+
+All errors are returned with a HTTP status code in the range of 400-599. Each
+error response contains the status code and the error message as a JSON message
+in the response body, eg:
+
+.. code-block:: javascript
+
+    {
+        "code": 403,
+        "error": "Bad credentials for crito."
+    }
+
+The following error messages are commong across the whole API:
+
+- **400**, "Malformed input data.": The request input could not be understood by
+  the API. This is mainly due to malformed JSON input.
+- **401**, "No authentication provided.": No authentication has been send along
+  the request. See _`Rerquest Format` for more information.
+- **403**, "Quota reached.": A quota limit has been reached.
+- **403**, "Account {account} does not exist.": The account you try to authenticate for
+  does not exist.
+- **403**, "Account {account} is disabled.": The account is not active.
+- **403**, "User {username} does not exist.": The user you try to authenticate with
+  does not exist for this account.
+- **403**, "Bad credentials for {username}.": The password does not validate.
+- **403**, "User {username} is disabled.": The user is not active.
+- **404**, "{resource} not found.": The requested resource does not exist.
+- **405**, "Method not allowed.": The HTTP method used for the request is not
+  valid for this URI.
+- **500**, "We encountered an error on the backend. Sorry for that.": A
+  unpredicted error occured. We are really sorry for that.
+- **503**, "Service taken down for maintainance.": The API has been temporarily
+  disabled.
+
 .. _`account-api`:
 
 Account API
@@ -279,9 +316,7 @@ Showing Accounts
     Show the details of `account`.
 
     :param account: The name of a account.
-    :status 200: Returns the account as a json string.
-    :status 403: Request not permitted.
-    :status 404: Account not found.
+    :status 200: Returns the account as a JSON message.
 
     **Example Request**:
 
@@ -303,8 +338,22 @@ Showing Accounts
             "link": {
                 "href": "https://api.30loops.net/1.0/30loops/",
                 "rel": "self"
-            }
+            },
+            "plan": "STANDARD", 
+            "plan_upgrade_uri": "https://30loops.chargevault.com/update?key=345f4543334&code=30loops"
         }
+
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**name**
+  The name of the account
+
+**plan**
+  The current pricing plan your account is subscribed to.
+
+**plan_upgrade_uri**
+  Visit this URI in your browser to change your subscription.
 
 Creating Users
 --------------
@@ -315,7 +364,6 @@ Creating Users
 
     :param account: The name of a account.
     :status 201: The new user has been created.
-    :status 403: Request not permitted.
     :status 400: You have to specify a password.
     :status 405: User already exists.
 
@@ -337,10 +385,22 @@ Creating Users
 
     .. sourcecode:: http
 
-        HTTP/1.1 200 OK
+        HTTP/1.1 201 OK
         Content-Type: application/json; charset=UTF-8
         Location: https://api.30loops.net/1.0/30loops/users/crito/
 
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**username** (required)
+  The username of the user account you want to create.
+
+**email** (required)
+  A valid email address for the user account you want to create. This email
+  address is also used to recover passwords.
+
+**password** (required)
+  The new password for this account.
 
 Showing Users
 -------------
@@ -352,8 +412,6 @@ Showing Users
     :param account: The name of a account.
     :param username: The name of the user.
     :status 200: Returns the user as a json message.
-    :status 403: Request not permitted.
-    :status 404: User not found.
 
     **Example Request**:
 
@@ -380,6 +438,19 @@ Showing Users
             }
         }
 
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**username**
+  The username of the user account you want to create.
+
+**email**
+  A valid email address for the user account you want to create. This email
+  address is also used to recover passwords.
+
+**is_active**
+  A boolean flag whether this user is active or not.
+
 Deleting Users
 --------------
 
@@ -390,8 +461,6 @@ Deleting Users
     :param account: The name of a account.
     :param username: The name of the user.
     :status 204: The user has been deleted.
-    :status 403: Request not permitted.
-    :status 404: User not found.
 
     **Example Request**:
 
@@ -418,8 +487,6 @@ Change User Password
     :param account: The name of a account.
     :param username: The name of the user.
     :status 204: The password was succesfully updated.
-    :status 403: Request not permitted.
-    :status 404: User not found.
 
     **Example Request**:
 
@@ -454,8 +521,6 @@ Reset User Password
     :param account: The name of a account.
     :param username: The name of the user.
     :status 204: The password was succesfully reset.
-    :status 403: Request not permitted.
-    :status 404: User or Account not found.
 
     **Example Request**:
 
@@ -481,8 +546,6 @@ Testing Credentials
 
     :param account: The name of a account, a short descriptive word.
     :status 204: The credentials succesfully authenticated.
-    :status 403: The credentials didn't authenticate.
-    :status 404: User not found.
 
     **Example Request**:
 

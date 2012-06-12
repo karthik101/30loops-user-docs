@@ -239,8 +239,6 @@ For your python script you can use something like that.
 Database
 ========
 
-
-
 Static and Media Files
 ======================
 
