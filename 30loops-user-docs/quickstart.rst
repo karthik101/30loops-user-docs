@@ -30,34 +30,10 @@ syntax is very simple, you can find more information at
     See :ref:`curl-examples-label` for an alternative way to use the 30loops
     platform.
 
+For instructions how to install the client see :ref:`client-installation` for
+more information.
+
 .. _`sample apps on github`: https://30loops.github.com
-
-Installing the 30loops client
-=============================
-
-Communicating with the 30loops platform can be done using the documented REST
-api or using the 30loops client, called thirty. The REST api is documented
-:doc:`here <rest_api>`. In this quickstart we will focus on using the client.
-You can install the client using pip:
-
-.. code-block:: bash
-
-    $ pip install thirty-cli
-
-If pip is not available on your system, you need to install it. On any Debian
-based system, you can run:
-
-.. code-block:: bash
-
-    $ apt-get install python-pip
-
-You can also build it from source. Grab the latest copy from
-https://github.com/30loops/thirty-cli and build it the usual way:
-
-.. code-block:: bash
-
-    $ git clone git://github.com/30loops/thirty-cli.git
-    $ python setup.py install
 
 Creating an app
 ===============

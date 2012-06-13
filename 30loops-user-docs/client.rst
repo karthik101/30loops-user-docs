@@ -2,49 +2,54 @@
 Thirty client
 =============
 
-Installation
-============
+.. _`client-installation`:
 
-To install the ``thirty-cli`` run::
+Installing the 30loops client
+=============================
 
-    pip install -U thirty-cli
+Communicating with the 30loops platform can be done using the documented REST
+api or using the 30loops client, called thirty. The REST api is documented
+:doc:`here <rest_api>`. You can install the client using pip:
 
-This should install all necessary requirements:
+.. code-block:: bash
 
-- python-docar
-- libthirty
-- requests
-- argparse
+    $ pip install thirty-cli
 
-If you don't have ``pip`` installed you can also use ``easy_install``::
+If pip is not available on your system, you need to install it. On any Debian
+based system, you can run:
 
-    easy_install -U thirty-cli
+.. code-block:: bash
 
-Usage
-=====
+    $ apt-get install python-pip
 
-::
+You can also build it from source. Grab the latest copy from
+https://github.com/30loops/thirty-cli and build it the usual way:
 
-    thirty [-u <username>] [-p <password>] [-a <account>] [-r <uri>]
-           [-i <api>] [-R]
-           <action> ...
+.. code-block:: bash
+
+    $ git clone git://github.com/30loops/thirty-cli.git
+    $ python setup.py install
 
 Getting help
-------------
+============
 
-This document gives an overview of the available flags when creating or updating
-and application. The client also has an inline help function::
+The client provides a help command. You can query the help by typing:
 
-  thirty help <command>
+.. code-block:: bash
 
-For help on a subcommand use::
+    $ thirty help
 
-  thirty help <command> <subcommand>
+To get the help for a specific action or an action target, type:
+
+.. code-block:: bash
+
+    $ thirty help <action>
+    $ thirty help <action> <resource>
 
 .. _thirty-client-global-options:
 
 Global Options
---------------
+==============
 
 The ``thirty`` command line tool uses a few global options to set stuff like
 authentication credentials or output formats. You can also omit them and
@@ -63,13 +68,9 @@ the config file.
 ``-a, --account`` *<account>*
   Specify the account name when sending a request to the API endpoint.
 
-``-r, --uri`` *<uri>*
-  Specify the API URI to use for the request. The default API URI is
-  ``https://api.30loops.net/``. You can override the default URI here.
-
 ``-i, --api`` *<api>*
   Specify the default API version to use when making a request. The default is
-  ``1.0``. You can override the default API version here.
+  ``0.9``. You can override the default API version here.
 
 ``-R, --raw``
   Use a raw mode for printing output. The raw mode prints JSON messages as
@@ -82,9 +83,11 @@ the config file.
 ---------------------------------
 
 You can create a configuration file in your home directory called
-``.thirty.cfg``. Specify any global option there to save yourself the typing::
+``.thirty.cfg``. Specify any global option there to save yourself the typing:
 
-    cat ~/.thirty.cfg
+.. code-block:: bash
+
+    $ cat ~/.thirty.cfg
     [thirtyloops]
     username = crito
     password = secret
@@ -94,146 +97,291 @@ The configuration file follows a simple INI style and collects all global
 options under a section called ``[thirtyloops]``. Global options specified on
 the command line take precedence over options specified in the config file.
 
+Actions
+=======
+
 list
 ----
 
 ::
 
-    thirty list <label>
+    thirty list
 
-List all resources with the given label.
+List all of your apps. It lists all apps, and each resource associated to ai
+resource.
 
 **Example:**
 
 ::
 
-    $ thirty list app
-    thirtyloops
-    djangocms
+    $ thirty list
+
+    cherryonloops
+        repository: cherryonloops
+        database: 30loops-db-cherryonloops
+    website
+        repository: website
+        database: 30loops-database-website
 
 show
 ----
 
 ::
 
-    thirty show <resource> <name> [environment]
+    thirty show <app>
 
-Show the details of a resource. If ``[environment]`` is given it will show the
-details of a specific app environment instead of the app itself.
+Show the details of an app. The app is identified by its name. It also shows
+the details of all resources associated to this app.
 
 **Example:**
 
 ::
 
-    $ thirty show repository djangocms
-    name: djangocms
-    variant: git
-    label: repository
-    location: git://github.com/30loops/djangocms-on-30loops.git
+    $ thirty show cherryonloops
+
+    name: cherryonloops
+    variant: python
+    region: ams1
+    instances: 1
+    repo_commit: HEAD
+    dns_record: 30loops-app-cherryonloops.30loops.net
+    repository
+        name: cherryonloops
+        variant: git
+        location: git://github.com/30loops/cherrypy-on-30loops.git
+    database
+        name: 30loops-db-cherryonloops
+        variant: postgres
+        username: 30loops-db-cherryonloops
+        host: 192.168.0.53
+        password: MWRjZWViY2Rk
+        port: 9999
 
 create
 ------
+
 ::
 
-    thirty create <label> <name> [location]
+    thirty create <resource>
 
-Create a new resource. Each resource has its own set of flags. Note that
-database resources cannot be created manually, but will be created when
-creating an application environment.
+Create a new resource. ``<resource>`` can be one of the following arguments:
 
-**Required arguments**
+create ``<app>``
+~~~~~~~~~~~~~~~~
 
-``<label>``
-  The label defines the type of the resource. This can be ``app``,
-  ``repository`` or ``environment``.
+::
 
-``<name>``
-  The name you give the resource
+    thirty create <app> [--cname CNAME] [--repository REPOSITORY]
+                         [--region REGION] [--instances INSTANCES] [--no-db]
+                         [--variant VARIANT]
+                         <location>
 
-**flags**
+Create a new app.
 
-``--root``
-  This flag specifies where the root of your application is. By default this is
-  set to the most upper directory.
+**Example**
 
-``--flavor``
-  The flavor flag needs to be set for every application. Currently we have the
-  ``wsgi`` flavor and ``django`` flavor.
+.. code-block:: bash
 
-``--cname``
-  Use this option if you use a custom domain. Create a CNAME record for your
-  domain and point it to the default application name on 30loops (for example
-  30loops-app-djangocms-production.30loops.net).
+    $ thirty create cherryonloops git://github.com/30loops/cherrypy-on-30loops.git
 
-``--environment``
-  By default, the created environment will be named ``production``. You can
-  override this by specifying a custon environment name.
+**Required Arguments**
 
-``--requirements``
-  This option specifies the file to use for the pip install command. By default
-  this is set to ``requirements.txt``.
+``<location>``
+  This is the URI of the repository that will be used for this app. You have to
+  specify at app creation a repository location.
 
-``--install-setup-py``
-  This flag enables or disables the ``python setup.py install`` command. If you
-  need to run this on deployment, please set it to ``true``. Default is
-  ``false``.
+**Optional Arguments**
 
-``--backends``
-  This flag specifies the number of backends to deploy on. By default it is set
-  to 1.
+``--cname CNAME``
+  Connect a CNAME record to this app. Specify multiple times if needed.
 
-**Django specific options**
+``--repository REPOSITORY``
+  Specify an existing repository to connect to this app. You reference
+  repositories by their name. If you want to use this option, as a current
+  limitation, you still have to specify a location.
 
-``--inject-db``
-  This tells the server to automaticaly inject the database settings during the
-  deploy. The database settings are injected at the bottom of the settings file
-  you specified. By default, this option is set to ``true``.
+``--region REGION``
+  The region of this app (defaults to ams1).
 
-``--django-settings-module``
-  This is the python module path to your settings file. This has to be
-  specified in a dotted syntax, for example: ``module.settings``. By default
-  this option is set to ``settings``.
+``--instances INSTANCES``
+  The number of instances to deploy your app on. Each app gets configured with
+  one instance as a default.
 
-.. _`Django`: http://djangoproject.com
-.. _`example repository`: https://github.com/30loops/djangocms-on-30loops
+``--no-db``
+  Don't create a database for this app. As a default each app gets created
+  allready with a database. Use this option if you dont need a database, eg for
+  static apps.
 
+``--variant VARIANT``
+  The variant of this app (default: python).
 
-**WSGI specific options**
+create ``<app>.repository``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``--wsgi-entrypoint``
-  This flag specifies the entrypoint of your application. Each incoming
-  request will be routed to this function. WSGI entrypoints have to be specified
-  in the following format: ``python.module.path:callable``, for example
-  ``wsgiapp.main:application``.
+::
+
+    thirty create <app>.repository [--name <name>] [--ssh-key SSH_KEY]
+                                    <location>
+
+Create a new repository and attch it to <app>
+
+**Example**
+
+.. code-block:: bash
+
+    $ thirty create cherryonloops.repository git://github.com/30loops/cherrypy-on-30loops.git --name cherrypyon30loops
+
+**Required Arguments**
+
+``<location>``
+  URI of the repository location.
+
+**Optional Arguments**
+
+``--name <name>``
+  Custom name of the repository resource (will be generated automatically from
+  the repository URI otherwise).
+
+``--ssh-key SSH_KEY``
+  SSH key (password-less) for a SSH protected repository. The full path to the
+  key file must be provided.
+
+create ``<app>.database``
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Example**
+
+.. code-block:: bash
+
+    $ thirty create <app>.database
+
+Create a new database resource for this app. No arguments are required.
+
+create ``<app>.worker``
+~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    thirty create <app>.worker [--instances INSTANCES]
+
+Create a new worker.
+
+**Example**
+
+.. code-block:: bash
+
+    $ thirty create <app>.worker
+
+**Optional Arguments**
+
+``--instances INSTANCES``
+  The number of worker instances to deploy. Defaults to one instance.
+
+create ``<app>.mongodb``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Example**
+
+.. code-block:: bash
+
+    $ thirty create <app>.mongodb
+
+Create a MongoDB database for this app. No arguments are required
 
 update
 ------
 
 ::
 
-    thirty update <lable> <resource_name> [environment]
+    thirty update <resource>
 
-Update the details of a resource. If ``[environment]`` is given it will update the
-details of a specific app environment instead of the app itself.
+Update an existing resource.
 
-**Flags**
+update ``<app>``
+~~~~~~~~~~~~~~~~
 
-All flags of the create command are available. Additionally, these flags are
-available on the ``update`` command:
+::
 
-``--repo-branch``
-  This option specifies which branch of the repository to fetch. By default this
-  is set to ``master``.
+    thirty update <app> [--add-cname ADD_CNAME] [--del-cname DEL_CNAME]
+                         [--instances INSTANCES] [--region REGION]
+                         [--repository REPOSITORY] [--repo-commit REPO_COMMIT]
 
-``--repo-commit``
-  This option specifies which commit of the repository to fetch. By default this
-  is set to ``HEAD``.
 
-``--add-cname``
-  This flag adds an additional CNAME to the environment.
+**Example**
 
-``--del-cname``
-  This flag deletes a CNAME from the environment.
+.. code-block::
+
+    $ thirty update cherryonloops --add-cname www.example.org
+
+**Optional Arguments**
+
+``--add-cname ADD_CNAME``
+  Add an additional CNAME to the app.
+
+``--del-cname DEL_CNAME``
+  Remove a CNAME from the app.
+
+``--instances INSTANCES``
+  The number of instances to deploy your app on. Note that only the
+  configuration will be updated. for the new instance count to take effect, you
+  still have to run a `deploy`_. You can also use the `scale`_ command to
+  immediately sclae the number of instances for this app.
+
+``--repository REPOSITORY``
+  Change the repository to use for this app.
+
+``--repo-commit REPO_COMMIT``
+  Commit or branch of the repository to clone.
+
+update ``<app>.repository``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    thirty update <app>.repository [--name <repository>]
+                                    [--location LOCATION] [--ssh-key KEY]
+
+Update the configuration of a repository.
+
+**Example**
+
+.. code-block::
+
+    $ thirty update cherryonloops.repository --key ~/new_key.pub
+
+**Optional Arguments**
+
+``--name <repository>``
+  Name of the repository to update (if not specified, <app>  will be used).
+
+``--location LOCATION``
+  Update URI of the repository.
+
+``--ssh-key KEY``
+  SSH key for a non-public repository (specify full path).
+
+update ``<app>.worker``
+~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    thirty update <app>.worker --instances INSTANCES
+
+Update the configuration of a worker.
+
+**Example**
+
+.. code-block:: bash
+
+    $ thirty update cherryonloops.worker --instances 3
+
+**Optional Arguments**
+
+``--instances INSTANCES``
+  The number of worker instances to deploy. Note that this only changes the
+  configuration of the worker. For this setting to take effect, you need to
+  deploy the worker again. Or you use the `scale`_ command that immediately
+  scales the worker.
 
 delete
 ------
@@ -302,6 +450,9 @@ or start the command with ``python manage.py``.
 ``--occurence``
   Specifies on how many backends this command should be executed on. You can
   either specify a number or ``all``. Defaults to ``1``.
+
+scale
+-----
 
 logs
 ----
