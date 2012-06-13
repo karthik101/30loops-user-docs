@@ -1837,3 +1837,66 @@ can be in the following states:
 - *running*: The action is currently in progress.
 - *finished*: The action has succesfully finished.
 - *error*: The action stopped due to an error.
+
+.. _`curl-examples-label`:
+
+Examples with ``curl``
+======================
+
+You can control every aspect of the platform using any HTTP client. This is an
+example on how to use the unix tool ``curl``, which is widely available on
+different unix platforms.
+
+To update the email address of your user type the following command:
+
+.. code-block:: bash
+
+    curl -v -X PUT -k -H "Content-Type: application/json" -u crito https://api.30loops.net/0.9/30loops -d '{
+    "email":"newemail@example.org"
+    }'
+
+**-v** (optional)
+  Use verbose mode. Use this to print the actual request/response headers too.
+  Use this for more information, but it is optional.
+
+**-X PUT**
+  Use the HTTP PUT verb for the request.
+
+**-k**
+  Perform an *insecure* request against an SSL enabled URI endpoint. This
+  prevents the request to validate the certificate. See
+  http://curl.haxx.se/docs/sslcerts.html for more information on this topic.
+
+**-H "Content-Type: application/json"**
+  Add the header to the request. Set the correct content type for the request.
+
+**-u crito**
+  Use *crito* as username for the HTTP Basic authentication. ``curl`` will ask
+  for your password on the prompt. To specify your password in one go, use the
+  following format: ``-u <username>:<password>``.
+
+**https://api.30loops.net/0.9/30loops**
+  The URI endpoint to send the request to.
+
+**-d ''**
+  Craft the needed JSON message and send it as data in the request body. The
+  actual data needs to be valid JSON, enclosed by single quotes (``'``) and
+  inside the data use double quotes (``"``).
+
+Most requests return a JSON message as a response. If you have python 2.7+
+installed, its very easy to pretty print the response message. Pipe the curl
+command through ``python -m json.tool``, eg:
+
+.. code-block:: bash
+
+    ~  curl -X PUT -ucrito -H "Content-Type: application/json" -k https://api.30loops.net/0.9/30loops/users/crito -d '{"email": "crito@30loops.net"}' | python -m json.tool 
+    Enter host password for user 'crito':
+    {
+        "email": "crito@30loops.net", 
+        "is_active": true, 
+        "link": {
+            "href": "https://api.30loops.net/0.9/30loops/users/crito", 
+            "rel": "self"
+        }, 
+        "username": "crito"
+    }
