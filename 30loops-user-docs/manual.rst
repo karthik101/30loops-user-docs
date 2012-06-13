@@ -414,292 +414,6 @@ This would also be the correct place to run a syncdb after each deploy:
     The deployment process will fail if the script ends with an error return
     code!
 
-Thirty client
-=============
-
-Installation
-------------
-
-To install the ``thirty-cli`` run:
-
-.. code-block:: bash
-
-    $ pip install -U thirty-cli
-
-This should install all necessary requirements:
-
-- python-docar
-- libthirty
-- requests
-- argparse
-
-If you don't have ``pip`` installed you can also use ``easy_install``:
-
-.. code-block:: bash
-
-    $ easy_install -U thirty-cli
-
-Basics
-------
-
-The client is quite self-explaining. When you just type in ``thirty`` you will
-get an overview of the various options. The basic structure of a command is:
-
-.. code-block:: bash
-
-    $ thirty <command> <subcommand> --flag1 somevariable --flag2 somevariable
-
-
-Help on commands
-----------------
-
-You can get help of a function by running one of the following commands:
-
-.. code-block:: bash
-
-    $ thirty help <command>
-    $ thirty help <command> <subcommand>
-
-Each command has its own set of subcommands and flags.
-
-Global Options
---------------
-
-The ``thirty`` command line tool uses a few global options to set stuff like
-authentication credentials or output formats. You can also omit them and
-configure a `thirty.cfg Configuration File`_ to specify those values. Global
-options specified on the command line take precedence over options specified in
-the config file.
-
-``-u, --username`` *<username>*
-  Specify the username to use when authenticating a request to the API
-  endpoints.
-
-``-p, --password`` *<password>*
-  Specify the password to use when authenticating a request to the API
-  endpoints.
-
-``-a, --account`` *<account>*
-  Specify the account name when sending a request to the API endpoint.
-
-``-r, --uri`` *<uri>*
-  Specify the API URI to use for the request. The default API URI is
-  ``https://api.30loops.net/``. You can override the default URI here. This is
-  only useful for development purposes.
-
-``-i, --api`` *<api>*
-  Specify the default API version to use when making a request. The default is
-  ``1.0``. You can override the default API version here.
-
-``-R, --raw``
-  Use a raw mode for printing output. The raw mode prints JSON messages as
-  returned from the server, with out any indendation. This is handy if you want
-  to use the ``thirty`` tool in scripts.
-
-``thirty.cfg`` Configuration File
----------------------------------
-
-You can create a configuration file in your home directory called
-``.thirty.cfg``. Specify any global option there to save yourself the typing:
-
-.. code-block:: bash
-
-    $ cat ~/.thirty.cfg
-    [thirtyloops]
-    username = crito
-    password = secret
-    account = 30loops
-
-The configuration file follows a simple INI style and collects all global
-options under a section called ``[thirtyloops]``. Global options specified on
-the command line take precedence over options specified in the config file.
-
-Commands
---------
-
-list
-~~~~
-
-.. code-block:: bash
-
-    $ thirty list <label>
-
-List all resources with the given label. Labels are written in plural, so the
-followng commands are correct:
-
-.. code-block:: bash
-
-    $ thirty list apps
-    $ thirty list repositories
-
-**Example:**
-
-.. code-block:: bash
-
-    $ thirty list app
-    thirtyloops
-    djangocms
-
-show
-~~~~
-
-.. code-block:: bash
-
-    $ thirty show <label> <name>
-
-Show the details of a resource.
-
-**Example:**
-
-.. code-block:: bash
-
-    $ thirty show repository djangocms
-    name: djangocms
-    variant: git
-    label: repository
-    location: git://github.com/30loops/djangocms-on-30loops.git
-
-create
-~~~~~~
-.. code-block:: bash
-
-    $ thirty create <label>
-    $ thirty create app [location]
-
-Create a new resource. If you create an app, you have to specify a repository
-location, or you have to specify and existing repository resource using the
-``--repo`` flag. Each resource needs a name. If you omit the ``--name`` flag
-when creating an app, it will use he respository name as its name.
-
-.. code-block:: bash
-
-    $ thirty create app https://github.com/30loops/djangocms.git
-
-This will create two new resource. A repository resource with
-``https://github.com/30loops/djangocms.git`` as location and ``djangocms``
-as the name. It also creates an app resource, also with ``djangocms`` as name
-and connecting the app to the before created repository.
-
-This is a shortcut to
-
-.. code-block:: bash
-
-    $ thirty create respository --name djangocms https://github.com/30loops/djangocms.git
-    $ thirty create app --name djangocms --repo djangocms
-
-**flags**
-
-``--name``
-  Specify the name of the resource.
-
-**app specific flags**
-
-``--cname``
-  Use this option if you use a custom domain. Create a CNAME record for your
-  domain and point it to the default application name on 30loops (for example
-  30loops-app-djangocms-production.30loops.net).
-
-``--instances``
-  The number of instances you want your app to deploy to. This defaults to one
-  instance.
-
-``--repo``
-  The name of an existing app resource, you want to connect to this app. The
-  app will checkout this repository during a deploy.
-
-``--region``
-  Specify in which region you want to run your application in. See the section
-  about :ref:`regions-label` for more details.
-
-``--create-db``
-  As a default each app gets created with one database. If you set this value
-  to false, the app gets created without a db.
-
-**repository specific flags**
-
-``--ssh-key``
-  The path to a ssh key, that gets stored on the repository. Use this key for
-  ssh key protected repositories.
-
-update
-~~~~~~
-.. code-block:: bash
-
-  $ thirty update <label> <name>
-
-Update the details of a resource.
-
-**Flags**
-
-All flags of the create command are available. Additionally, these flags are
-available on the ``update`` command:
-
-delete
-~~~~~~
-
-.. code-block:: bash
-
-    $ thirty delete <label> <name>
-
-Delete a resource.
-
-deploy
-~~~~~~
-.. code-block:: bash
-
-    $ thirty deploy <app> --env <environment>
-
-Deploy a specific app environment. It queues a new deployment of that
-environment. See :doc:`REST API guide <rest_api>` for more information about
-deploys.
-
-runcmd
-~~~~~~
-
-.. code-block:: bash
-
-    $ thirty runcmd <app> --env <environment> [<command> [<command> ...]]
-
-Run a command in the context of your app environment. The full command is
-specified enclosed by ``"``. The working directory of this command is the root
-of your repository.
-
-**Example:**
-
-.. code-block:: bash
-
-    $ thirty runcmd thirtyblog python init_db.py
-
-**Options:**
-
-``--occurence``
-  Specifies on how many backends this command should be executed on. You can
-  either specify a number or ``all``. Defaults to ``1``.
-
-djangocmd
-~~~~~~~~~
-
-.. code-block:: bash
-
-    $ thirty djangocmd <app> --env <environment> [<command> [<command> ...]
-
-Run a django management command in the context of your django project. The full
-command is specified enclosed by ``"``. The working directory of this command
-is the root of your repository. You don't have to specify any settings module
-or start the command with ``python manage.py``.
-
-**Example:**
-
-.. code-block:: bash
-
-    $ thirty djangocmd thirtyblog --env development "syncdb"
-
-**Options:**
-
-``--occurence``
-  Specifies on how many backends this command should be executed on. You can
-  either specify a number or ``all``. Defaults to ``1``.
-
 Cronjobs
 ========
 
@@ -770,10 +484,47 @@ http://upstart.ubuntu.com/cookbook/.
 
 Note: custom processes are completely unsupported!
 
+Debugging your application
+==========================
+
+When deploying your application on 30loops, you might encounter some errors.
+This guide will help you debug your application.
+
+Logbook
+-------
+
+The logbook can help you debugging the deployment itself. If you deploy, the 
+client will tail the logbook, and show any errors. If errors occur, most likely
+there is also a description of the error, which will give you hints on how to
+solve them.
+
+If the logbook doesn't give enough information to fix the problem, you should
+ask us to help you out.
+
+Logs
+----
+
+The logs will help you debugging any errors in your application. This requires
+a successful deploy, because logfiles are generated from active instances.
+
+To show logs for an application, you can use the following command:
+
+.. code-block:: bash
+
+    $ thirty logs <app>
+
+This will show the logs of `gunicorn` and `nginx` by default. If you need logs 
+of a separate process, you can use the ``--process`` option:
+
+.. code-block:: bash
+
+    $ thirty logs <app> --process nginx
+
+Currently we capture logs from `nginx`, `gunicorn` and `postgres`. To 
+limit the number of returned log entries, use the ``--limit`` option.
+
 Github examples
 ===============
 
 On http://30loops.github.com we created a collection of sample apps and tutorials.
 Please check it out, and let us know if you have recommendations for new apps!
-
-.. include:: debugging.rst

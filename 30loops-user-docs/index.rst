@@ -14,6 +14,7 @@ Contents:
    firststeps
    quickstart
    manual
+   client
    rest_api
 
 Indices and tables
