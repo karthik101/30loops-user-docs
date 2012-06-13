@@ -4,8 +4,8 @@ Quickstart guide
 
 .. note::
 
-    This guide assumes that you are already familiar with the basic concepts
-    of our platform. If not, you should read :doc:`this <firststeps>` first.
+    It helps to first read the :doc:`firststeps to the 30loops platform
+    <firststeps>` before following the quickstart.
 
 This guide will provide some basic information about the platform and walk you
 through the following steps:
@@ -67,79 +67,74 @@ Create an app with the following command:
 
 .. code-block:: bash
 
-    $ thirty create app <repository_location>
+    $ thirty create <app> <repository_location>
 
-Replace ``repository_location`` with the URL to your code repository. At the
-moment only Git repositories are supported. Every command has its own help
-function:
+Replace ``<app>`` with the name of your application. Replace
+``repository_location`` with the URL to your code repository. At the moment
+only Git repositories are supported. Every command has its own help function:
 
 .. code-block:: bash
 
-    $ thirty help create app
+    $ thirty help create <app>
 
-This will show help for the ``create app`` subcommand. In this quickstart we
+This will show help for the ``create app`` action. In this quickstart we
 will deploy a simple cherrypy application. So our command looks like:
 
 .. code-block:: bash
 
-    $ thirty create app git://github.com/30loops/cherrypy-on-30loops.git
+    $ thirty create cherryonloops git://github.com/30loops/cherrypy-on-30loops.git
 
-This will automatically create an app named ``cherrypyon30loops`` and a
-repository named ``cherrypyon30loops``.
-
-.. note:
-
-    You can specify the name for the app by using the ``--name`` flag. If the
-    flag is not specified the name will be determined by the name of the
-    repository.
+This will create an app configuration named ``cherryonloops`` and a repository
+configuration named ``cherryonloops``.
 
 To see the configuration of the newly created app, use the following command:
 
 .. code-block:: bash
 
-    $ thirty show app cherrypyon30loops
+    $ thirty show cherryonloops
 
 It will output something like:
 
 .. code-block:: bash
 
-    --> App cherrypyonloops is created!
-    --> Details of the app:
-
-    name: cherrypyonloops
+    name: cherryonloops
     variant: python
-    label: app
     region: ams1
-    repo_branch: master
     instances: 1
     repo_commit: HEAD
-    dns_record: 30loops-app-cherrypyonloops.30loops.net
+    dns_record: 30loops-app-cherryonloops.30loops.net
     repository
-        name: cherrypyonloops
+        name: cherryonloops
         variant: git
-        label: repository
         location: git://github.com/30loops/cherrypy-on-30loops.git
     database
-        name: 30loops-db-cherrypyonloops
+        name: 30loops-db-cherryonloops
         variant: postgres
-        label: database
-        username: 30loops-db-cherrypyonloops
-        password: YzYyMTI1MmY3
+        username: 30loops-db-cherryonloops
+        host: not deployed
+        password: OTYzMzgzZmNi
+        port: not deployed
 
 The app is now defined. We will continue with deploying the newly created app.
 
 Deploying an app
 ================
 
+.. note::
+
+    The actual environment settings of your app is stored inside your
+    repository, in a file called ``thirty.ini``. See
+    :ref:`runtime-configuration-label` for more information.
+
 Deploying an app is quite simple and fast, just run the following command:
 
 .. code-block:: bash
 
-    $ thirty deploy cherrypyon30loops
+    $ thirty deploy cherryonloops
 
 This will start the deployment. Every action you run on your resources creates
-a logbook. The client starts polling the logbook immediately. You can also
-access the logbook manually by running:
+a logbook. The command client starts polling the logbook immediately. You can
+also access the logbook manually by running:
 
 .. code-block:: bash
 

@@ -69,7 +69,7 @@ We tried to give you as much freedom as possible in setting up your repository
 structure. To make a succesfull deploy we need to know a few things though.
 
 You have to specify the project root. This is a relative path from the root of
-your repository to where the actual project files are residing, eg: you django
+your repository to where the actual project files are residing, eg: your django
 project. Your project root gets added to the python path.
 
 For example the following directory layout is possible::
@@ -87,14 +87,14 @@ For example the following directory layout is possible::
               +--> ..
 
 You configure the project root among other things by supplying a runtime
-configuration file named ``thirty.ini`` in the root of your repository.  And
-the appserver and the ``djangocmd`` and ``runcmd`` action know which directory
-hosts your actual project. See :ref:`runtime-configuration-label` for more
-information.
+configuration file named ``thirty.ini`` in the root of your repository. Like
+that, eg: the appserver and the ``djangocmd`` and ``runcmd`` action, know which
+directory hosts your actual project. See :ref:`runtime-configuration-label` for
+more information.
 
 The preferred way to install dependencies for your app is to supply a
 requirements file. The location of this file is again configured in your
-``thirty.ini`` file. But you can also write a ``setup.py`` for your app.  You
+``thirty.ini`` file. But you can also write a ``setup.py`` for your app. You
 can run any ``setup.py`` as part of the postinstall script. 
 
 For WSGI apps this is similar::
@@ -159,7 +159,7 @@ options available:
 
   the root would look like this::
 
-    root = projectA
+    root = project
 
   The default root directory of your project is ``.``, which is the root of the
   repository.
@@ -203,7 +203,7 @@ options available:
 .. code-block:: ini
 
     [wsgi]
-    entrypoint = main:app
+    entrypoint = wsgiapp.main:app
 
 ``django`` Section
 ------------------
@@ -231,7 +231,6 @@ options available:
   If you want more control over your database settings, you should use
   :ref:`instance-environment-label` mechanism to write your settings.
 
-
 **Example**
 
 .. code-block:: ini
@@ -240,10 +239,9 @@ options available:
     settings = settings.production
     inject_db = false
 
-
 .. _instance-environment-label:
 
-Environment variables
+Environment Variables
 ---------------------
 
 You can access the most important values of your environment inside of an
@@ -267,6 +265,11 @@ string.
     export DB_PASSWORD="ZjBmNDEyMWJj"
     export DJANGO_SETTINGS_MODULE="settings"
     export DJANGO_PROJECT_ROOT="thirtyblog"
+    export MONGODB_NAME="30loops-monogdb-thirtyblog"
+    export MONGODB_USER="30loops-monogdb-thirtyblog"
+    export MONGODB_PASSWORD="DASDdsaw23DF"
+    export MONGODB_HOST="192.168.0.99"
+    export MONGODB_PORT="27701"
 
 Add to your script the following line.
 
@@ -293,7 +296,12 @@ Add to your script the following line.
         {'DB_PASSWORD': 'ZjBmNDEyMWJj'},
         {'DJANGO_SETTINGS_MODULE': 'settings'},
         {'DJANGO_PROJECT_ROOT': 'thirtyblog'},
-        {'APP_USER': '30loops-app-thirtyblog'}
+        {'APP_USER': '30loops-app-thirtyblog'},
+        {'MONGODB_NAME': '30loops-monogdb-thirtyblog'}
+        {'MONGODB_USER': '30loops-monogdb-thirtyblog'}
+        {'MONGODB_PASSWORD': 'DASDdsaw23DF'}
+        {'MONGODB_HOST': '192.168.0.99'}
+        {'MONGODB_PORT': '27701'}
     }
 
 For your python application you can use something like:
