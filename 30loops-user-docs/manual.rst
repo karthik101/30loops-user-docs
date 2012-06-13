@@ -58,7 +58,7 @@ Application layout
 ------------------
 
 We tried to give you as much freedom as possible in setting up your repository
-structure. To make a succesfull deploy we need to know a few things though.
+structure. To make a successful deploy we need to know a few things though.
 
 You have to specify the project root. This is a relative path from the root of
 your repository to where the actual project files are residing, eg: your django
@@ -144,7 +144,7 @@ options available:
 
 **root** (default: .)
   You have to specify the root directory of your app relative to the root
-  directory of your respository. If your repository looks like this::
+  directory of your repository. If your repository looks like this::
 
     +--> setup.py
     +--> project      # This contains the root of your application.
@@ -257,8 +257,8 @@ string.
     export DB_PASSWORD="ZjBmNDEyMWJj"
     export DJANGO_SETTINGS_MODULE="settings"
     export DJANGO_PROJECT_ROOT="thirtyblog"
-    export MONGODB_NAME="30loops-monogdb-thirtyblog"
-    export MONGODB_USER="30loops-monogdb-thirtyblog"
+    export MONGODB_NAME="30loops-mongodb-thirtyblog"
+    export MONGODB_USER="30loops-mongodb-thirtyblog"
     export MONGODB_PASSWORD="DASDdsaw23DF"
     export MONGODB_HOST="192.168.0.99"
     export MONGODB_PORT="27701"
@@ -289,8 +289,8 @@ Add to your script the following line.
         {'DJANGO_SETTINGS_MODULE': 'settings'},
         {'DJANGO_PROJECT_ROOT': 'thirtyblog'},
         {'APP_USER': '30loops-app-thirtyblog'},
-        {'MONGODB_NAME': '30loops-monogdb-thirtyblog'}
-        {'MONGODB_USER': '30loops-monogdb-thirtyblog'}
+        {'MONGODB_NAME': '30loops-mongodb-thirtyblog'}
+        {'MONGODB_USER': '30loops-mongodb-thirtyblog'}
         {'MONGODB_PASSWORD': 'DASDdsaw23DF'}
         {'MONGODB_HOST': '192.168.0.99'}
         {'MONGODB_PORT': '27701'}

@@ -74,7 +74,7 @@ the config file.
 
 ``-R, --raw``
   Use a raw mode for printing output. The raw mode prints JSON messages as
-  returned from the server, with out any indendation. This is handy if you want
+  returned from the server, with out any indentation. This is handy if you want
   to use the ``thirty`` tool in scripts.
 
 .. _thirty-client-configuration-file:
@@ -107,7 +107,7 @@ list
 
     thirty list
 
-List all of your apps. It lists all apps, and each resource associated to ai
+List all of your apps. It lists all apps, and each resource associated to a
 resource.
 
 **Example:**
@@ -209,7 +209,7 @@ Create a new app.
 
 ``--no-db``
   Don't create a database for this app. As a default each app gets created
-  allready with a database. Use this option if you dont need a database, eg for
+  already with a database. Use this option if you don't need a database, eg for
   static apps.
 
 ``--variant VARIANT``
@@ -223,7 +223,7 @@ create ``<app>.repository``
     thirty create <app>.repository [--name <name>] [--ssh-key SSH_KEY]
                                     <location>
 
-Create a new repository and attch it to <app>
+Create a new repository and attach it to <app>
 
 **Example**
 
@@ -325,7 +325,7 @@ update ``<app>``
   The number of instances to deploy your app on. Note that only the
   configuration will be updated. for the new instance count to take effect, you
   still have to run a `deploy`_. You can also use the `scale`_ command to
-  immediately sclae the number of instances for this app.
+  immediately scale the number of instances for this app.
 
 ``--repository REPOSITORY``
   Change the repository to use for this app.
@@ -482,7 +482,7 @@ Run a django management in the context of your app or worker instances. The
 working directory of this command is the root of your repository. using a
 `djangocmd`` is equivalent to using ``runcmd`` and specifying ``python
 manage.py`` and a ``--settings`` argument in the command. ``djangocmd`` will
-always use teh settings path you specified in the environment file.
+always use the settings path you specified in the environment file.
 
 **Example**
 
@@ -490,7 +490,7 @@ always use teh settings path you specified in the environment file.
 
     $ thirty djangocmd cherryonloops syncdb
 
-is eqivalent to
+is equivalent to
 
 .. code-block:: bash
 
@@ -612,7 +612,7 @@ can get aggregated logs of all instances.
 
 ``--process PROCESS``
   Specify the process to get the logs from. You can specify several processes
-  by seperating them with a comma (``,``) and no space in between. Currently
+  by separating them with a comma (``,``) and no space in between. Currently
   the following processes can be selected:
 
   - nginx
@@ -631,7 +631,7 @@ logbook
 
     thirty logbook <uuid>
 
-Shows the logbook of an action, for example a deploy.. You see the uuid in qhen
+Shows the logbook of an action, for example a deploy.. You see the uuid in then
 you queue the action with client, or in the ``Location`` header of the HTTP
 response, when talking to the API directly.
 

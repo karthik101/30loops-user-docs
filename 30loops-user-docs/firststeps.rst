@@ -76,7 +76,7 @@ You can connect several resources to your app. In this example there is a
 database connected, but you can also connect other resources, eg: a MongoDB
 database
 
-We are working on imlplementing more resources. If your required resource is not
+We are working on implementing more resources. If your required resource is not
 listed, please drop us an email.
 
 Workflow

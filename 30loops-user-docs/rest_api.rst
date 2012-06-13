@@ -17,7 +17,7 @@ build your own client tools.
 
 .. note::
 
-    A resource on the 30loops platform specificially means a service that is
+    A resource on the 30loops platform specifically means a service that is
     hosted on the platform, like databases, apps or repositories. To not
     confuse URI resources and 30loops resources, we use different terminology.
     If we use the term `resource` we mean a service hosted by 30loops, and if we
@@ -26,7 +26,7 @@ build your own client tools.
 Quick Reference
 ===============
 
-All API access is over HTTPS and can be accesed at ``https://api.30loops.net/``.
+All API access is over HTTPS and can be accessed at ``https://api.30loops.net/``.
 The first element of the path indicates the version of the API, currently this
 defaults to ``/0.9/``.
 
@@ -99,7 +99,7 @@ Request Format
 ==============
 
 ``POST`` and ``PUT`` requests send a JSON_ message as request body and set the
-``Content-Type`` header to ``aplication/json``.
+``Content-Type`` header to ``application/json``.
 
 Authentication is currently implemented using `HTTP Basic Auth`_. When requesting
 a resource without credentials the server challenges the request with a
@@ -162,7 +162,7 @@ JSON Format
 ===========
 
 The JSON_ format for all 30loops objects has a similar structure and
-implements a certain behaviour. The format and behaviour described is valid for
+implements a certain behavior. The format and behavior described is valid for
 all objects identified by an URI. Unless specified in the detailed description
 of each object, the rules of this section always apply.
 
@@ -209,7 +209,7 @@ dictionaries.
 
 When creating a new object, and you want to reference an already existing
 object, its enough to specify the identifier in the JSON request. The
-identifier of a resource ususaly is the `name` of the resource, unless
+identifier of a resource usually is the `name` of the resource, unless
 otherwise specified.
 
 .. code-block:: js
@@ -299,12 +299,12 @@ in the response body, eg:
         "error": "Bad credentials for crito."
     }
 
-The following error messages are commong across the whole API:
+The following error messages are common across the whole API:
 
 - **400**, "Malformed input data.": The request input could not be understood by
   the API. This is mainly due to malformed JSON input.
 - **401**, "No authentication provided.": No authentication has been send along
-  the request. See _`Rerquest Format` for more information.
+  the request. See _`Request Format` for more information.
 - **403**, "Quota reached.": A quota limit has been reached.
 - **403**, "Account {account} does not exist.": The account you try to authenticate for
   does not exist.
@@ -317,8 +317,8 @@ The following error messages are commong across the whole API:
 - **405**, "Method not allowed.": The HTTP method used for the request is not
   valid for this URI.
 - **500**, "We encountered an error on the backend. Sorry for that.": A
-  unpredicted error occured. We are really sorry for that.
-- **503**, "Service taken down for maintainance.": The API has been temporarily
+  unpredicted error occurred. We are really sorry for that.
+- **503**, "Service taken down for maintenance.": The API has been temporarily
   disabled.
 
 .. _`account-api`:
@@ -507,7 +507,7 @@ Resource Fields
   address is also used to recover passwords.
 
 **is_active**
-  A boolean flag whether this user is active or not.
+  A Boolean flag whether this user is active or not.
 
 Deleting Users
 --------------
@@ -544,7 +544,7 @@ Change User Password
 
     :param account: The name of a account.
     :param username: The name of the user.
-    :status 204: The password was succesfully updated.
+    :status 204: The password was successfully updated.
 
     **Example Request**:
 
@@ -578,7 +578,7 @@ Reset User Password
 
     :param account: The name of a account.
     :param username: The name of the user.
-    :status 204: The password was succesfully reset.
+    :status 204: The password was successfully reset.
 
     **Example Request**:
 
@@ -603,7 +603,7 @@ Testing Credentials
     Check the credentials of a user.
 
     :param account: The name of a account, a short descriptive word.
-    :status 204: The credentials succesfully authenticated.
+    :status 204: The credentials successfully authenticated.
 
     **Example Request**:
 
@@ -706,7 +706,7 @@ Creating Resources
 
     :param account: The name of a account, a short descriptive word.
     :param label: The resource type, eg: repository, db, app
-    :status 201: The resource has been succesfully created.
+    :status 201: The resource has been successfully created.
 
     **Example Request**:
 
@@ -850,7 +850,7 @@ Deleting Resources
     :param account: The name of a account, a short descriptive word.
     :param label: The resource type, eg: repository, db, app
     :param resource: The name of the resource.
-    :status 204: The resource was succesfully deleted.
+    :status 204: The resource was successfully deleted.
 
     **Example Request:**
 
@@ -871,7 +871,7 @@ Sending a ``DELETE`` request to the URI of a resource deletes it.
 
 .. warning::
 
-    This operation **can't** be undone. Once the request returns succesfully, the
+    This operation **can't** be undone. Once the request returns successfully, the
     information associated with this resource has been removed on the server
     side.
 
@@ -880,7 +880,7 @@ Resource Objects
 
 Every service that is hosted on 30loops is represented as a resource. A
 resource is always created for a certain account. The account is specified in
-the URI and does not show up in the JSON representation, neither when creatd
+the URI and does not show up in the JSON representation, neither when created
 nor when retrieved. Every resource can be retrieved as a JSON object. All
 resources have a few common attributes:
 
@@ -903,7 +903,7 @@ resources have a few common attributes:
 :variant:
 
     Each resource type (label) has one or more variants. A variant specifies a
-    specific type of this rsource, eg: *postgres* for databases or *git* for
+    specific type of this resource, eg: *postgres* for databases or *git* for
     repositories.
 
 Resource References
@@ -912,7 +912,7 @@ Resource References
 Each resource acts as an independent entity. But you can reference different
 resources to each other, eg: an App **must** have a repository referenced, but
 **may** reference a Database. You can still use the database for your app if
-you dont reference it, but then we can't create the
+you don't reference it, but then we can't create the
 :ref:`instance-environment-label` for you.
 
 You can reference resources with each other by either
@@ -1006,7 +1006,7 @@ it.
             "href": "https://api.30loops.net/0.9/30loops/app/thirtyblog",
             "rel": "self"
         },
-        "name": "thrity-blog",
+        "name": "thirty-blog",
         "repository": {
             "href": "https://api.30loops.net/0.9/30loops/repository/thirtyblog",
             "name": "thirtyblog",
@@ -1054,7 +1054,7 @@ Resource Fields
   will be checked out.
 
 **database** (optional)
-  The database reference is created automaticaly when creating an app. Users
+  The database reference is created automatically when creating an app. Users
   can't create those resources themselves. They are also protected from
   updates. See the section `Database Resource`_ for more information.
 
@@ -1139,7 +1139,7 @@ Repository Resource
 -------------------
 
 Every app must have a repository defined. When deploying the repository gets
-cloned. It provides the sourcecode for the webapplication.
+cloned. It provides the sourcecode for the web application.
 
 **Example Request:**
 
@@ -1200,7 +1200,7 @@ Database Resource
     always have to defined within the context of an app. See `JSON Format`_
     for more details.
 
-Currently we offer PostgreSQL as SQL possibility.
+Currently we offer Postgresql as SQL possibility.
 
 **Example Request:**
 
@@ -1248,18 +1248,18 @@ Resource Fields
   within your environment file on your app and worker instances.
 
 **username** (read-only)
-  The username to access your postgresl database. The username is set byt the API
+  The username to access your postgresql database. The username is set by the API
   and the mongo server is configured accordingly. The username is provided
   within your environment file on your app and worker instances.
 
 **host** (read-only)
-  The IP address of the host your database is deployd to. If the database
-  hasn't been physicaly deployed yet, it will say ``not deployed``. The host is
+  The IP address of the host your database is deployed to. If the database
+  hasn't been physically deployed yet, it will say ``not deployed``. The host is
   provided within your environment file on your app and worker instances.
 
 **port** (read-only)
-  The port of the postgresql server your database is deployd to. If the database
-  hasn't been physicaly deployed yet, it will say ``not deployed``. The port is
+  The port of the postgresql server your database is deployed to. If the database
+  hasn't been physically deployed yet, it will say ``not deployed``. The port is
   provided within your environment file on your app and worker instances.
 
 .. _worker-resource-api:
@@ -1268,7 +1268,7 @@ Worker Resource
 ---------------
 
 Worker resources are used to run different processes. They are in that sense
-similar to apps, only they dont run an webserver or application server. But you
+similar to apps, only they don't run an webserver or application server. But you
 can use workers to run cronjobs in the background or for celery task queues.
 
 **Example Request:**
@@ -1373,18 +1373,18 @@ Resource Fields
   within your environment file on your app and worker instances.
 
 **username** (read-only)
-  The username to access your mongodb database. The username is set byt the API
+  The username to access your mongodb database. The username is set by the API
   and the mongo server is configured accordingly. The username is provided
   within your environment file on your app and worker instances.
 
 **host** (read-only)
-  The ip address of the host your database is deployd to. If the database
-  hasn't been physicaly deployed yet, it will say ``not deployed``. The host is
+  The ip address of the host your database is deployed to. If the database
+  hasn't been physically deployed yet, it will say ``not deployed``. The host is
   provided within your environment file on your app and worker instances.
 
 **port** (read-only)
-  The port of the mongodb server your database is deployd to. If the database
-  hasn't been physicaly deployed yet, it will say ``not deployed``. The port is
+  The port of the mongodb server your database is deployed to. If the database
+  hasn't been physically deployed yet, it will say ``not deployed``. The port is
   provided within your environment file on your app and worker instances.
 
 Actions API
@@ -1398,8 +1398,8 @@ state.
 
 Every request to the actions API creates a *logbook* that can be polled for the
 progress of the action. The logbook contains the current status of the action,
-and the log output generated by the server. If an action has been succesfully
-queued, the respone contains a :mailheader:`Location` header field, containing
+and the log output generated by the server. If an action has been successfully
+queued, the response contains a :mailheader:`Location` header field, containing
 the URI of the logbook. See the :ref:`Logbook API <logbook-api>` section for more information on
 the logbook.
 
@@ -1440,7 +1440,7 @@ Queue Action
     :param account: The name of a account, a short descriptive word.
     :param label: The resource type, eg: repository, db, app
     :param resource: The name of the resource.
-    :status 202: The action was succesfully queued.
+    :status 202: The action was successfully queued.
 
     **Example Request:**
 
@@ -1497,7 +1497,7 @@ After you configured an application, you can deploy it to the platform.
 
 **options:**
 
-*clean* (default=False, boolean)
+*clean* (default=False, Boolean)
   Perform a clean deploy when set to `True`. This means a new bundle will be
   created. If set to False, the old bundle gets reused, and only the source
   code gets updated.
@@ -1507,7 +1507,7 @@ App Runcommand Action
 
 You can execute single commands in the context of your application. The command
 is executed with your repository as working directory, so if in the root of
-your respository you have a file called ``init_db.py`` you can call it with the
+your repository you have a file called ``init_db.py`` you can call it with the
 command: ``python init_db.py``.
 
 **Example Request:**
@@ -1522,7 +1522,7 @@ command: ``python init_db.py``.
         "action": "runcommand",
         "options": {
             "command": "python init_db.py --initial",
-            "occurence": "all"
+            "occurrence": "all"
         }
     }
 
@@ -1541,7 +1541,7 @@ command: ``python init_db.py``.
 *command* (string)
   The full command to execute.
 
-*occurence* (default=1, integer or string)
+*occurrence* (default=1, integer or string)
   Specify on how many backends this command should run on. Can be either an
   integer for the number of backends to run it on or ``all``. Defaults to
   ``1``.
@@ -1553,7 +1553,7 @@ Run a django management command in the context of your django project root. The
 working directory of this call is your django project root. You don't have to
 specify ``python manage.py`` or a ``--settings`` argument, this happens
 automatically for you. So to run ``python manage.py syncdb --settings
-production`` you just specify the follwing command: ``syncdb``.
+production`` you just specify the foll wing command: ``syncdb``.
 
 **Example Request:**
 
@@ -1567,7 +1567,7 @@ production`` you just specify the follwing command: ``syncdb``.
         "action": "djangocommand",
         "options": {
             "command": "syncdb",
-            "occurence": 4
+            "occurrence": 4
         }
     }
 
@@ -1586,7 +1586,7 @@ production`` you just specify the follwing command: ``syncdb``.
 *command* (string)
   The django management command to execute.
 
-*occurence* (default=1, integer or string)
+*occurrence* (default=1, integer or string)
   Specify on how many backends this command should run on. Can be either an
   integer for the number of backends to run it on or ``all``. Defaults to
   ``1``.
@@ -1595,7 +1595,7 @@ Scale Instances Actions
 -----------------------
 
 You can scale a running app or worker. Scaling means to change the amount of
-instances that the app or worker is deployed to. This happens whithout
+instances that the app or worker is deployed to. This happens without
 interruption to the running instances. To pause an app or worker, you can scale
 it to 0 instances
 
@@ -1646,7 +1646,7 @@ Showing Logs
     :param resource: The name of the app.
     :query limit: Limit the amount of logs to retrieve. Defaults to 10.
     :query process: Limit the logs to these processes. Supply processes as a
-        string seperated by a `,`. The following processes can be supplied:
+        string separated by a `,`. The following processes can be supplied:
 
         - nginx
         - gunicorn
@@ -1835,7 +1835,7 @@ can be in the following states:
 
 - *queued*: The action is queued and waiting to be processed.
 - *running*: The action is currently in progress.
-- *finished*: The action has succesfully finished.
+- *finished*: The action has successfully finished.
 - *error*: The action stopped due to an error.
 
 .. _`curl-examples-label`:
