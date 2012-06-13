@@ -388,100 +388,241 @@ delete
 
 ::
 
-    thirty delete <lable> <resource_name> [environment]
+    thirty delete <resource>
 
-Delete a resource. If ``[environment]`` is given it will delete the app
-environment instead of the app itself.
+Delete a resource. ``<resource>`` can be one of the following:
+
+- ``<app>``: Delete an app.
+- ``<app>.database``: Delete a database.
+- ``<app>.mongodb``" Delete a mongodb.
+- ``<app>.repository``: Delete a repository.
+- ``<app>.worker``: Delete a worker.
+
+This command takes no further arguments.
 
 deploy
 ------
 
 ::
 
-    thirty deploy <app> <environment>
+    thirty deploy [--clean] <app>
 
-Deploy a specific app environment. It queues a new deployment of that
-environment. See :doc:`REST API guide <rest_api>` for more information about
-deploys.
+Deploy an app. A regular deploy only pulls the latest code, but reuses the same
+virtualenv for your app. if you want to create a clean virtualenv or update any
+requirements, you have to make a clean deploy.
+
+**Example**
+
+.. code-block:: bash
+
+    $ thirty deploy -c cherryonloops
+
+**Optional Arguments**
+
+``--clean, -c``
+  Perform a clean deploy. This rebuilds the virtualenv during the deploy. This
+  takes longer than a normal deploy.
 
 runcmd
 ------
 
 ::
 
-    thirty runcmd <app> <environment> "<command>"
+    thirty runcmd <resource>
 
-Run a command in the context of your app environment. The full command is
-specified enclosed by ``"``. The working directory of this command is the root
-of your repository.
+Run a command in the context of your app or worker instances. The working
+directory of this command is the root of your repository.
 
-**Example:**
+runcmd ``<app>``
+~~~~~~~~~~~~~~~~
 
 ::
 
-    thirty runcmd thirtyblog production "python init_db.py"
+    thirty runcmd <app> [--occurrence OCCURRENCE] <command>
 
-**Options:**
+Run a generic command on one or more app instances.
 
-``--occurence``
-  Specifies on how many backends this command should be executed on. You can
-  either specify a number or ``all``. Defaults to ``1``.
+**Required Arguments**
+
+``<command>``
+  Command to run.
+
+**Optional Arguments**
+
+``--occurrence OCCURRENCE``
+  Number of app instances to run the command on (use "all" for all instances).
+
+runcmd ``<app>.worker``
+~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    thirty runcmd <app> [--occurrence OCCURRENCE] <command>
+
+Run a generic command on one or more worker instances.
+
+**Required Arguments**
+
+``<command>``
+  Command to run.
+
+**Optional Arguments**
+
+``--occurrence OCCURRENCE``
+  Number of worker instances to run the command on (use "all" for all instances).
 
 djangocmd
 ---------
 
 ::
 
-    thirty djangocmd <app> <environment> "<management command>"
+    thirty djangocmd <resource>
 
-Run a django management command in the context of your django project. The full
-command is specified enclosed by ``"``. The working directory of this command
-is the root of your repository. You don't have to specify any settings module
-or start the command with ``python manage.py``.
+Run a django management in the context of your app or worker instances. The
+working directory of this command is the root of your repository. using a
+`djangocmd`` is equivalent to using ``runcmd`` and specifying ``python
+manage.py`` and a ``--settings`` argument in the command. ``djangocmd`` will
+always use teh settings path you specified in the environment file.
 
-**Example:**
+**Example**
+
+.. code-block:: bash
+
+    $ thirty djangocmd cherryonloops syncdb
+
+is eqivalent to
+
+.. code-block:: bash
+
+    $ thirty runcmd cherryonloops python manage.py syncdb --settings settings
+
+djangocmd ``<app>``
+~~~~~~~~~~~~~~~~~~~
 
 ::
 
-    thirty djangocmd thirtyblog production "syncdb"
+    thirty djangocmd <app> [--occurrence OCCURRENCE] <command>
 
-**Options:**
+Run a django management command on one or more app instances.
 
-``--occurence``
-  Specifies on how many backends this command should be executed on. You can
-  either specify a number or ``all``. Defaults to ``1``.
+**Required Arguments**
+
+``<command>``
+  Command to run.
+
+**Optional Arguments**
+
+``--occurrence OCCURRENCE``
+  Number of app instances to run the command on (use "all" for all instances).
+
+djangocmd ``<app>.worker``
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    thirty djangocmd <app> [--occurrence OCCURRENCE] <command>
+
+Run a django management command on one or more worker instances.
+
+**Required Arguments**
+
+``<command>``
+  Command to run.
+
+**Optional Arguments**
+
+``--occurrence OCCURRENCE``
+  Number of worker instances to run the command on (use "all" for all instances).
 
 scale
 -----
+
+::
+
+    thirty scale <resource>
+
+Scale a resource. This increases the configured instance count for this
+resource and applies right away the physical changes. To pause a resource, you
+can scale the resource to 0 instances.
+
+scale ``<app>``
+~~~~~~~~~~~~~~~
+
+::
+
+    thirty scale <app> <instances>
+
+Scale the number of app instances.
+
+**Example**
+
+.. code-block:: bash
+
+    $ thirty scale cherryonloops 4
+
+**Required Arguments**
+
+``<instances>``
+  Number of app instances to scale to. This is the final number of <app>
+  instances.
+
+scale ``<app>.worker``
+~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    thirty scale <app>.worker <instances>
+
+Scale the number of worker instances.
+
+**Example**
+
+.. code-block:: bash
+
+    $ thirty scale cherryonloops.worker 0
+
+**Required Arguments**
+
+``<instances>``
+  Number of worker instances to scale to. This is the final number of <app>
+  instances.
 
 logs
 ----
 
 ::
 
-    thirty logs <app>
+    thirty logs [--process PROCESS] [--limit LIMIT] <app>
 
 Shows the logs of your application. All logs are collected centrally, so you
 can get aggregated logs of all instances.
 
 **Example:**
 
-::
+.. code-block:: bash
 
     thirty logs thirtyblog --process nginx,gunicorn --limit 20
 
-**Options:**
+**Required Arguments:**
 
-``--environment``
-  Specifies the environment of the application
+``<app>``
+  The name of the app.
 
-``--process``
-  A comma separated list of the processes to fetch the logs from. Currently
-  only ``nginx``, ``gunicorn`` and ``postgres`` are available. Notice that
-  ``postgres`` logs can only be fetched separately.
+**Optional Arguments:**
 
-``--limit``
-  Limit of the entries to fetch. By default this is set to 10.
+``--process PROCESS``
+  Specify the process to get the logs from. You can specify several processes
+  by seperating them with a comma (``,``) and no space in between. Currently
+  the following processes can be selected:
+
+  - nginx
+  - gunicorn
+  - postgresql
+
+  (default: gunicorn,nginx)
+
+``--limit LIMIT``
+  The number of entries to return (default: 10).
 
 logbook
 -------
@@ -490,9 +631,16 @@ logbook
 
     thirty logbook <uuid>
 
-Shows the logbook of an action, for example a deploy. The output is valid JSON.
+Shows the logbook of an action, for example a deploy.. You see the uuid in qhen
+you queue the action with client, or in the ``Location`` header of the HTTP
+response, when talking to the API directly.
 
 **Example:**
 
 ::
     thirty logbook e6418181-5b3f-483b-a1c5-c88a55f0550a
+
+**Required Arguments:**
+
+``<uuid>``
+  The UUID of the logbook.
