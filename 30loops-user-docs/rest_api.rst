@@ -11,6 +11,12 @@ build your own client tools.
 
 .. note::
 
+    The API version is currently set to 0.9. While we try to keep the API
+    stable, we keep the option open to still change parts of it before freezing
+    it in the near future.
+
+.. note::
+
     A resource on the 30loops platform specificially means a service that is
     hosted on the platform, like databases, apps or repositories. To not
     confuse URI resources and 30loops resources, we use different terminology.
@@ -22,7 +28,7 @@ Quick Reference
 
 All API access is over HTTPS and can be accesed at ``https://api.30loops.net/``.
 The first element of the path indicates the version of the API, currently this
-defaults to ``/1.0/``.
+defaults to ``/0.9/``.
 
 Account API
 -----------
@@ -30,13 +36,14 @@ Account API
 ===================================================  =========  ==============================================
 URL                                                  HTTP Verb  Function
 ===================================================  =========  ==============================================
-/1.0/{account}/                                      GET        `Showing Accounts`_
-/1.0/{account}/users/                                POST       `Creating Users`_
-/1.0/{account}/users/{username}/                     GET        `Showing Users`_
-/1.0/{account}/users/{username}/                     DELETE     `Deleting Users`_
-/1.0/{account}/users/{username}/change_password/     PUT        `Change User Password`_
-/1.0/{account}/users/{username}/reset_password/      POST       `Reset User Password`_
-/1.0/{account}/authcheck/                            GET        `Testing Credentials`_
+/0.9/{account}                                       GET        `Showing Accounts`_
+/0.9/{account}/users                                 GET        `Listing Users`_
+/0.9/{account}/users                                 POST       `Creating Users`_
+/0.9/{account}/users/{username}                      GET        `Showing Users`_
+/0.9/{account}/users/{username}                      DELETE     `Deleting Users`_
+/0.9/{account}/users/{username}/change_password      PUT        `Change User Password`_
+/0.9/{account}/users/{username}/reset_password       POST       `Reset User Password`_
+/0.9/{account}/authcheck                             GET        `Testing Credentials`_
 ===================================================  =========  ==============================================
 
 Resource API
@@ -45,11 +52,11 @@ Resource API
 ========================================================  =========  ==============================================
 URL                                                       HTTP Verb  Function
 ========================================================  =========  ==============================================
-/1.0/{account}/{label}/                                   GET        `Listing Resources`_
-/1.0/{account}/{label}/                                   POST       `Creating Resources`_
-/1.0/{account}/{label}/{resource}/                        GET        `Showing Resources`_
-/1.0/{account}/{label}/{resource}/                        PUT        `Updating Resources`_
-/1.0/{account}/{label}/{resource}/                        DELETE     `Deleting Resources`_
+/0.9/{account}/{label}                                    GET        `Listing Resources`_
+/0.9/{account}/{label}                                    POST       `Creating Resources`_
+/0.9/{account}/{label}/{resource}                         GET        `Showing Resources`_
+/0.9/{account}/{label}/{resource}                         PUT        `Updating Resources`_
+/0.9/{account}/{label}/{resource}                         DELETE     `Deleting Resources`_
 ========================================================  =========  ==============================================
 
 Actions API
@@ -58,7 +65,16 @@ Actions API
 =====================================  =========  ===========================
 URL                                    HTTP Verb  Function
 =====================================  =========  ===========================
-/1.0/{account}/{label}/{resource}/     POST       `Queue Action`_
+/0.9/{account}/{label}/{resource}      POST       `Queue Action`_
+=====================================  =========  ===========================
+
+Logs API
+--------
+
+=====================================  =========  ===========================
+URL                                    HTTP Verb  Function
+=====================================  =========  ===========================
+/0.9/{account}/app/{resource}/logs     GET        `Showing Logs`_
 =====================================  =========  ===========================
 
 Billing and Usage API
@@ -67,7 +83,7 @@ Billing and Usage API
 =====================================  =========  ===========================
 URL                                    HTTP Verb  Function
 =====================================  =========  ===========================
-/1.0/{account}/app/{resource}/usage    GET        `Show App Usage`_
+/0.9/{account}/app/{resource}/usage    GET        `Showing App Usage`_
 =====================================  =========  ===========================
 
 Logbook API
@@ -76,7 +92,7 @@ Logbook API
 =====================================  =========  ===========================
 URL                                    HTTP Verb  Function
 =====================================  =========  ===========================
-/1.0/{account}/logbook/{uuid}/         GET        `Showing Action Logbook`_
+/0.9/{account}/logbook/{uuid}          GET        `Showing Action Logbook`_
 =====================================  =========  ===========================
 
 Request Format
@@ -93,7 +109,7 @@ a resource without credentials the server challenges the request with a
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/ HTTP/1.1
+    GET /0.9/30loops HTTP/1.1
     Host: api.30loops.net
 
 **Response:**
@@ -111,7 +127,7 @@ Add a ``Authorization`` header to the request to supply the right credentials
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/ HTTP/1.1
+    GET /0.9/30loops HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
 
 Other authentication mechanisms are planned.
@@ -223,7 +239,7 @@ examples).
         "repository": {
             "name": "thirtyloops-repo",
             "variant": "git",
-            "location": "https://github.com/30loops/django-on-30loops/"
+            "location": "https://github.com/30loops/django-on-30loops"
         }
     }
 
@@ -313,7 +329,7 @@ Account API
 Showing Accounts
 ----------------
 
-.. http:get:: /1.0/{account}/
+.. http:get:: /0.9/{account}
 
     Show the details of `account`.
 
@@ -324,7 +340,7 @@ Showing Accounts
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/ HTTP/1.1
+        GET /0.9/30loops HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -338,7 +354,7 @@ Showing Accounts
         {
             "name": "30loops",
             "link": {
-                "href": "https://api.30loops.net/1.0/30loops/",
+                "href": "https://api.30loops.net/0.9/30loops",
                 "rel": "self"
             },
             "plan": "STANDARD",
@@ -357,10 +373,50 @@ Resource Fields
 **plan_upgrade_uri**
   Visit this URI in your browser to change your subscription.
 
+Listing Users
+-------------
+
+.. http:get:: /0.9/{account}/users
+
+    List all users of an account.
+
+    :param account: The name of a account.
+    :status 200: Retrieve the list of users.
+
+    **Example Request**:
+
+    .. sourcecode:: http
+
+        GET /0.9/30loops/users HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "items": [
+                {
+                    "email": "crito@30loops.net",
+                    "is_active": true,
+                    "link": {
+                        "href": "https://api.30loops.net/0.9/30loops/users/crito",
+                        "rel": "item"
+                    },
+                    "username": "crito"
+                }
+            ],
+            "size": 2
+        }
+
 Creating Users
 --------------
 
-.. http:post:: /1.0/{account}/users/
+.. http:post:: /0.9/{account}/users
 
     Create a new user.
 
@@ -373,7 +429,7 @@ Creating Users
 
     .. sourcecode:: http
 
-        POST /1.0/30loops/users/ HTTP/1.1
+        POST /0.9/30loops/users HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -389,7 +445,7 @@ Creating Users
 
         HTTP/1.1 201 OK
         Content-Type: application/json; charset=UTF-8
-        Location: https://api.30loops.net/1.0/30loops/users/crito/
+        Location: https://api.30loops.net/0.9/30loops/users/crito
 
 Resource Fields
 ~~~~~~~~~~~~~~~
@@ -407,7 +463,7 @@ Resource Fields
 Showing Users
 -------------
 
-.. http:get:: /1.0/{account}/users/{username}/
+.. http:get:: /0.9/{account}/users/{username}
 
     Show the details of the user `username`.
 
@@ -419,7 +475,7 @@ Showing Users
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/users/crito/ HTTP/1.1
+        GET /0.9/30loops/users/crito HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -435,7 +491,7 @@ Showing Users
             "is_active": true,
             "email": "crito@30loops.net",
             "link": {
-                "href": "https://api.30loops.net/1.0/30loops/users/crito/",
+                "href": "https://api.30loops.net/0.9/30loops/users/crito",
                 "rel": "self"
             }
         }
@@ -456,7 +512,7 @@ Resource Fields
 Deleting Users
 --------------
 
-.. http:delete:: /1.0/{account}/users/{username}/
+.. http:delete:: /0.9/{account}/users/{username}
 
     Delete a user.
 
@@ -468,7 +524,7 @@ Deleting Users
 
     .. sourcecode:: http
 
-        DELETE /1.0/30loops/users/crito/ HTTP/1.1
+        DELETE /0.9/30loops/users/crito HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -482,7 +538,7 @@ Deleting Users
 Change User Password
 --------------------
 
-.. http:put:: /1.0/{account}/users/{username}/change_password/
+.. http:put:: /0.9/{account}/users/{username}/change_password
 
     Update the password for this user.
 
@@ -494,7 +550,7 @@ Change User Password
 
     .. sourcecode:: http
 
-        PUT /1.0/30loops/users/crito/change_password/ HTTP/1.1
+        PUT /0.9/30loops/users/crito/change_password HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
         Content-Type: application/json
@@ -513,7 +569,7 @@ Change User Password
 Reset User Password
 -------------------
 
-.. http:post:: /1.0/{account}/users/{username}/reset_password/
+.. http:post:: /0.9/{account}/users/{username}/reset_password
 
     Reset the password for this user. Note that this request needs no
     authentication credentials. A new password will be set and emailed to the
@@ -528,7 +584,7 @@ Reset User Password
 
     .. sourcecode:: http
 
-        POST /1.0/30loops/users/crito/reset_password/ HTTP/1.1
+        POST /0.9/30loops/users/crito/reset_password HTTP/1.1
         Host: api.30loops.net
         Content-Type: application/json
 
@@ -542,7 +598,7 @@ Reset User Password
 Testing Credentials
 -------------------
 
-.. http:get:: /1.0/{account}/authcheck/
+.. http:get:: /0.9/{account}/authcheck
 
     Check the credentials of a user.
 
@@ -553,7 +609,7 @@ Testing Credentials
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/authcheck/ HTTP/1.1
+        GET /0.9/30loops/authcheck HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
         Content-Type: application/json
@@ -594,7 +650,7 @@ A detailed description of each resource object can be found in the
 Listing Resources
 -----------------
 
-.. http:get:: /1.0/{account}/{label}/
+.. http:get:: /0.9/{account}/{label}
 
     Retrieve a list of all resources of the type `label` owned by this `account`.
 
@@ -606,7 +662,7 @@ Listing Resources
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/repository/ HTTP/1.1
+        GET /0.9/30loops/repository HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
         Content-Type: application/json
@@ -623,7 +679,7 @@ Listing Resources
                 {
                     "label": "repository",
                     "link": {
-                        "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/",
+                        "href": "https://api.30loops.net/0.9/30loops/repository/thirtyblog",
                         "rel": "item"
                     },
                     "location": "git://github.com/30loops/thirtyblog.git",
@@ -632,7 +688,7 @@ Listing Resources
                 },
             ],
             "link": {
-                "href": "https://api.30loops.net/1.0/30loops/repository/",
+                "href": "https://api.30loops.net/0.9/30loops/repository",
                 "rel": "self"
             },
             "size": 1
@@ -644,7 +700,7 @@ Listing Resources
 Creating Resources
 ------------------
 
-.. http:post:: /1.0/{account}/{label}/
+.. http:post:: /0.9/{account}/{label}
 
     Create a new resource of type `label`.
 
@@ -656,7 +712,7 @@ Creating Resources
 
     .. sourcecode:: http
 
-        POST /1.0/30loops/repository/ HTTP/1.1
+        POST /0.9/30loops/repository HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
         Content-Type: application/json
@@ -664,7 +720,7 @@ Creating Resources
         {
             "name": "thirtyblog",
             "variant": "git",
-            "location": "https://github.com/30loops/thirtyblog/"
+            "location": "https://github.com/30loops/thirtyblog"
         }
 
     **Example Response:**
@@ -673,7 +729,7 @@ Creating Resources
 
         HTTP/1.1 201 CREATED
         Content-Type: application/json; charset=UTF-8
-        Location: https://api.30loops.net/1.0/30loops/repository/thirtyblog/
+        Location: https://api.30loops.net/0.9/30loops/repository/thirtyblog
 
 When the creation succeeds, a ``201 CREATED`` response is returned, containing
 the ``Location`` header with the URI of the new resource.
@@ -686,7 +742,7 @@ If the JSON_ input is not valid or incomplete to create a new resource, a
 Showing Resources
 -----------------
 
-.. http:get:: /1.0/{account}/{label}/{resource}/
+.. http:get:: /0.9/{account}/{label}/{resource}
 
     Show the details of this `resource`.
 
@@ -699,7 +755,7 @@ Showing Resources
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/repository/thirtyblog/ HTTP/1.1
+        GET /0.9/30loops/repository/thirtyblog HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -713,10 +769,10 @@ Showing Resources
         {
             "label": "repository",
             "link": {
-                "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/",
+                "href": "https://api.30loops.net/0.9/30loops/repository/thirtyblog",
                 "rel": "self"
             },
-            "location": "https://github.com/30loops/thirtyblog/",
+            "location": "https://github.com/30loops/thirtyblog",
             "name": "thirtyblog",
             "variant": "git"
         }
@@ -730,7 +786,7 @@ The resource URI is returned either when a resource gets created in the
 Updating Resources
 ------------------
 
-.. http:put:: /1.0/{account}/{label}/{resource}/
+.. http:put:: /0.9/{account}/{label}/{resource}
 
     Update the state of the resource instance.
 
@@ -743,7 +799,7 @@ Updating Resources
 
     .. sourcecode:: http
 
-        PUT /1.0/30loops/repository/thirtyblog/ HTTP/1.1
+        PUT /0.9/30loops/repository/thirtyblog HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
         Content-Type: application/json
@@ -762,7 +818,7 @@ Updating Resources
         {
             "label": "repository",
             "link": {
-                "href": "/1.0/30loops/repository/thirtyblog/",
+                "href": "/0.9/30loops/repository/thirtyblog",
                 "rel": "self"
             },
             "location": "https://bitbucket.org/30loops/thirtyblog",
@@ -787,7 +843,7 @@ the resource.
 Deleting Resources
 ------------------
 
-.. http:delete:: /1.0/{account}/{label}/{resource}/
+.. http:delete:: /0.9/{account}/{label}/{resource}
 
     Delete the resource..
 
@@ -800,7 +856,7 @@ Deleting Resources
 
     .. sourcecode:: http
 
-        DELETE /1.0/30loops/repository/thirtyblog/ HTTP/1.1
+        DELETE /0.9/30loops/repository/thirtyblog HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -839,7 +895,7 @@ resources have a few common attributes:
 :label:
 
     Each resource has a certain type, that is defined by its label. A label is
-    specified in the URI of the resource, eg: /1.0/30loops/app/thirtyblog/,
+    specified in the URI of the resource, eg: /0.9/30loops/app/thirtyblog,
     where app would be the label. You don't have to specify the label in the
     JSON request when creating a new resource. But the label is part of the
     representation when retrieving the details of a resource.
@@ -868,7 +924,7 @@ You can reference resources with each other by either
 
     .. sourcecode:: http
 
-        POST /1.0/30loops/app/ HTTP/1.1
+        POST /0.9/30loops/app HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
         Content-Type: application/json; charset=UTF-8
@@ -891,7 +947,7 @@ You can reference resources with each other by either
 
     .. sourcecode:: http
 
-        POST /1.0/30loops/repository/ HTTP/1.1
+        POST /0.9/30loops/repository HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
 
         {
@@ -902,7 +958,7 @@ You can reference resources with each other by either
 
     .. sourcecode:: http
 
-        POST /1.0/30loops/app/ HTTP/1.1
+        POST /0.9/30loops/app HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
 
         {
@@ -927,7 +983,7 @@ it.
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    GET /0.9/30loops/app/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -947,17 +1003,17 @@ it.
         "label": "app",
         "dns_record": "30loops-app-thirtyblog.30loops.net",
         "link": {
-            "href": "https://api.30loops.net/1.0/30loops/app/thirtyblog/",
+            "href": "https://api.30loops.net/0.9/30loops/app/thirtyblog",
             "rel": "self"
         },
         "name": "thrity-blog",
         "repository": {
-            "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/",
+            "href": "https://api.30loops.net/0.9/30loops/repository/thirtyblog",
             "name": "thirtyblog",
             "rel": "related"
         },
         "database": {
-            "href": "https://api.30loops.net/1.0/30loops/database/thirtyblog/",
+            "href": "https://api.30loops.net/0.9/30loops/database/thirtyblog",
             "name": "thirtyblog",
             "rel": "related"
         },
@@ -1036,7 +1092,7 @@ created resource.
 
 .. sourcecode:: http
 
-    POST /1.0/30loops/app/ HTTP/1.1
+    POST /0.9/30loops/app HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
 
     {
@@ -1054,7 +1110,7 @@ created resource.
 
     HTTP/1.1 201 CREATED
     Content-Type: application/json; charset=UTF-8
-    Location: https://api.30loops.net/1.0/30loops/app/thirtyblog/
+    Location: https://api.30loops.net/0.9/30loops/app/thirtyblog
 
 **Connecting a Database**
 
@@ -1062,7 +1118,7 @@ We have a database resource, called `blogdb` and want to connect it to an app.
 
 .. sourcecode:: http
 
-    PUT /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    PUT /0.9/30loops/app/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
 
     {
@@ -1089,7 +1145,7 @@ cloned. It provides the sourcecode for the webapplication.
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/repository/thirtyblog/ HTTP/1.1
+    GET /0.9/30loops/repository/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
 
 **Example Response:**
@@ -1102,10 +1158,10 @@ cloned. It provides the sourcecode for the webapplication.
     {
         "label": "repository",
         "link": {
-            "href": "https://api.30loops.net/1.0/30loops/repository/thirtyblog/",
+            "href": "https://api.30loops.net/0.9/30loops/repository/thirtyblog",
             "rel": "self"
         },
-        "location": "https://github.com/30loops/thirtyblog/",
+        "location": "https://github.com/30loops/thirtyblog",
         "name": "thirtyblog",
         "variant": "git"
     }
@@ -1150,7 +1206,7 @@ Currently we offer PostgreSQL as SQL possibility.
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/database/thirtyblog/ HTTP/1.1
+    GET /0.9/30loops/database/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
 
 **Example Response:**
@@ -1163,7 +1219,7 @@ Currently we offer PostgreSQL as SQL possibility.
     {
         "label": "postgres",
         "link": {
-            "href": "https://api.30loops.net/1.0/30loops/database/30loops-db-thirtyblog/",
+            "href": "https://api.30loops.net/0.9/30loops/database/30loops-db-thirtyblog",
             "rel": "self"
         },
         "name": "30loops-db-thirtyblog",
@@ -1219,7 +1275,7 @@ can use workers to run cronjobs in the background or for celery task queues.
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/worker/thirtyblog/ HTTP/1.1
+    GET /0.9/30loops/worker/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
 
 **Example Response:**
@@ -1233,7 +1289,7 @@ can use workers to run cronjobs in the background or for celery task queues.
         "instances": 1,
         "label": "worker",
         "link": {
-            "href": "https://api.30loops.net/1.0/30loops/worker/thirtyblog/",
+            "href": "https://api.30loops.net/0.9/30loops/worker/thirtyblog",
             "rel": "self"
         },
         "name": "thirtyblog",
@@ -1275,7 +1331,7 @@ Next to a SQL based database you can also use a MongoDB. Currently instances of
 
 .. sourcecode:: http
 
-    GET /1.0/30loops/mongodb/thirtyblog/ HTTP/1.1
+    GET /0.9/30loops/mongodb/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
 
 **Example Response:**
@@ -1288,7 +1344,7 @@ Next to a SQL based database you can also use a MongoDB. Currently instances of
     {
         "label": "mongodb",
         "link": {
-            "href": "https://api.30loops.net/1.0/30loops/mongodb/30loops-mongodb-thirtyblog/",
+            "href": "https://api.30loops.net/0.9/30loops/mongodb/30loops-mongodb-thirtyblog",
             "rel": "self"
         },
         "name": "30loops-mongodb-thirtyblog",
@@ -1377,7 +1433,7 @@ and varies only in the options provided.
 Queue Action
 ------------
 
-.. http:post:: /1.0/{account}/{label}/{resource}/
+.. http:post:: /0.9/{account}/{label}/{resource}
 
     Queue an action for this resource.
 
@@ -1390,7 +1446,7 @@ Queue Action
 
     .. sourcecode:: http
 
-        POST /1.0/30loops/app/thirtyloops/ HTTP/1.1
+        POST /0.9/30loops/app/thirtyloops HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -1404,7 +1460,7 @@ Queue Action
 
         HTTP/1.1 202 OK
         Content-Type: application/json; charset=UTF-8
-        Location: http://api.30loops.net/1.0/30loops/logbook/1705af0e-5250-11e1-b660-568837fa3205/
+        Location: http://api.30loops.net/0.9/30loops/logbook/0.95af0e-5250-11e1-b660-568837fa3205
 
 Actions
 =======
@@ -1418,7 +1474,7 @@ After you configured an application, you can deploy it to the platform.
 
 .. sourcecode:: http
 
-    POST /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    POST /0.9/30loops/app/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1435,7 +1491,7 @@ After you configured an application, you can deploy it to the platform.
 
     HTTP/1.1 202 ACCEPTED
     Content-Type: application/json; charset=UTF-8
-    Location: https://api.30loops.net/1.0/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-1a09507dbcf2/
+    Location: https://api.30loops.net/0.9/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-0.99507dbcf2
 
 **action:** deploy
 
@@ -1458,7 +1514,7 @@ command: ``python init_db.py``.
 
 .. sourcecode:: http
 
-    POST /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    POST /0.9/30loops/app/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1476,7 +1532,7 @@ command: ``python init_db.py``.
 
     HTTP/1.1 202 ACCEPTED
     Content-Type: application/json; charset=UTF-8
-    Location: https://api.30loops.net/1.0/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-1a09507dbcf2/
+    Location: https://api.30loops.net/0.9/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-0.99507dbcf2
 
 **actions:** runcommand
 
@@ -1503,7 +1559,7 @@ production`` you just specify the follwing command: ``syncdb``.
 
 .. sourcecode:: http
 
-    POST /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    POST /0.9/30loops/app/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1521,7 +1577,7 @@ production`` you just specify the follwing command: ``syncdb``.
 
     HTTP/1.1 202 ACCEPTED
     Content-Type: application/json; charset=UTF-8
-    Location: https://api.30loops.net/1.0/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-1a09507dbcf2/
+    Location: https://api.30loops.net/0.9/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-0.99507dbcf2
 
 **actions:** djangocommand
 
@@ -1547,7 +1603,7 @@ it to 0 instances
 
 .. sourcecode:: http
 
-    POST /1.0/30loops/app/thirtyblog/ HTTP/1.1
+    POST /0.9/30loops/app/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1564,7 +1620,7 @@ it to 0 instances
 
     HTTP/1.1 202 ACCEPTED
     Content-Type: application/json; charset=UTF-8
-    Location: https://api.30loops.net/1.0/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-1a09507dbcf2/
+    Location: https://api.30loops.net/0.9/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-0.99507dbcf2
 
 **actions:** scale
 
@@ -1582,7 +1638,7 @@ Logs API
 Showing Logs
 ------------
 
-.. http:get:: /1.0/{account}/logs/{resource}/
+.. http:get:: /0.9/{account}/app/{resource}/logs
 
     Retrieve the logs for an app.
 
@@ -1603,7 +1659,7 @@ Showing Logs
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/logs/thirtyblog/?limit=5,process=gunicorn,nginx HTTP/1.1
+        GET /0.9/30loops/app/thirtyblog/logs?limit=5,process=gunicorn,nginx HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -1617,33 +1673,33 @@ Showing Logs
         {
             "messages": [
                 {
-                    "message": " [error] 2318#0: 41 open() \"/app/static/dfgsdg\" failed (2: No such file or directory), client: 192.168.0.111, server: 30loops-cherrypyonloops-.30loops.net, request: \"GET /static/dfgsdg HTTP/1.1\", host: \"30loops-app-cherrypyonloops.30loops.net\"", 
-                    "program": "nginx", 
-                    "severity": "Error", 
+                    "message": " [error] 2318#0: 41 open() \"/app/static/dfgsdg\" failed (2: No such file or directory), client: 192.168.0.111, server: 30loops-cherrypyonloops-.30loops.net, request: \"GET /static/dfgsdg HTTP/1.1\", host: \"30loops-app-cherrypyonloops.30loops.net\"",
+                    "program": "nginx",
+                    "severity": "Error",
                     "timestamp": "2012-05-10T12:21:35.857585+00:00"
                 },
                 {
-                    "message": "  File \"/app/env/lib/python2.7/site-packages/gunicorn/arbiter.py\", line 488, in kill_workers", 
-                    "program": "gunicorn", 
-                    "severity": "Error", 
-                    "timestamp": "2012-05-22T15:58:54.375160+00:00"
-                }, 
+                    "message": "  File \"/app/env/lib/python2.7/site-packages/gunicorn/arbiter.py\", line 488, in kill_workers",
+                    "program": "gunicorn",
+                    "severity": "Error",
+                    "timestamp": "2012-05-22T15:58:54.3750.9+00:00"
+                },
                 {
-                    "message": "<module 'threading' from '/usr/lib/python2.7/threading.pyc'>", 
-                    "program": "gunicorn", 
-                    "severity": "Error", 
+                    "message": "<module 'threading' from '/usr/lib/python2.7/threading.pyc'>",
+                    "program": "gunicorn",
+                    "severity": "Error",
                     "timestamp": "2012-05-22T15:58:54.376792+00:00"
-                }, 
+                },
                 {
-                    "message": ":", 
-                    "program": "gunicorn", 
-                    "severity": "Error", 
+                    "message": ":",
+                    "program": "gunicorn",
+                    "severity": "Error",
                     "timestamp": "2012-05-22T15:58:54.376465+00:00"
-                }, 
+                },
                 {
-                    "message": " ignored", 
-                    "program": "gunicorn", 
-                    "severity": "Error", 
+                    "message": " ignored",
+                    "program": "gunicorn",
+                    "severity": "Error",
                     "timestamp": "2012-05-22T15:58:54.376949+00:00"
                 }
             ]
@@ -1657,7 +1713,7 @@ Billing and Usage API
 Showing App Usage
 -----------------
 
-.. http:get:: /1.0/{account}/app/{resource}/usage/
+.. http:get:: /0.9/{account}/app/{resource}/usage
 
     Retrieve the usage statistics for an app. With no parameter given, the
     request will return short usage stats for the current month.
@@ -1673,7 +1729,7 @@ Showing App Usage
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/app/thirtyblog/usage HTTP/1.1
+        GET /0.9/30loops/app/thirtyblog/usage HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -1687,11 +1743,16 @@ Showing App Usage
         {
             "app": "thirtyblog",
             "usage": {
-                "150": {
+                "0.9": {
                     "total_hours": 47
                 },
             }
         }
+
+If you query for details, the request also retrieves a list of the usage
+periods. Every change in the usage calculation, creates a new period entry. So
+if you scale an app from 1 to 2 instances, the currently running period is
+ended, and a new period is started, with 2 instances.
 
 .. _`logbook-api`:
 
@@ -1701,7 +1762,7 @@ Logbook API
 Showing Action Logbook
 ----------------------
 
-.. http:get:: /1.0/{account}/logbook/{uuid}/
+.. http:get:: /0.9/{account}/logbook/{uuid}
 
     Retrieve the whole logbook with that uuid.
 
@@ -1713,7 +1774,7 @@ Showing Action Logbook
 
     .. sourcecode:: http
 
-        GET /1.0/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205/ HTTP/1.1
+        GET /0.9/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205 HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -1728,7 +1789,7 @@ Showing Action Logbook
             "action": "AppDeployAction",
             "status": "running",
             "link": {
-                "href": "https://api.30loops.net/1.0/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205/",
+                "href": "https://api.30loops.net/0.9/30loops/logbook/eb920556-5197-11e1-bf5b-568837fa3205",
                 "rel": "self"
             },
             "messages": [
