@@ -145,20 +145,12 @@ Where UUID is the ID of the deployment task.
 After a succesfull deploy, your application will be availabl on the specified
 DNS record: ``http://30loops-app-cherrypyon30loops.30loops.net``.
 
-Guides
-======
+Where to go
+===========
 
-To continue, you should read the indepth :doc:`30loops platform guide <guide>`.
-We created a few guides with some sample applications. You can find examples
-for a lot of different applications and stacks on https://30loops.github.com/
-
-Django
-------
-- :doc:`Django CMS <django>`
-
-WSGI
-----
-- :doc:`Simple WSGI app <wsgi>`
+To continue, you should read the indepth :doc:`30loops platform manual
+<manual>`.  We created a few sample applications. You can find examples for a
+lot of different applications and stacks on https://30loops.github.com/
 
 Additional support
 ==================

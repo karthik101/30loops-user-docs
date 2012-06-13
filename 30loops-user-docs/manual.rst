@@ -778,23 +778,8 @@ http://upstart.ubuntu.com/cookbook/.
 
 Note: custom processes are completely unsupported!
 
-
-Guides
-======
-
-We created a few guides with some sample applications. This will be extended in
-the future with more samples.
-
-Django
-------
-- :doc:`Django CMS <django>`
-
-WSGI
-----
-- :doc:`Simple WSGI app <wsgi>`
-
 Github examples
----------------
+===============
 
 On http://30loops.github.com we created a collection of sample apps and tutorials.
 Please check it out, and let us know if you have recommendations for new apps!
