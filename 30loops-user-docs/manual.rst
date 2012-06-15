@@ -441,8 +441,13 @@ instance or on every instance. Example:
 
 This will install the cron after deploying your application.
 
-Running custom processes (unsupported!)
-=======================================
+Running custom processes
+========================
+
+.. note::
+
+    Currently we provide only limited support for running your own processes in
+    this way.
 
 It is possible to run your own custom processes. The processes will run as a
 non-privileged user. To create a custom process, you need to add a ``.init/``
@@ -481,8 +486,6 @@ line to the ``postinstall`` script:
 
 For more information about upstart processes, read the Ubuntu Upstart Cookbook:
 http://upstart.ubuntu.com/cookbook/.
-
-Note: custom processes are completely unsupported!
 
 Debugging your application
 ==========================
