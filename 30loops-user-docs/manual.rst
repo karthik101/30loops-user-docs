@@ -424,8 +424,7 @@ This would also be the correct place to run a syncdb after each deploy:
 ------------
 
 If you use ``setup.py`` to install dependencies, you can do so in a
-``postinstall_all`` hook. Since the postinstall hooks are run last, you also
-have to restart your app server. Its very easy, create in your repository root
+``postinstall_all`` hook. Its very easy, create in your repository root
 a file called ``postinstall_all``, make it executable and add the following
 lines to it:
 
@@ -433,7 +432,11 @@ lines to it:
 
     #!/bin/sh
     python setup.py install
-    restart gunicorn
+
+.. note::
+
+    Please note that we recommend you to use a requirements file to install
+    your dependencies. It results in faster deploys than using a ``setup.py``.
 
 We have an example django app, that uses a ``setup.py`` instead of a
 requirements file in our `github repository`_.
