@@ -254,13 +254,16 @@ string.
     export STATIC_ROOT="/app/static"
     export MEDIA_ROOT="/app/media"
     export DB_PORT="9999"
+    export LABEL="app"
+    export PORT="800"
     export PATH="/app/env/bin:/bin:/usr/bin"
-    export DB_USER="30loops-app-thirtyblog"
-    export DB_NAME="30loops-app-thirtyblog-production"
-    export DB_HOST="pg.30loops.net"
-    export DB_PASSWORD="ZjBmNDEyMWJj"
+    export DATABASE_USER="30loops-database-thirtyblog"
+    export DATABASE_NAME="30loops-database-thirtyblog"
+    export DATABASE_HOST="pg.30loops.net"
+    export DATABASE_PASSWORD="ZjBmNDEyMWJj"
+    export DATABASE_URL="postgres://30loops-database-thirtyblog:ZjBmNDEyMWJj@192.168.0.53:9999/30loops-database-thirtyblog"
     export DJANGO_SETTINGS_MODULE="settings"
-    export DJANGO_PROJECT_ROOT="thirtyblog"
+    export PROJECT_ROOT="thirtyblog"
     export MONGODB_NAME="30loops-mongodb-thirtyblog"
     export MONGODB_USER="30loops-mongodb-thirtyblog"
     export MONGODB_PASSWORD="DASDdsaw23DF"
@@ -284,14 +287,17 @@ Add to your script the following line.
         {'VIRTUAL_ENV': '/app/env'},
         {'STATIC_ROOT': '/app/static'},
         {'MEDIA_ROOT': '/app/media'},
-        {'DB_PORT': '9999'},
+        {'DATABASE_PORT': '9999'},
+        {'LABEL': 'app'},
+        {'PORT': '8000'},
         {'PATH': '/app/env/bin:/bin:/usr/bin'},
-        {'DB_USER': '30loops-app-thirtyblog'},
-        {'DB_NAME': '30loops-app-thirtyblog-production'},
-        {'DB_HOST': 'pg.30loops.net'},
-        {'DB_PASSWORD': 'ZjBmNDEyMWJj'},
+        {'DATABASE_USER': '30loops-app-thirtyblog'},
+        {'DATABASE_NAME': '30loops-app-thirtyblog-production'},
+        {'DATABASE_HOST': 'pg.30loops.net'},
+        {'DATABASE_PASSWORD': 'ZjBmNDEyMWJj'},
+        {'DATABASE_URL': 'postgres://30loops-database-thirtyblog:ZjBmNDEyMWJj@192.168.0.53:9999/30loops-database-thirtyblog'},
         {'DJANGO_SETTINGS_MODULE': 'settings'},
-        {'DJANGO_PROJECT_ROOT': 'thirtyblog'},
+        {'PROJECT_ROOT': 'thirtyblog'},
         {'APP_USER': '30loops-app-thirtyblog'},
         {'MONGODB_NAME': '30loops-mongodb-thirtyblog'}
         {'MONGODB_USER': '30loops-mongodb-thirtyblog'}
