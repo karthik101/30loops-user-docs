@@ -167,6 +167,10 @@ options available:
 
     requirements = requirements.txt
 
+  To use a requirements file for dependencies is the prefered way to install
+  any 3rd party modules. But if you want to use a ``setup.py``, you can also do
+  that. See :ref:`setup.py` for more information.
+
 **Example**
 
 .. code-block:: ini
@@ -413,6 +417,28 @@ This would also be the correct place to run a syncdb after each deploy:
 
     The deployment process will fail if the script ends with an error return
     code!
+
+.. _`setup.py`:
+
+``setup.py``
+------------
+
+If you use ``setup.py`` to install dependencies, you can do so in a
+``postinstall_all`` hook. Since the postinstall hooks are run last, you also
+have to restart your app server. Its very easy, create in your repository root
+a file called ``postinstall_all``, make it executable and add the following
+lines to it:
+
+.. code-block:: bash
+
+    #!/bin/sh
+    python setup.py install
+    restart gunicorn
+
+We have an example django app, that uses a ``setup.py`` instead of a
+requirements file in our `github repository`_.
+
+.. _`github repository`: https://github.com/30loops/django-on-30loops
 
 Cronjobs
 ========

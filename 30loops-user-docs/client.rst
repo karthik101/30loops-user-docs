@@ -309,7 +309,7 @@ update ``<app>``
 
 **Example**
 
-.. code-block::
+.. code-block:: bash
 
     $ thirty update cherryonloops --add-cname www.example.org
 
@@ -345,7 +345,7 @@ Update the configuration of a repository.
 
 **Example**
 
-.. code-block::
+.. code-block:: bash
 
     $ thirty update cherryonloops.repository --key ~/new_key.pub
 
