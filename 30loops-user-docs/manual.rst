@@ -264,6 +264,7 @@ string.
     export DATABASE_URL="postgres://30loops-database-thirtyblog:ZjBmNDEyMWJj@192.168.0.53:9999/30loops-database-thirtyblog"
     export DJANGO_SETTINGS_MODULE="settings"
     export PROJECT_ROOT="thirtyblog"
+    export DJANGO_ROOT="thirtyblog"
     export MONGODB_NAME="30loops-mongodb-thirtyblog"
     export MONGODB_USER="30loops-mongodb-thirtyblog"
     export MONGODB_PASSWORD="DASDdsaw23DF"
@@ -298,6 +299,7 @@ Add to your script the following line.
         {'DATABASE_URL': 'postgres://30loops-database-thirtyblog:ZjBmNDEyMWJj@192.168.0.53:9999/30loops-database-thirtyblog'},
         {'DJANGO_SETTINGS_MODULE': 'settings'},
         {'PROJECT_ROOT': 'thirtyblog'},
+        {'DJANGO_ROOT': 'thirtyblog'},
         {'APP_USER': '30loops-app-thirtyblog'},
         {'MONGODB_NAME': '30loops-mongodb-thirtyblog'}
         {'MONGODB_USER': '30loops-mongodb-thirtyblog'}
