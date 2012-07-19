@@ -1900,3 +1900,13 @@ command through ``python -m json.tool``, eg:
         }, 
         "username": "crito"
     }
+
+Add a new user to your account
+------------------------------
+
+To create an new user, run the following command and replace the needed fields
+as needed:
+
+.. code-block:: bash
+
+    ~ curl -XPOST -k -H "Content-Type: application/json" -u <USERNAME> https://api.30loops.net/0.9/<ACCOUNT>/users -d '{"username": "<NEW_USERNAME>", "email": "<EMAIL_ADDRESS>", "password": "<NEWPASS>"}'
