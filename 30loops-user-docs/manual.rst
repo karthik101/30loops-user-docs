@@ -102,8 +102,8 @@ myawesomeblog.app import application`` are possible then.
 
 .. _runtime-configuration-label:
 
-``thirty.ini`` Runtime Configuration
-====================================
+``thirty.ini``
+==============
 
 When you deploy an application, we will clone your repository and look for a
 ``thirty.ini`` file in your repository root directory. This file is used to
@@ -273,7 +273,7 @@ supply your S3 credentials or other app specific information to the instances.
 .. _instance-environment-label:
 
 Environment Variables
----------------------
+=====================
 
 You can access the most important values of your environment inside of an
 instance. There are two files, ``/app/conf/environment.conf`` and
@@ -354,7 +354,7 @@ For your python application you can use something like:
     print env['DB_PORT']
 
 Runtime environment
--------------------
+===================
 
 The instances run on Ubuntu 12.04 with Python 2.7.3, and contain the following
 installed python system packages::
@@ -410,7 +410,7 @@ installed python system packages::
     python-zmq 2.1.11-1
 
 Static and Media files
-----------------------
+======================
 
 Static content are files like css or javascript. They get placed with every
 deploy. Each instance has its own copies of those files. Media files are shared
@@ -424,7 +424,7 @@ media files from the path ``/media/``. The path locations on the instance are
 app accordingly if needed.
 
 Postinstall hook
-----------------
+================
 
 After each deploy the scripts ``postinstall`` and ``postinstall_all`` are
 executed. The ``postinstall`` script runs only on the first created instance,
@@ -464,7 +464,7 @@ This would also be the correct place to run a syncdb after each deploy:
 .. _`setup.py`:
 
 ``setup.py``
-------------
+============
 
 If you use ``setup.py`` to install dependencies, you can do so in a
 ``postinstall_all`` hook. Its very easy, create in your repository root
