@@ -103,7 +103,7 @@ myawesomeblog.app import application`` are possible then.
 .. _runtime-configuration-label:
 
 ``thirty.ini`` Runtime Configuration
-------------------------------------
+====================================
 
 When you deploy an application, we will clone your repository and look for a
 ``thirty.ini`` file in your repository root directory. This file is used to
@@ -171,6 +171,11 @@ options available:
   any 3rd party modules. But if you want to use a ``setup.py``, you can also do
   that. See :ref:`setup.py` for more information.
 
+**systempackages** (unsupported!)
+  Specify packages to be installed in your instances. The packages must be available
+  in the standard Ubuntu Precise repositories.
+
+
 **Example**
 
 .. code-block:: ini
@@ -179,6 +184,7 @@ options available:
     python_version = python2.7
     root = .
     requirements = requirements.txt
+    systempackages = memcached
 
 ``wsgi`` Section
 ----------------
@@ -207,33 +213,53 @@ options available:
 **settings** (default: settings)
   The python path to your settings file from your project root.
 
-**inject_db** (default: False)
-  Whether to inject the database configuration into your django settings. The
-  injected database settings are placed at the end your settings file and
-  therefore override any previous defined database settings. The template used
-  looks like this::
-
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': '{{ db_name }}',
-            'USER': '{{ db_user }}',
-            'PASSWORD': '{{ db_password }}',
-            'HOST': '{{ db_host }}',
-            'PORT': '{{ db_port }}',
-        }
-    }
-
-  If you want more control over your database settings, you should use
-  :ref:`instance-environment-label` mechanism to write your settings.
-
 **Example**
 
 .. code-block:: ini
 
     [django]
     settings = settings.production
-    inject_db = false
+
+Custom processes Section
+------------------------
+
+The processes section can be used to run custom processes. To allow running
+different processes on both the app instances and the worker instances, we 
+splitted this in:
+
+``app:processes``
+
+and 
+
+``worker:processes``
+
+To define a process, simply supply a name and the command to run. We will take 
+care of generating the configuration and piping stdout and stderr to the logging.
+
+**Example**
+
+.. code-block:: ini
+
+    [app:processes]
+    gunicorn = gunicorn_django graphite.settings
+
+    [worker:processes]
+    carbon = python $PROJECT_ROOT/graphite/bin/carbon-cache.py --debug start
+
+
+``variables`` Section
+---------------------
+
+This section can be used to define custom environment variables. This way you can
+supply your S3 credentials or other app specific information to the instances.
+
+**Example**
+
+.. code-block:: ini
+
+    [variables]
+    PYTHONPATH = $PROJECT_ROOT/graphite:$PROJECT_ROOT/graphite/lib
+    GRAPHITE_STORAGE_DIR = $HOME/data
 
 .. _instance-environment-label:
 
@@ -486,43 +512,35 @@ Running custom processes
     Currently we provide only limited support for running your own processes in
     this way.
 
-It is possible to run your own custom processes. The processes will run as a
-non-privileged user. To create a custom process, you need to add a ``.init/``
-directory to your repository. In this ``.init/`` directory you need to create
-an upstart file, that will be started after the deploy of an instance.
+The processes section in the `thirty.ini` configuration file can be used to run 
+custom processes. To allow running different processes on both the app instances 
+and the worker instances, we splitted this in:
 
-So the tree could look like:
+``app:processes``
 
-.. code-block:: bash
+and 
 
-    +--> .init
-    |    +--> myprocess.conf
-    +--> mycms
-    |    +--> ..
-    +--> requirements.txt
-    +--> postinstall
+``worker:processes``
 
-The process file is an upstart configuration file. A very simple example:
+To define a process, simply supply a name and the command to run. We will take 
+care of generating the configuration and piping stdout and stderr to the logging.
 
-.. code-block:: bash
+**Example**
 
-    $ cat .init/myprocess.conf
-    respawn
+.. code-block:: ini
 
-    exec /app/mycms/mycms/mycustomprocess
+    [app:processes]
+    gunicorn = gunicorn_django graphite.settings
 
-The process will not be started by default, so you need to add an additional
-line to the ``postinstall`` script:
+    [worker:processes]
+    carbon = python $PROJECT_ROOT/graphite/bin/carbon-cache.py --debug start
+
+To get logs from the custom processes, you have to provide the process name to
+the logs command:
 
 .. code-block:: bash
 
-    $ cat postinstall
-    #!/bin/sh
-    crontab mycrontab
-    start myprocess
-
-For more information about upstart processes, read the Ubuntu Upstart Cookbook:
-http://upstart.ubuntu.com/cookbook/.
+    thirty logs myapplication --process mycustomprocess
 
 Debugging your application
 ==========================
