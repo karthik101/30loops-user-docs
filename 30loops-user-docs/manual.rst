@@ -131,8 +131,8 @@ Currently this file can contain three different sections:
 Every app needs an ``environment`` section, and then depending on your app, you
 have to define either a ``wsgi`` section or a ``django`` section.
 
-``environment`` Section
------------------------
+``[environment]``
+-----------------
 
 In this section you configure your python environment. You have the following
 options available:
@@ -186,8 +186,8 @@ options available:
     requirements = requirements.txt
     systempackages = memcached
 
-``wsgi`` Section
-----------------
+``[wsgi]``
+--------
 
 **wsgi**
   WSGI entrypoints have to be specified in the following format:
@@ -207,8 +207,8 @@ options available:
     [wsgi]
     entrypoint = wsgiapp.main:app
 
-``django`` Section
-------------------
+``[django]``
+------------
 
 **settings** (default: settings)
   The python path to your settings file from your project root.
@@ -220,18 +220,12 @@ options available:
     [django]
     settings = settings.production
 
-Custom processes Section
-------------------------
+``[app:processes]``
+-------------------
 
-The processes section can be used to run custom processes. To allow running
+The custom processes section can be used to run custom processes. To allow running
 different processes on both the app instances and the worker instances, we 
-splitted this in:
-
-``app:processes``
-
-and 
-
-``worker:processes``
+splitted this in `[app:processes]` and `[worker:processes]`.
 
 To define a process, simply supply a name and the command to run. We will take 
 care of generating the configuration and piping stdout and stderr to the logging.
@@ -243,12 +237,27 @@ care of generating the configuration and piping stdout and stderr to the logging
     [app:processes]
     gunicorn = gunicorn_django graphite.settings
 
+
+``[worker:processes]``
+----------------------
+
+The custom processes section can be used to run custom processes. To allow running
+different processes on both the app instances and the worker instances, we 
+splitted this in `[app:processes]` and `[worker:processes]`.
+
+To define a process, simply supply a name and the command to run. We will take 
+care of generating the configuration and piping stdout and stderr to the logging.
+
+**Example**
+
+.. code-block:: ini
+
     [worker:processes]
     carbon = python $PROJECT_ROOT/graphite/bin/carbon-cache.py --debug start
 
 
-``variables`` Section
----------------------
+``[variables]``
+---------------
 
 This section can be used to define custom environment variables. This way you can
 supply your S3 credentials or other app specific information to the instances.
