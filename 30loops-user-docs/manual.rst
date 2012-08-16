@@ -187,7 +187,7 @@ options available:
     systempackages = memcached
 
 ``[wsgi]``
---------
+----------
 
 **wsgi**
   WSGI entrypoints have to be specified in the following format:

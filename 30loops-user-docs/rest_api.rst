@@ -80,11 +80,15 @@ URL                                    HTTP Verb  Function
 Billing and Usage API
 ---------------------
 
-=====================================  =========  ===========================
-URL                                    HTTP Verb  Function
-=====================================  =========  ===========================
-/0.9/{account}/app/{resource}/usage    GET        `Showing App Usage`_
-=====================================  =========  ===========================
+=================================================   =========  =============================
+URL                                                 HTTP Verb  Function
+=================================================   =========  =============================
+/0.9/{account}/invoices                             GET        `Listing Invoices`_
+/0.9/{account}/invoices/current                     GET        `Showing Current Invoice`_
+/0.9/{account}/invoices/{invoice_nr}                GET        `Showing Past Invoices`_
+/0.9/{account}/app/{resource}/usage/current         GET        `Showing Current App Usage`_
+/0.9/{account}/app/{resource}/usage/{invoice_nr}    GET        `Showing Past App Usage`_
+=================================================   =========  =============================
 
 Logbook API
 -----------
@@ -1591,8 +1595,8 @@ production`` you just specify the foll wing command: ``syncdb``.
   integer for the number of backends to run it on or ``all``. Defaults to
   ``1``.
 
-Scale Instances Actions
------------------------
+App Scale Instances Action
+--------------------------
 
 You can scale a running app or worker. Scaling means to change the amount of
 instances that the app or worker is deployed to. This happens without
@@ -1629,6 +1633,35 @@ it to 0 instances
 *instances* (integer or string)
   Specify the number of instances the app or worker should be scaled to. This
   number is the target number of instances you want to end up with.
+
+App Publish Action
+------------------
+
+Every app gets created on the free tier per default. To go live with an app,
+you have to publish it. That will move it to the paid tier, and lift any
+restrictions set on it. This action takes no options.
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    POST /0.9/30loops/app/thirtyblog HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+    Host: api.30loops.net
+
+    {
+        "action": "publish",
+    }
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 202 ACCEPTED
+    Content-Type: application/json; charset=UTF-8
+    Location: https://api.30loops.net/0.9/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-0.99507dbcf2
+
+**actions:** publish
 
 .. _`logs-api`:
 
@@ -1710,26 +1743,22 @@ Showing Logs
 Billing and Usage API
 =====================
 
-Showing App Usage
------------------
+Listing Invoices
+----------------
 
-.. http:get:: /0.9/{account}/app/{resource}/usage
+.. http:get:: /0.9/{account}/invoices
 
-    Retrieve the usage statistics for an app. With no parameter given, the
-    request will return short usage stats for the current month.
+    Retrieve a list of all past invoices. You find here also past usage stats.
+    Note the current running invoice is not part of this listing.
 
     :param account: The name of the account.
-    :param resource: The name of the app.
-    :query details: Can be `true`, to show a detailed listing.
-    :query month: The month as a number from 1-12. Show stats for this month.
-    :query year: The year as a number. Show stats for the month of that year.
     :status 200: Returns the usage stats.
 
     **Example Request:**
 
     .. sourcecode:: http
 
-        GET /0.9/30loops/app/thirtyblog/usage HTTP/1.1
+        GET /0.9/30loops/invoices HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -1741,18 +1770,228 @@ Showing App Usage
         Content-Type: application/json; charset=UTF-8
 
         {
-            "app": "thirtyblog",
-            "usage": {
-                "0.9": {
-                    "total_hours": 47
+            "items": [
+                {
+                    "invoice_number": 1,
+                    "link": {
+                        "href": "https://api.30loops.net/0.9/30loops/invoices/1",
+                        "rel": "item"
+                    }
                 },
+            ],
+            "link": {
+                "href": "https://api.30loops.net/0.9/30loops/invoices",
+                "rel": "self"
+            },
+            "size": 1
+        }
+
+Showing Current Invoice
+-----------------------
+
+.. http:get:: /0.9/{account}/invoices/current
+
+    Retrieve the details of the current, running invoice. This invoice has not
+    yet been billed, and your current usage is tracked here. You find the
+    current resource usage, seperated by free and paid tier.
+
+    :param account: The name of the account.
+    :status 200: Returns the usage stats.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        GET /0.9/30loops/invoices/current HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "billing_datetime": "2012-09-15T16:33:56.211000+02:00",
+            "created": "2012-08-16T16:33:56.211000+02:00",
+            "free": [
+                {
+                    "item": "Postgresql Micro",
+                    "quantity": 3,
+                    "unit": "count"
+                },
+                {
+                    "item": "Instance 150MB",
+                    "quantity": 6,
+                    "unit": "hours"
+                }
+            ],
+            "invoice_number": 4,
+            "link": {
+                "href": "https://api.30loops.net/0.9/30loops/invoices/4",
+                "rel": "self"
+            },
+            "paid": [
+                {
+                    "item": "MongoDB Micro",
+                    "quantity": 1,
+                    "unit": "count"
+                },
+                {
+                    "item": "Instance 150MB",
+                    "quantity": 8,
+                    "unit": "hours"
+                },
+                {
+                    "item": "Postgresql Micro",
+                    "quantity": 2,
+                    "unit": "count"
+                }
+            ]
+        }
+
+Showing Past Invoices
+---------------------
+
+.. http:get:: /0.9/{account}/invoices/{invoice_nr}
+
+    Retrieve the details of a single invoice. Only usage that is collected on
+    the paid tier is shown. Free tier usage is not stored.
+
+    :param account: The name of the account.
+    :param invoice_nr: The number of the invoice to retrieve.
+    :status 200: Returns the usage stats.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        GET /0.9/30loops/invoices/1 HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "billing_datetime": "2012-08-16T16:33:55.211000+02:00",
+            "created": "2012-08-15T17:29:29.117000+02:00",
+            "invoice_number": 1,
+            "link": {
+                "href": "https://api.30loops.net/0.9/30loops/invoices/1",
+                "rel": "self"
+            },
+            "paid": [
+                {
+                    "item": "Instance 150MB",
+                    "quantity": 1503,
+                    "unit": "hours"
+                },
+                {
+                    "item": "Postgresql Micro",
+                    "quantity": 1,
+                    "unit": "count"
+                }
+            ]
+        }
+
+Showing Current App Usage
+-------------------------
+
+.. http:get:: /0.9/{account}/app/{resource}/usage/current
+
+    Retrieve the current usage statistics for a specific resource. Usage is
+    seperated between free and paid tier.
+
+    :param account: The name of the account.
+    :param resource: The name of the app.
+    :status 200: Returns the usage stats.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        GET /0.9/30loops/app/thirtyblog/usage/current HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "billing_datetime": "2012-09-15T16:33:56.211000+02:00", 
+            "created": "2012-08-16T16:33:56.211000+02:00", 
+            "free": {
+                "item": "Instance 150MB", 
+                "quantity": 3, 
+                "unit": "hours"
+            }, 
+            "invoice_number": 4, 
+            "link": {
+                "href": "https://api.30loops.net/0.9/30loops/app/thirtyblog/usage/current", 
+                "rel": "self"
+            }, 
+            "paid": {
+                "item": "Instance 150MB", 
+                "quantity": 2, 
+                "unit": "hours"
             }
         }
 
-If you query for details, the request also retrieves a list of the usage
-periods. Every change in the usage calculation, creates a new period entry. So
-if you scale an app from 1 to 2 instances, the currently running period is
-ended, and a new period is started, with 2 instances.
+Showing Past App Usage
+----------------------
+
+.. http:get:: /0.9/{account}/app/{resource}/usage/{invoice_nr}
+
+    Retrieve past usage statistics for a specific resource. Usage is
+    seperated between free and paid tier. The invoice_nr is synced with the
+    invoice number (see above). If you delete a resource, historical usage data
+    is deleted too.
+
+    :param account: The name of the account.
+    :param resource: The name of the app.
+    :param invoice_nr: Query the billing cycle with this invoice number.
+    :status 200: Returns the usage stats.
+
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        GET /0.9/30loops/app/thirtyblog/usage/3 HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json; charset=UTF-8
+
+        {
+            "billing_datetime": "2012-09-15T16:33:56.211000+02:00", 
+            "created": "2012-08-16T16:33:56.211000+02:00", 
+            "invoice_number": 3, 
+            "link": {
+                "href": "https://api.30loops.net/0.9/30loops/app/thirtyblog/usage/3", 
+                "rel": "self"
+            }, 
+            "paid": {
+                "item": "Instance 150MB", 
+                "quantity": 2, 
+                "unit": "hours"
+            }
+        }
 
 .. _`logbook-api`:
 
@@ -1889,15 +2128,15 @@ command through ``python -m json.tool``, eg:
 
 .. code-block:: bash
 
-    ~  curl -X PUT -ucrito -H "Content-Type: application/json" -k https://api.30loops.net/0.9/30loops/users/crito -d '{"email": "crito@30loops.net"}' | python -m json.tool 
+    ~  curl -X PUT -ucrito -H "Content-Type: application/json" -k https://api.30loops.net/0.9/30loops/users/crito -d '{"email": "crito@30loops.net"}' | python -m json.tool
     Enter host password for user 'crito':
     {
-        "email": "crito@30loops.net", 
-        "is_active": true, 
+        "email": "crito@30loops.net",
+        "is_active": true,
         "link": {
-            "href": "https://api.30loops.net/0.9/30loops/users/crito", 
+            "href": "https://api.30loops.net/0.9/30loops/users/crito",
             "rel": "self"
-        }, 
+        },
         "username": "crito"
     }
 
