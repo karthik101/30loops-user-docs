@@ -48,6 +48,7 @@ To get the help for a specific action or an action target, type:
 
 .. _thirty-client-global-options:
 
+
 Global Options
 ==============
 
@@ -116,9 +117,9 @@ resource.
 
     $ thirty list
 
-    cherryonloops
-        repository: cherryonloops
-        database: 30loops-db-cherryonloops
+    cherryon30loops
+        repository: cherryon30loops
+        database: 30loops-db-cherryon30loops
     website
         repository: website
         database: 30loops-database-website
@@ -137,22 +138,22 @@ the details of all resources associated to this app.
 
 ::
 
-    $ thirty show cherryonloops
+    $ thirty show cherryon30loops
 
-    name: cherryonloops
+    name: cherryon30loops
     variant: python
     region: ams1
     instances: 1
     repo_commit: HEAD
-    dns_record: 30loops-app-cherryonloops.30loops.net
+    dns_record: 30loops-app-cherryon30loops.30loops.net
     repository
-        name: cherryonloops
+        name: cherryon30loops
         variant: git
         location: git://github.com/30loops/cherrypy-on-30loops.git
     database
-        name: 30loops-db-cherryonloops
+        name: 30loops-db-cherryon30loops
         variant: postgres
-        username: 30loops-db-cherryonloops
+        username: 30loops-db-cherryon30loops
         host: 192.168.0.53
         password: MWRjZWViY2Rk
         port: 9999
@@ -182,7 +183,7 @@ Create a new app.
 
 .. code-block:: bash
 
-    $ thirty create cherryonloops git://github.com/30loops/cherrypy-on-30loops.git
+    $ thirty create cherryon30loops git://github.com/30loops/cherrypy-on-30loops.git
 
 **Required Arguments**
 
@@ -229,7 +230,7 @@ Create a new repository and attach it to <app>
 
 .. code-block:: bash
 
-    $ thirty create cherryonloops.repository git://github.com/30loops/cherrypy-on-30loops.git --name cherrypyon30loops
+    $ thirty create cherryon30loops.repository git://github.com/30loops/cherrypy-on-30loops.git --name cherrypyon30loops
 
 **Required Arguments**
 
@@ -311,7 +312,7 @@ update ``<app>``
 
 .. code-block:: bash
 
-    $ thirty update cherryonloops --add-cname www.example.org
+    $ thirty update cherryon30loops --add-cname www.example.org
 
 **Optional Arguments**
 
@@ -347,7 +348,7 @@ Update the configuration of a repository.
 
 .. code-block:: bash
 
-    $ thirty update cherryonloops.repository --key ~/new_key.pub
+    $ thirty update cherryon30loops.repository --key ~/new_key.pub
 
 **Optional Arguments**
 
@@ -373,7 +374,7 @@ Update the configuration of a worker.
 
 .. code-block:: bash
 
-    $ thirty update cherryonloops.worker --instances 3
+    $ thirty update cherryon30loops.worker --instances 3
 
 **Optional Arguments**
 
@@ -415,13 +416,33 @@ requirements, you have to make a clean deploy.
 
 .. code-block:: bash
 
-    $ thirty deploy -c cherryonloops
+    $ thirty deploy -c cherryon30loops
 
 **Optional Arguments**
 
 ``--clean, -c``
   Perform a clean deploy. This rebuilds the virtualenv during the deploy. This
   takes longer than a normal deploy.
+
+publish
+-------
+
+::
+
+    thirty publish <app>
+
+Publish an app. By default apps are created as development apps. This means that
+they will be shutdown after 6 hours of inactivity, and that they are only
+accessible over their assigned URL, not over custom domains.
+
+Publishing an app means that the app is upgraded to a paid app. This has several
+advantages, like the use of custom domains and the fact that they are always on.
+
+**Example**
+
+.. code-block:: bash
+
+    $ thirty publish cherryon30loops
 
 runcmd
 ------
@@ -488,13 +509,13 @@ always use the settings path you specified in the environment file.
 
 .. code-block:: bash
 
-    $ thirty djangocmd cherryonloops syncdb
+    $ thirty djangocmd cherryon30loops syncdb
 
 is equivalent to
 
 .. code-block:: bash
 
-    $ thirty runcmd cherryonloops python manage.py syncdb --settings settings
+    $ thirty runcmd cherryon30loops python manage.py syncdb --settings settings
 
 djangocmd ``<app>``
 ~~~~~~~~~~~~~~~~~~~
@@ -558,7 +579,7 @@ Scale the number of app instances.
 
 .. code-block:: bash
 
-    $ thirty scale cherryonloops 4
+    $ thirty scale cherryon30loops 4
 
 **Required Arguments**
 
@@ -579,13 +600,51 @@ Scale the number of worker instances.
 
 .. code-block:: bash
 
-    $ thirty scale cherryonloops.worker 0
+    $ thirty scale cherryon30loops.worker 0
 
 **Required Arguments**
 
 ``<instances>``
   Number of worker instances to scale to. This is the final number of <app>
   instances.
+
+restoredb
+---------
+
+::
+
+    thirty restoredb <app>.database <location>
+
+Restores a database from a specified URL. The current database will be deleted,
+and a new database will be created and restored from the specified database 
+dump.
+
+The command we use internally to restore the database is:
+
+.. code-block:: bash
+
+    pg_restore --clean --no-acl --no-owner -d <database>
+
+To make sure the database is restored correctly, you should dump your database
+with the following command:
+
+.. code-block:: bash
+
+    pg_dump -Fc --no-acl --no-owner <database> > <dumpfile>
+
+**Example:**
+
+.. code-block:: bash
+
+    thirty restoredb cherrypyon30loops http://mywebpage.com/database.dump
+
+**Required Arguments:**
+
+``<app>.database``
+  The database resource.
+
+``<location>``
+  The location of the database dump file.
 
 logs
 ----
