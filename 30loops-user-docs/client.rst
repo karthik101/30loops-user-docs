@@ -98,8 +98,32 @@ The configuration file follows a simple INI style and collects all global
 options under a section called ``[thirtyloops]``. Global options specified on
 the command line take precedence over options specified in the config file.
 
+You can run ``thirty setup``, to create the initial configuration file. A
+simple wizard will help you.
+
 Actions
 =======
+
+setup
+-----
+
+::
+
+    thirty setup
+
+Setup the initial configuration file. If a file already exists, the setup
+wizard will not overwrite the existing file.
+
+**Example:**
+
+::
+
+    $ thirty setup
+
+    Please enter your accountname: 30loops
+    Please enter your username: crito
+    Password:
+    The configuration file has been created. You can now use the client.
 
 list
 ----
@@ -144,6 +168,7 @@ the details of all resources associated to this app.
     variant: python
     region: ams1
     instances: 1
+    published: False
     repo_commit: HEAD
     dns_record: 30loops-app-cherryon30loops.30loops.net
     repository
@@ -304,8 +329,9 @@ update ``<app>``
 ::
 
     thirty update <app> [--add-cname ADD_CNAME] [--del-cname DEL_CNAME]
-                         [--instances INSTANCES] [--region REGION]
-                         [--repository REPOSITORY] [--repo-commit REPO_COMMIT]
+                        [--instances INSTANCES] [--repository REPOSITORY]
+                        [--repo-commit REPO_COMMIT] [--add-var ADD_VAR]
+                        [--del-var DEL_VAR]
 
 
 **Example**
@@ -333,6 +359,17 @@ update ``<app>``
 
 ``--repo-commit REPO_COMMIT``
   Commit or branch of the repository to clone.
+
+``--add-var ADD_VAR``
+  Add a new environment variable to your application. Specify the variable in
+  this format: ``VARIABLE=VALUE``. Those values are accesible inside your
+  applications environment. Note that you can also specify environment variables
+  in your ``thirty.ini`` file. If you dont wanna store sensitive values in a
+  public repository, use this mechanism. Otherwise prefer the ``thirty.ini``
+  over this method.
+
+``--del-var DEL_VAR``
+  Delete an environment variable from your app.
 
 update ``<app>.repository``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -366,7 +403,9 @@ update ``<app>.worker``
 
 ::
 
-    thirty update <app>.worker --instances INSTANCES
+    thirty update <app>.worker [--instances INSTANCES] [--add-var ADD_VAR]
+                               [--del-var DEL_VAR]
+
 
 Update the configuration of a worker.
 
@@ -383,6 +422,17 @@ Update the configuration of a worker.
   configuration of the worker. For this setting to take effect, you need to
   deploy the worker again. Or you use the `scale`_ command that immediately
   scales the worker.
+
+``--add-var ADD_VAR``
+  Add a new environment variable to your worker. Specify the variable in
+  this format: ``VARIABLE=VALUE``. Those values are accesible inside your
+  workers environment. Note that you can also specify environment variables
+  in your ``thirty.ini`` file. If you dont wanna store sensitive values in a
+  public repository, use this mechanism. Otherwise prefer ``thirty.ini``
+  over this method.
+
+``--del-var DEL_VAR``
+  Delete an environment variable from your worker.
 
 delete
 ------
@@ -424,6 +474,8 @@ requirements, you have to make a clean deploy.
   Perform a clean deploy. This rebuilds the virtualenv during the deploy. This
   takes longer than a normal deploy.
 
+.. _publish-client-action:
+
 publish
 -------
 
@@ -431,12 +483,10 @@ publish
 
     thirty publish <app>
 
-Publish an app. By default apps are created as development apps. This means that
-they will be shutdown after 6 hours of inactivity, and that they are only
-accessible over their assigned URL, not over custom domains.
-
-Publishing an app means that the app is upgraded to a paid app. This has several
-advantages, like the use of custom domains and the fact that they are always on.
+Publish an app. By default apps are created as free tier apps. Several
+restrictions apply on those apps. To go live with an app, you have to publish
+it. This removes any restrictions set due to the free tier. See
+:ref:`tier-label` for more information about free tier restrictions.
 
 **Example**
 
@@ -608,12 +658,12 @@ Scale the number of worker instances.
   Number of worker instances to scale to. This is the final number of <app>
   instances.
 
-restoredb
----------
+restore
+-------
 
 ::
 
-    thirty restoredb <app>.database <location>
+    thirty restore <app>.database <location>
 
 Restores a database from a specified URL. The current database will be deleted,
 and a new database will be created and restored from the specified database 
@@ -640,11 +690,35 @@ with the following command:
 
 **Required Arguments:**
 
-``<app>.database``
-  The database resource.
-
 ``<location>``
   The location of the database dump file.
+
+restart
+-------
+
+::
+
+    thirty restart <resource>
+
+Restart all running process for your resource.
+
+restart ``<app>``
+~~~~~~~~~~~~~~~~~
+
+::
+
+    thirty restart <app>
+
+Restart all app processes.
+
+restart ``<app>.worker``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    thirty restart <app>.worker
+
+Restart all worker processes.
 
 logs
 ----

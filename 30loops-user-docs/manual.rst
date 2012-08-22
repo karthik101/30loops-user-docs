@@ -100,6 +100,27 @@ By setting ``root`` in your ``thirty.ini`` to ``src/myawsomeblog/``, the right
 directory gets added to the python path. Import paths like ``from
 myawesomeblog.app import application`` are possible then.
 
+.. _tier-label:
+
+Free Tier
+---------
+
+Every app gets initially created as a free tier app. Its meant for you to be
+able to quickly develop and try out things without having to pay for it. We
+place several restrictions on those apps:
+
+- Those apps are shutdown, 6 hours after their last deploy. That means if you
+  want to work again on them, at a later point, you have to redeploy.
+- You cant configure any cname records on those apps. Only the dns record we
+  configure for your application is valid.
+
+Once you wanna go live with your application, you can publish it. That will
+remove the above mentioned restrictions placed on your app. To be able to do
+that, you have to sign up for a paid plan. See :ref:`paid-plan-label` on how to
+do that. The easiest way to publish your app is to use the :ref:`command line
+tool <publish-client-action>`. You can also use the :ref:`REST API
+<publish-rest-action>`.
+
 .. _runtime-configuration-label:
 
 ``thirty.ini``
@@ -589,6 +610,29 @@ of a separate process, you can use the ``--process`` option:
 
 Currently we capture logs from `nginx`, `gunicorn` and `postgres`. To 
 limit the number of returned log entries, use the ``--limit`` option.
+
+.. _paid-plan-label:
+
+Upgrading to a paid plan
+========================
+
+When you create an account on 30loops, you are subscribed to the free plan. If
+you want to run your apps on 30loops without any restrictions, you will have to
+upgrade to a paid plan. Every account owns a plan upgrade URI. You can view it
+when retrieving your account details.
+
+.. code-block:: bash
+
+    curl -X GET -ucrito -k https://api.30loops.net/0.9/30loops | python -m json.tool
+
+    {
+        ...
+        "plan_upgrade_uri": "https://30loops.chargevault.com/update?key=ba72848e61&code=30loops"
+        ...
+    }
+
+Visit this URI in your browser to change the plan and enter your billing
+details.
 
 Github examples
 ===============

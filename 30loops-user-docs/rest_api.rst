@@ -1634,6 +1634,8 @@ it to 0 instances
   Specify the number of instances the app or worker should be scaled to. This
   number is the target number of instances you want to end up with.
 
+.. _publish-rest-action:
+
 App Publish Action
 ------------------
 
