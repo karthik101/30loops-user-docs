@@ -1469,8 +1469,10 @@ Queue Action
 Actions
 =======
 
-App Deploy Action
------------------
+Deploy Action
+-------------
+
+**Target Resources:** app
 
 After you configured an application, you can deploy it to the platform.
 
@@ -1506,8 +1508,10 @@ After you configured an application, you can deploy it to the platform.
   created. If set to False, the old bundle gets reused, and only the source
   code gets updated.
 
-App Runcommand Action
----------------------
+Runcommand Action
+-----------------
+
+**Target Resources:** app, worker
 
 You can execute single commands in the context of your application. The command
 is executed with your repository as working directory, so if in the root of
@@ -1550,8 +1554,10 @@ command: ``python init_db.py``.
   integer for the number of backends to run it on or ``all``. Defaults to
   ``1``.
 
-App Django Management Action
-----------------------------
+Django Management Action
+------------------------
+
+**Target Resources:** app, worker
 
 Run a django management command in the context of your django project root. The
 working directory of this call is your django project root. You don't have to
@@ -1598,6 +1604,8 @@ production`` you just specify the foll wing command: ``syncdb``.
 App Scale Instances Action
 --------------------------
 
+**Target Resources:** app, worker
+
 You can scale a running app or worker. Scaling means to change the amount of
 instances that the app or worker is deployed to. This happens without
 interruption to the running instances. To pause an app or worker, you can scale
@@ -1636,8 +1644,10 @@ it to 0 instances
 
 .. _publish-rest-action:
 
-App Publish Action
-------------------
+Publish Action
+--------------
+
+**Target Resources:** app
 
 Every app gets created on the free tier per default. To go live with an app,
 you have to publish it. That will move it to the paid tier, and lift any
@@ -1664,6 +1674,87 @@ restrictions set on it. This action takes no options.
     Location: https://api.30loops.net/0.9/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-0.99507dbcf2
 
 **actions:** publish
+
+Restart Action
+--------------
+
+**Target Resources:** app, worker
+
+You can restart all processes of your app or worker. This will restart all
+daemon processes that run on your instances.
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    POST /0.9/30loops/app/thirtyblog HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+    Host: api.30loops.net
+
+    {
+        "action": "restart",
+    }
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 202 ACCEPTED
+    Content-Type: application/json; charset=UTF-8
+    Location: https://api.30loops.net/0.9/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-0.99507dbcf2
+
+**actions:** restart
+
+Restore Action
+--------------
+
+**Target Resources:** database
+
+You can restore a database with a dump file. The file has to be provided over
+a publicly reachable URI. 
+
+The command we use internally to restore the database is:
+
+.. code-block:: bash
+
+    pg_restore --clean --no-acl --no-owner -d <database>
+
+To make sure the database is restored correctly, you should dump your database
+with the following command:
+
+.. code-block:: bash
+
+    pg_dump -Fc --no-acl --no-owner <database> > <dumpfile>
+
+**Example Request:**
+
+.. sourcecode:: http
+
+    POST /0.9/30loops/database/30loops-database-blog HTTP/1.1
+    Authorization: Basic Y3JpdG86c2VjcmV0
+    Host: api.30loops.net
+
+    {
+        "action": "restore",
+        "options": {
+            "location": "http://example.org/file.dump"
+        }
+    }
+
+**Example Response:**
+
+.. sourcecode:: http
+
+    HTTP/1.1 202 ACCEPTED
+    Content-Type: application/json; charset=UTF-8
+    Location: https://api.30loops.net/0.9/30loops/logbook/1694a4a0-5bbd-11e1-8fb5-0.99507dbcf2
+
+**actions:** restore
+
+**options:**
+
+*location* (string)
+  The HTTP location, where to download the dump file from.
 
 .. _`logs-api`:
 
