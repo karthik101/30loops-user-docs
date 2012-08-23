@@ -2,11 +2,6 @@
 Quickstart guide
 ================
 
-.. note::
-
-    It helps to first read the :doc:`firststeps to the 30loops platform
-    <firststeps>` before following the quickstart.
-
 This guide will provide some basic information about the platform and walk you
 through the following steps:
 
@@ -15,11 +10,10 @@ through the following steps:
 #) Deploying an application
 
 We will configure and deploy an example app you can find in our `sample apps on 
-github`_. Its a very simple CherryPy application. It already contains a
-``thirty.ini`` file, that configures the runtime environment. If you want to
-deploy your own app, you have to provide your own ``thirty.ini`` file. The 
-syntax is very simple, you can find more information at 
-:ref:`runtime-configuration-label`.
+github`_. Its a very simple CherryPy application.
+
+Installing the 30loops client
+=============================
 
 .. note::
 
@@ -30,23 +24,26 @@ syntax is very simple, you can find more information at
     See :ref:`curl-examples-label` for an alternative way to use the 30loops
     platform.
 
-For instructions how to install the client see :ref:`client-installation` for
-more information.
+Installing the ``thirty`` client is very simple:
+
+.. code-block:: bash
+
+    $ sudo pip install thirty-cli
+
+For detailed instructions how to install the client see
+:ref:`client-installation` for more information.
+
+We configure your account by running the setup wizard of the client. You can
+find :ref:`here <thirty-client-configuration-file>` more information.
+
+.. code-block:: bash
+
+    $ thirty setup
 
 .. _`sample apps on github`: https://30loops.github.com
 
 Creating an app
 ===============
-
-.. note::
-
-    You have to specify your account name, username and password in order to
-    use the client. You can do this either on the command line as arguments or
-    by creating a ``.thirty.cfg`` in your home directory. See
-    :ref:`thirty-client-global-options` and
-    :ref:`thirty-client-configuration-file` for more information. For the rest
-    of the quickstart we assume you have created a configuration file with
-    your credentials.
 
 Create an app with the following command:
 
@@ -136,6 +133,10 @@ Where to go
 To continue, you should read the indepth :doc:`30loops platform manual
 <manual>`.  We created a few sample applications. You can find examples for a
 lot of different applications and stacks on https://30loops.github.com/
+
+All your apps are created as free tier apps and have certain restrictions. If
+you want to go live with your app read the section on :ref:`the free tier
+<tier-label>`.
 
 Additional support
 ==================
