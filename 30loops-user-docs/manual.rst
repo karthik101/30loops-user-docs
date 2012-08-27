@@ -113,6 +113,7 @@ place several restrictions on those apps:
   want to work again on them, at a later point, you have to redeploy.
 - You cant configure any cname records on those apps. Only the dns record we
   configure for your application is valid.
+- You can only scale to a maximum of 3 instances.
 
 Once you wanna go live with your application, you can publish it. That will
 remove the above mentioned restrictions placed on your app. To be able to do
@@ -148,6 +149,9 @@ Currently this file can contain three different sections:
 - **environment**: Configure the general python runtime environment.
 - **wsgi**: Configure your generic wsgi application.
 - **django**: Configure your django application.
+- **app:processes**: Define processes for the app.
+- **worker:processes**: Define processes for the worker.
+- **variables**: Define environment variables for the application.
 
 Every app needs an ``environment`` section, and then depending on your app, you
 have to define either a ``wsgi`` section or a ``django`` section.

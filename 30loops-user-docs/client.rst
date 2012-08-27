@@ -362,7 +362,7 @@ update ``<app>``
 
 ``--add-var ADD_VAR``
   Add a new environment variable to your application. Specify the variable in
-  this format: ``VARIABLE=VALUE``. Those values are accesible inside your
+  this format: ``VARIABLE=value``. Those values are accesible inside your
   applications environment. Note that you can also specify environment variables
   in your ``thirty.ini`` file. If you dont wanna store sensitive values in a
   public repository, use this mechanism. Otherwise prefer the ``thirty.ini``
@@ -425,7 +425,7 @@ Update the configuration of a worker.
 
 ``--add-var ADD_VAR``
   Add a new environment variable to your worker. Specify the variable in
-  this format: ``VARIABLE=VALUE``. Those values are accesible inside your
+  this format: ``VARIABLE=value``. Those values are accesible inside your
   workers environment. Note that you can also specify environment variables
   in your ``thirty.ini`` file. If you dont wanna store sensitive values in a
   public repository, use this mechanism. Otherwise prefer ``thirty.ini``
