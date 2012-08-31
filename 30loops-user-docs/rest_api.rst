@@ -576,13 +576,15 @@ Reset User Password
 .. http:post:: /0.9/{account}/users/{username}/reset_password
 
     Reset the password for this user. Note that this request needs no
-    authentication credentials. A new password will be set and emailed to the
-    email address that is associated with this user. See
-    `Change User Password`_ how to change your password afterwards.
+    authentication credentials. An email with further instructions is sent to
+    the email address associated with this user account. The user account
+    itself will be disabled after a password request. A request for a password
+    reset is valid for 12 hours. After that a new request has to be sent to
+    reset the password and reactivate the account.
 
     :param account: The name of a account.
     :param username: The name of the user.
-    :status 204: The password was successfully reset.
+    :status 200: A password reset has been requested.
 
     **Example Request**:
 
@@ -596,8 +598,12 @@ Reset User Password
 
     .. sourcecode:: http
 
-        HTTP/1.1 204 NO CONTENT
+        HTTP/1.1 200 OK
         Content-Type: application/json; charset=UTF-8
+
+        {
+            "message": "An email has been sent to the requested account with further information. If you do not receive an email then please confirm you have entered the same user name used during account registration."
+        }
 
 Testing Credentials
 -------------------
