@@ -39,8 +39,8 @@ URL                                                  HTTP Verb  Function
 /0.9/{account}/authcheck                             GET        `Testing Credentials`_
 ===================================================  =========  ==============================================
 
-Resource API
-------------
+App API
+-------
 
 ========================================================  =========  ==============================================
 URL                                                       HTTP Verb  Function
@@ -50,6 +50,14 @@ URL                                                       HTTP Verb  Function
 /0.9/{account}/apps/{appname}                             GET        `Showing Apps`_
 /0.9/{account}/apps/{appname}                             PUT        `Updating Apps`_
 /0.9/{account}/apps/{appname}                             DELETE     `Deleting Apps`_
+========================================================  =========  ==============================================
+
+Services API
+------------
+
+========================================================  =========  ==============================================
+URL                                                       HTTP Verb  Function
+========================================================  =========  ==============================================
 /0.9/{account}/apps/{appname}/services                    POST       `Creating Services`_
 /0.9/{account}/apps/{appname}/services/{service}          GET        `Showing Services`_
 /0.9/{account}/apps/{appname}/services/{service}          PUT        `Updating Services`_
@@ -59,11 +67,12 @@ URL                                                       HTTP Verb  Function
 Actions API
 -----------
 
-=====================================  =========  ===========================
-URL                                    HTTP Verb  Function
-=====================================  =========  ===========================
-/0.9/{account}/{label}/{resource}      POST       `Queue Action`_
-=====================================  =========  ===========================
+========================================================  =========  ==============================================
+URL                                                       HTTP Verb  Function
+========================================================  =========  ==============================================
+/0.9/{account}/apps/{appname}                             POST       `Queue Action`_
+/0.9/{account}/apps/{appname}/service/{service}           POST       `Queue Action`_
+========================================================  =========  ==============================================
 
 Logs API
 --------
@@ -624,20 +633,12 @@ Testing Credentials
 
 .. _`resource-api`:
 
-Resource API
-============
+App API
+=======
 
-There are two types of resources. Apps and services. A service is always
-attached to an app. Currently there are the following services available on
-30loops:
-
-- :ref:`Repository resource <repository-resource-api>`
-- :ref:`PostgreSQL resource <postgres-resource-api>`
-- :ref:`Worker resource <worker-resource-api>`
-- :ref:`MongoDB resource <mongodb-resource-api>`
-
-A detailed description of each service can be found in the
-`Service Types`_ section. The following labels are currently recognized:
+The app resource defines web applications that can be hosted on the 30loops
+platform. Every app needs to attach a repository. It can't be created with out
+it. For a description of all fields of the app resource, see `App Resource`_.
 
 .. _`Listing Aps`:
 
@@ -899,6 +900,65 @@ Sending a ``DELETE`` request to the URI of a resource deletes it.
     information associated with this resource has been removed on the server
     side.
 
+App Resource
+------------
+
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**label** (static, default=app)
+  The unique label of this resource.
+
+**variants** (default=python)
+  - static
+  - python
+
+**name** (identifier)
+  The name of this app as identified by the 30loops platform.
+
+**region** (default=ams1)
+  The region where to deploy the app to. See the documentation about zones for
+  more information.
+
+**instances** (default=1)
+  Specify the amount of instances you wish to use for this app. It
+  defaults to 1 backend. The backends are deployed in the region that you
+  specified during app creation.
+
+**repo_commit** (default=HEAD)
+  Specify which commit you want to deploy. When deploying an app, this commit
+  will be checked out.
+
+**dns_record** (read-only)
+  The dns record under the 30loops.net domain that we provide for your app.
+
+**cname_records** (optional)
+  A list of cname records that are used to configure the load balancer. Cnames
+  are optional. We create as a default a record for your app under the
+  30loops.net domain. You should point those cname records to the dns record we
+  provide.
+
+.. code-block:: js
+
+    "cname_records": [
+        {"record": "cname.example.org"}
+    ]
+
+Services API
+============
+
+There are two types of resources. Apps and services. A service is always
+attached to an app. Currently there are the following services available on
+30loops:
+
+- :ref:`Repository resource <repository-resource-api>`
+- :ref:`PostgreSQL resource <postgres-resource-api>`
+- :ref:`Worker resource <worker-resource-api>`
+- :ref:`MongoDB resource <mongodb-resource-api>`
+
+A detailed description of each service can be found in the
+`Service Types`_ section. The following labels are currently recognized:
+
 .. _`Creating Services`:
 
 Creating Service
@@ -1004,265 +1064,11 @@ Deleting Services
 Service Types
 =============
 
-Resource References
--------------------
-
-Each resource acts as an independent entity. But you can reference different
-resources to each other, eg: an App **must** have a repository referenced, but
-**may** reference a Database. You can still use the database for your app if
-you don't reference it, but then we can't create the
-:ref:`instance-environment-label` for you.
-
-You can reference resources with each other by either
-
-#) create the referenced resources at the same time you create the resource
-   that holds the reference:
-
-    **Example Request:**
-
-    .. sourcecode:: http
-
-        POST /0.9/30loops/app HTTP/1.1
-        Authorization: Basic Y3JpdG86c2VjcmV0
-        Host: api.30loops.net
-        Content-Type: application/json; charset=UTF-8
-
-        {
-            "label": "app",
-            "name": "thirty-blog",
-            "repository": {
-                "name": "thirtyblog",
-                "location": "http://github.com/30loops/thirtyblog"
-                "variant": "git",
-            },
-            "variant": "python",
-            "region": "ams1"
-        }
-
-#) or by setting the reference to the name of an existing resource:
-
-    **Example Request:**
-
-    .. sourcecode:: http
-
-        POST /0.9/30loops/repository HTTP/1.1
-        Authorization: Basic Y3JpdG86c2VjcmV0
-
-        {
-            "name": "thirtyblog",
-            "variant": "git",
-            "location": "http://github.com/30loops/thirtyblog"
-        }
-
-    .. sourcecode:: http
-
-        POST /0.9/30loops/app HTTP/1.1
-        Authorization: Basic Y3JpdG86c2VjcmV0
-
-        {
-            "name": "thirtyblog",
-            "variant": "python",
-            "repository": {
-                "name": "thirtyblog",
-            },
-            "region": "ams1"
-        }
-
-.. _app-resource-api:
-
-App Resource
-------------
-
-The app resource defines web applications that can be hosted on the 30loops
-platform. Every app needs to attach a repository. It can't be created with out
-it.
-
-**Example Request:**
-
-.. sourcecode:: http
-
-    GET /0.9/30loops/app/thirtyblog HTTP/1.1
-    Authorization: Basic Y3JpdG86c2VjcmV0
-    Host: api.30loops.net
-
-**Example Response:**
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Content-Type: application/json; charset=UTF-8
-
-    {
-        "cnames": [
-            {
-                "record": "dns1.example.com"
-            }
-        ],
-        "label": "app",
-        "dns_record": "30loops-app-thirtyblog.30loops.net",
-        "link": {
-            "href": "https://api.30loops.net/0.9/30loops/app/thirtyblog",
-            "rel": "self"
-        },
-        "name": "thirty-blog",
-        "repository": {
-            "href": "https://api.30loops.net/0.9/30loops/repository/thirtyblog",
-            "name": "thirtyblog",
-            "rel": "related"
-        },
-        "database": {
-            "href": "https://api.30loops.net/0.9/30loops/database/thirtyblog",
-            "name": "thirtyblog",
-            "rel": "related"
-        },
-        "variant": "python",
-        "instances": 1,
-        "repo_commit": "HEAD",
-        "region": "ams1"
-    }
-
-Resource Fields
-~~~~~~~~~~~~~~~
-
-**label** (static, default=app)
-  The unique label of this resource.
-
-**variants** (default=python)
-  - static
-  - python
-
-**name** (identifier)
-  The name of this app as identified by the 30loops platform.
-
-**region** (default=ams1)
-  The region where to deploy the app to. See the documentation about zones for
-  more information.
-
-**repository**
-  The referenced repository resource. See the `Repository Resource`_ section
-  for more information.
-
-**instances** (default=1)
-  Specify the amount of instances you wish to use for this app. It
-  defaults to 1 backend. The backends are deployed in the region that you
-  specified during app creation.
-
-**repo_commit** (default=HEAD)
-  Specify which commit you want to deploy. When deploying an app, this commit
-  will be checked out.
-
-**database** (optional)
-  The database reference is created automatically when creating an app. Users
-  can't create those resources themselves. They are also protected from
-  updates. See the section `Database Resource`_ for more information.
-
-**worker** (optional)
-  Define a worker resource for your app. See `Worker Resource`_ for more
-  information.
-
-**mongodb** (optional)
-  Define a MongoDB database for your app. See `MongoDB Resource`_ for more
-  information.
-
-**dns_record** (read-only)
-  The dns record under the 30loops.net domain that we provide for your app.
-
-**cname_records** (optional)
-  A list of cname records that are used to configure the load balancer. Cnames
-  are optional. We create as a default a record for your app under the
-  30loops.net domain. You should point those cname records to the dns record we
-  provide.
-
-.. code-block:: js
-
-    "cname_records": [
-        {"record": "cname.example.org"}
-    ]
-
-More Examples
-~~~~~~~~~~~~~
-
-**App Creation**
-
-This is an example of a minimal app creation, where we create the repository
-inline. The response contains a ``Location`` header with the URI of the newly
-created resource.
-
-.. sourcecode:: http
-
-    POST /0.9/30loops/app HTTP/1.1
-    Authorization: Basic Y3JpdG86c2VjcmV0
-
-    {
-        "name": "thirtyblog",
-        "variant": "python",
-        "repository": {
-            "name": "thirtyblog",
-            "variant": "git",
-            "location": "http://github.com/30loops/thirtyblog"
-        },
-        "region": "ams1"
-    }
-
-.. sourcecode:: http
-
-    HTTP/1.1 201 CREATED
-    Content-Type: application/json; charset=UTF-8
-    Location: https://api.30loops.net/0.9/30loops/app/thirtyblog
-
-**Connecting a Database**
-
-We have a database resource, called `blogdb` and want to connect it to an app.
-
-.. sourcecode:: http
-
-    PUT /0.9/30loops/app/thirtyblog HTTP/1.1
-    Authorization: Basic Y3JpdG86c2VjcmV0
-
-    {
-        "name": "thirtyblog",
-        "database": {
-            "name": "blogdb",
-        }
-    }
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Content-Type: application/json; charset=UTF-8
-
-.. _repository-resource-api:
-
 Repository Resource
 -------------------
 
-Every app must have a repository defined. When deploying the repository gets
-cloned. It provides the sourcecode for the web application.
-
-**Example Request:**
-
-.. sourcecode:: http
-
-    GET /0.9/30loops/repository/thirtyblog HTTP/1.1
-    Authorization: Basic Y3JpdG86c2VjcmV0
-
-**Example Response:**
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Content-Type: application/json; charset=UTF-8
-
-    {
-        "label": "repository",
-        "link": {
-            "href": "https://api.30loops.net/0.9/30loops/repository/thirtyblog",
-            "rel": "self"
-        },
-        "location": "https://github.com/30loops/thirtyblog",
-        "name": "thirtyblog",
-        "variant": "git"
-    }
+Every app must have a repository defined. When deploying an app, the repository
+gets cloned. It provides the sourcecode for the web application.
 
 Resource Fields
 ~~~~~~~~~~~~~~~
@@ -1270,11 +1076,8 @@ Resource Fields
 **label** (static, default=repository)
   The unique label of this resource.
 
-**variants** (default=git)
+**variant** (default=git)
   - git
-
-**name** (identifier)
-  The name of this repository as identified by the 30loops platform.
 
 **location**
   The full URI where to clone this repository from. This can be any valid
@@ -1292,47 +1095,19 @@ Resource Fields
 PostgreSQL Resource
 -------------------
 
-Currently we offer Postgresql as SQL possibility.
-
-**Example Request:**
-
-.. sourcecode:: http
-
-    GET /0.9/30loops/database/thirtyblog HTTP/1.1
-    Authorization: Basic Y3JpdG86c2VjcmV0
-
-**Example Response:**
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Content-Type: application/json; charset=UTF-8
-
-    {
-        "label": "postgres",
-        "link": {
-            "href": "https://api.30loops.net/0.9/30loops/database/30loops-db-thirtyblog",
-            "rel": "self"
-        },
-        "name": "30loops-db-thirtyblog",
-        "password": "ERd56fZlY2Rh",
-        "username": "30loops-db-thirtyblog",
-        "variant": "postgres",
-        "host": "192.168.0.53",
-        "port": 9999
-    }
+Currently we offer PostgreSQL as the only SQL database possibility.
 
 Resource Fields
 ~~~~~~~~~~~~~~~
 
-**label** (static, default=database)
+**label** (static, default=postgres)
   The unique label of this resource.
 
-**variants** (default=postgres)
-  - postgres
+**variant** (default=postgres)
+  - postgres_micro
 
-**name** (identifier)
-  The name of this database as identified by the 30loops platform.
+**name** (read-only)
+  The name of this database. The name is a random string.
 
 **password** (read-only)
   The password to access your postgresql database. The password is set by the API
@@ -1363,42 +1138,14 @@ Worker resources are used to run different processes. They are in that sense
 similar to apps, only they don't run an webserver or application server. But you
 can use workers to run cronjobs in the background or for celery task queues.
 
-**Example Request:**
-
-.. sourcecode:: http
-
-    GET /0.9/30loops/worker/thirtyblog HTTP/1.1
-    Authorization: Basic Y3JpdG86c2VjcmV0
-
-**Example Response:**
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Content-Type: application/json; charset=UTF-8
-
-    {
-        "instances": 1,
-        "label": "worker",
-        "link": {
-            "href": "https://api.30loops.net/0.9/30loops/worker/thirtyblog",
-            "rel": "self"
-        },
-        "name": "thirtyblog",
-        "variant": "python"
-    }
-
 Resource Fields
 ~~~~~~~~~~~~~~~
 
 **label** (static, default=worker)
   The unique label of this resource.
 
-**variants** (default=python)
+**variant** (default=python)
   - python
-
-**name** (identifier)
-  The name of this worker as identified by the 30loops platform.
 
 **instances** (default=1)
   Specify the amount of instances you wish to use for this worker. It
@@ -1410,42 +1157,8 @@ Resource Fields
 MongoDB Resource
 ----------------
 
-.. note::
-
-    MongoDB resources currently can't be created directly by the user. They
-    always have to defined within the context of an app. See `JSON Format`_
-    for more details.
-
 Next to a SQL based database you can also use a MongoDB. Currently instances of
 16MB are offered.
-
-**Example Request:**
-
-.. sourcecode:: http
-
-    GET /0.9/30loops/mongodb/thirtyblog HTTP/1.1
-    Authorization: Basic Y3JpdG86c2VjcmV0
-
-**Example Response:**
-
-.. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Content-Type: application/json; charset=UTF-8
-
-    {
-        "label": "mongodb",
-        "link": {
-            "href": "https://api.30loops.net/0.9/30loops/mongodb/30loops-mongodb-thirtyblog",
-            "rel": "self"
-        },
-        "name": "30loops-mongodb-thirtyblog",
-        "password": "OWQ3YjZlY2Rh",
-        "username": "30loops-mongodb-thirtyblog",
-        "variant": "16MB",
-        "host": "not deployed",
-        "port": "not deployed"
-    }
 
 Resource Fields
 ~~~~~~~~~~~~~~~
@@ -1453,11 +1166,11 @@ Resource Fields
 **label** (static, default=mongodb)
   The unique label of this resource.
 
-**variants** (default=16MB)
-  - 16MB
+**variant** (default=mongodb_micro)
+  - mongodb_micro
 
-**name** (identifier)
-  The name of this mongodb as identified by the 30loops platform.
+**name** (read-only)
+  The name of this mongodb. This is a random string.
 
 **password** (read-only)
   The password to access your mongodb database. The password is set by the API
