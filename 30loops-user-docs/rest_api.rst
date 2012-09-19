@@ -26,84 +26,84 @@ defaults to ``/0.9/``.
 Account API
 -----------
 
-===================================================  =========  ==============================================
-URL                                                  HTTP Verb  Function
-===================================================  =========  ==============================================
-/0.9/{account}                                       GET        `Showing Accounts`_
-/0.9/{account}/users                                 GET        `Listing Users`_
-/0.9/{account}/users                                 POST       `Creating Users`_
-/0.9/{account}/users/{username}                      GET        `Showing Users`_
-/0.9/{account}/users/{username}                      DELETE     `Deleting Users`_
-/0.9/{account}/users/{username}/change_password      PUT        `Change User Password`_
-/0.9/{account}/users/{username}/reset_password       POST       `Reset User Password`_
-/0.9/{account}/authcheck                             GET        `Testing Credentials`_
-===================================================  =========  ==============================================
+==================================================  =========  ==============================================
+URL                                                 HTTP Verb  Function
+==================================================  =========  ==============================================
+/0.9/{account}                                      GET        `Showing Accounts`_
+/0.9/{account}/users                                GET        `Listing Users`_
+/0.9/{account}/users                                POST       `Creating Users`_
+/0.9/{account}/users/{username}                     GET        `Showing Users`_
+/0.9/{account}/users/{username}                     DELETE     `Deleting Users`_
+/0.9/{account}/users/{username}/change_password     PUT        `Change User Password`_
+/0.9/{account}/users/{username}/reset_password      POST       `Reset User Password`_
+/0.9/{account}/authcheck                            GET        `Testing Credentials`_
+==================================================  =========  ==============================================
 
 App API
 -------
 
-========================================================  =========  ==============================================
-URL                                                       HTTP Verb  Function
-========================================================  =========  ==============================================
-/0.9/{account}/apps                                       GET        `Listing Apps`_
-/0.9/{account}/apps                                       POST       `Creating Apps`_
-/0.9/{account}/apps/{appname}                             GET        `Showing Apps`_
-/0.9/{account}/apps/{appname}                             PUT        `Updating Apps`_
-/0.9/{account}/apps/{appname}                             DELETE     `Deleting Apps`_
-========================================================  =========  ==============================================
+==================================================  =========  ==============================================
+URL                                                 HTTP Verb  Function
+==================================================  =========  ==============================================
+/0.9/{account}/apps                                 GET        `Listing Apps`_
+/0.9/{account}/apps                                 POST       `Creating Apps`_
+/0.9/{account}/apps/{appname}                       GET        `Showing Apps`_
+/0.9/{account}/apps/{appname}                       PUT        `Updating Apps`_
+/0.9/{account}/apps/{appname}                       DELETE     `Deleting Apps`_
+==================================================  =========  ==============================================
 
 Services API
 ------------
 
-========================================================  =========  ==============================================
-URL                                                       HTTP Verb  Function
-========================================================  =========  ==============================================
-/0.9/{account}/apps/{appname}/services                    POST       `Creating Services`_
-/0.9/{account}/apps/{appname}/services/{service}          GET        `Showing Services`_
-/0.9/{account}/apps/{appname}/services/{service}          PUT        `Updating Services`_
-/0.9/{account}/apps/{appname}/services/{service}          DELETE     `Deleting Services`_
-========================================================  =========  ==============================================
+==================================================  =========  ==============================================
+URL                                                 HTTP Verb  Function
+==================================================  =========  ==============================================
+/0.9/{account}/apps/{appname}/services              POST       `Creating Services`_
+/0.9/{account}/apps/{appname}/services/{service}    GET        `Showing Services`_
+/0.9/{account}/apps/{appname}/services/{service}    PUT        `Updating Services`_
+/0.9/{account}/apps/{appname}/services/{service}    DELETE     `Deleting Services`_
+==================================================  =========  ==============================================
 
 Actions API
 -----------
 
-========================================================  =========  ==============================================
-URL                                                       HTTP Verb  Function
-========================================================  =========  ==============================================
-/0.9/{account}/apps/{appname}                             POST       `Queue Action`_
-/0.9/{account}/apps/{appname}/service/{service}           POST       `Queue Action`_
-========================================================  =========  ==============================================
+==================================================  =========  ==============================================
+URL                                                 HTTP Verb  Function
+==================================================  =========  ==============================================
+/0.9/{account}/apps/{appname}                       POST       `Queue Action`_
+/0.9/{account}/apps/{appname}/service/{service}     POST       `Queue Action`_
+==================================================  =========  ==============================================
 
 Logs API
 --------
 
-=====================================  =========  ===========================
-URL                                    HTTP Verb  Function
-=====================================  =========  ===========================
-/0.9/{account}/app/{resource}/logs     GET        `Showing Logs`_
-=====================================  =========  ===========================
+==================================================  =========  ==============================================
+URL                                                 HTTP Verb  Function
+==================================================  =========  ==============================================
+/0.9/{account}/app/{resource}/logs                  GET        `Showing Logs`_
+==================================================  =========  ==============================================
 
 Billing and Usage API
 ---------------------
 
-=================================================   =========  =============================
+==================================================  =========  ==============================================
 URL                                                 HTTP Verb  Function
-=================================================   =========  =============================
+==================================================  =========  ==============================================
 /0.9/{account}/invoices                             GET        `Listing Invoices`_
 /0.9/{account}/invoices/current                     GET        `Showing Current Invoice`_
 /0.9/{account}/invoices/{invoice_nr}                GET        `Showing Past Invoices`_
 /0.9/{account}/app/{resource}/usage/current         GET        `Showing Current App Usage`_
 /0.9/{account}/app/{resource}/usage/{invoice_nr}    GET        `Showing Past App Usage`_
-=================================================   =========  =============================
+==================================================  =========  ==============================================
 
 Logbook API
 -----------
 
-=====================================  =========  ===========================
-URL                                    HTTP Verb  Function
-=====================================  =========  ===========================
-/0.9/{account}/logbook/{uuid}          GET        `Showing Action Logbook`_
-=====================================  =========  ===========================
+==================================================  =========  ==============================================
+URL                                                 HTTP Verb  Function
+==================================================  =========  ==============================================
+/0.9/{account}/logbook/{uuid}                       GET        `Showing Action Logbook`_
+==================================================  =========  ==============================================
 
 Request Format
 ==============
@@ -631,7 +631,7 @@ Testing Credentials
         HTTP/1.1 204 NO CONTENT
         Content-Type: application/json; charset=UTF-8
 
-.. _`resource-api`:
+.. _`app-api`:
 
 App API
 =======
@@ -944,6 +944,11 @@ Resource Fields
         {"record": "cname.example.org"}
     ]
 
+**envvars** (optional)
+  Set environment variables that are available within the app instance context.
+
+.. _`service-api`:
+
 Services API
 ============
 
@@ -986,6 +991,8 @@ Creating Service
 
     **Example Response:**
 
+    .. sourcecode:: http
+
         HTTP/1.1 201 NO CONTENT
         Content-Type: application/json; charset=UTF-8
         Location: https://api.30loops.net/0.9/30loops/apps/thirtyblog/services/mongodb
@@ -1008,11 +1015,13 @@ Showing Services
 
     .. sourcecode:: http
 
-        GET /0.9/30loops/apps/thirtyblog HTTP/1.1
+        GET /0.9/30loops/apps/thirtyblog/services/postgres HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
     **Example Response:**
+
+    .. sourcecode:: http
 
         HTTP/1.0 200 OK
         Content-Type: application/json; charset=UTF-8
@@ -1047,6 +1056,35 @@ Updating Service
     :param service: The service type.
     :status 200: Returns the updated service as a JSON object.
 
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        PUT /0.9/30loops/apps/thirtyblog/services/repository HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+        {
+            "location": "git://github.com/30loops/django-on-30loops.git"
+        }
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.0 200 OK
+
+        {
+            "label": "repository",
+            "link": {
+                "href": "https://api.30loops.net/0.9/30loops/apps/thirtyblog/services/repository",
+                "rel": "self"
+            },
+            "location": "git://github.com/30loops/django-on-30loops.git",
+            "name": "thirtyblog",
+            "variant": "git"
+        }
+
 .. _`Deleting Services`:
 
 Deleting Services
@@ -1061,8 +1099,24 @@ Deleting Services
     :param service: The service type.
     :status 204: The service has been deleted.
 
+    **Example Request:**
+
+    .. sourcecode:: http
+
+        DELETE /0.9/30loops/apps/thirtyblog/services/mongodb HTTP/1.1
+        Authorization: Basic Y3JpdG86c2VjcmV0
+        Host: api.30loops.net
+
+    **Example Response:**
+
+    .. sourcecode:: http
+
+        HTTP/1.0 204 NO CONTENT
+
 Service Types
 =============
+
+.. _repository-resource-api:
 
 Repository Resource
 -------------------
@@ -1157,8 +1211,7 @@ Resource Fields
 MongoDB Resource
 ----------------
 
-Next to a SQL based database you can also use a MongoDB. Currently instances of
-16MB are offered.
+Next to a SQL based database you can also use a MongoDB.
 
 Resource Fields
 ~~~~~~~~~~~~~~~
@@ -1195,18 +1248,17 @@ Resource Fields
 Actions API
 ===========
 
-To interact with the physical state of your resources you can use the actions
-API. Each resource can have several actions defined, of things you can do with
-it on the platform. While the :ref:`Resource API <resource-api>` focuses on the
-configuration part of your resources, the actions API manipulates the physical
-state.
+To interact with the physical state of your apps and services you can use the
+actions API. While the :ref:`App API <app-api>` and :ref:`Services API
+<service-api>` focuses on the configuration part of your resources, the actions
+API manipulates the physical state.
 
 Every request to the actions API creates a *logbook* that can be polled for the
 progress of the action. The logbook contains the current status of the action,
 and the log output generated by the server. If an action has been successfully
 queued, the response contains a :mailheader:`Location` header field, containing
-the URI of the logbook. See the :ref:`Logbook API <logbook-api>` section for more information on
-the logbook.
+the URI of the logbook. See the :ref:`Logbook API <logbook-api>` section for
+more information on the logbook.
 
 Action JSON Format
 ------------------
@@ -1238,20 +1290,21 @@ and varies only in the options provided.
 Queue Action
 ------------
 
-.. http:post:: /0.9/{account}/{label}/{resource}
+.. http:post:: /0.9/{account}/apps/{appname}
+.. http:post:: /0.9/{account}/apps/{appname}/services/{service}
 
     Queue an action for this resource.
 
     :param account: The name of a account, a short descriptive word.
-    :param label: The resource type, eg: repository, db, app
-    :param resource: The name of the resource.
+    :param appname: The name of the app.
+    :param service: The label of the service.
     :status 202: The action was successfully queued.
 
     **Example Request:**
 
     .. sourcecode:: http
 
-        POST /0.9/30loops/app/thirtyloops HTTP/1.1
+        POST /0.9/30loops/apps/thirtyloops HTTP/1.1
         Authorization: Basic Y3JpdG86c2VjcmV0
         Host: api.30loops.net
 
@@ -1281,7 +1334,7 @@ After you configured an application, you can deploy it to the platform.
 
 .. sourcecode:: http
 
-    POST /0.9/30loops/app/thirtyblog HTTP/1.1
+    POST /0.9/30loops/apps/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1323,7 +1376,7 @@ command: ``python init_db.py``.
 
 .. sourcecode:: http
 
-    POST /0.9/30loops/app/thirtyblog HTTP/1.1
+    POST /0.9/30loops/apps/thirtyblog/services/worker HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1370,7 +1423,7 @@ production`` you just specify the foll wing command: ``syncdb``.
 
 .. sourcecode:: http
 
-    POST /0.9/30loops/app/thirtyblog HTTP/1.1
+    POST /0.9/30loops/apps/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1416,7 +1469,7 @@ it to 0 instances
 
 .. sourcecode:: http
 
-    POST /0.9/30loops/app/thirtyblog HTTP/1.1
+    POST /0.9/30loops/apps/thirtyblog/services/worker HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1458,7 +1511,7 @@ restrictions set on it. This action takes no options.
 
 .. sourcecode:: http
 
-    POST /0.9/30loops/app/thirtyblog HTTP/1.1
+    POST /0.9/30loops/apps/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1488,7 +1541,7 @@ daemon processes that run on your instances.
 
 .. sourcecode:: http
 
-    POST /0.9/30loops/app/thirtyblog HTTP/1.1
+    POST /0.9/30loops/apps/thirtyblog HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
@@ -1509,10 +1562,10 @@ daemon processes that run on your instances.
 Restore Action
 --------------
 
-**Target Resources:** database
+**Target Resources:** postgres
 
-You can restore a database with a dump file. The file has to be provided over
-a publicly reachable URI. 
+You can restore a PostgreSQL database with a dump file. The file has to be
+provided over a publicly reachable URI.
 
 The command we use internally to restore the database is:
 
@@ -1531,7 +1584,7 @@ with the following command:
 
 .. sourcecode:: http
 
-    POST /0.9/30loops/database/30loops-database-blog HTTP/1.1
+    POST /0.9/30loops/apps/thirtyblog/services/postgres HTTP/1.1
     Authorization: Basic Y3JpdG86c2VjcmV0
     Host: api.30loops.net
 
