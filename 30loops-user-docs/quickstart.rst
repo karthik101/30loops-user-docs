@@ -8,7 +8,7 @@ discuss the first part and give more explanations.  We will configure and
 deploy an example app you can find in our `sample apps on github`_. Its a very
 simple CherryPy application. If you followed the short instructions right after
 account registration, then the first part won't contain much new information.
-You might want to skip right away to :ref:`part 2 <quickstart-part2>`.
+You might want to skip right away to :ref:`explanations <quickstart-part2>`.
 
 .. _quickstart-part1:
 
@@ -62,8 +62,8 @@ further.
 
 .. _quickstart-part2:
 
-Part 2: Some more explanations
-==============================
+Some more explanations
+======================
 
 Setting up the client and your account
 --------------------------------------
@@ -95,7 +95,7 @@ To host your own application on 30loops, you have to do 2 things:
 The first step has to happen only once at the beginning. Creating an app
 configures it on our platform. You can configure different aspects of your app,
 and configure which add on resources should be used. You can always update
-your the configuration of your app later on. To create an app use the following
+the configuration of your app later on. To create an app use the following
 command:
 
 .. code-block:: bash
@@ -132,11 +132,12 @@ It will output something like:
         location: git://github.com/30loops/cherrypy-on-30loops.git
 
 Note that per default, no database gets created. If your application needs a
-databse you should run the following command.
+database you should run the following command. this creates a PostgreSQL
+database for your app.
 
 .. code-block:: bash
 
-    $ thirty create cherryonloops.database
+    $ thirty create cherryonloops.postgres
 
 This will configure 30loops to provide your app with a database. You can change
 your configuration later using the ``update`` command. See the :ref:`client
