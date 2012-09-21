@@ -39,8 +39,8 @@ URL                                                 HTTP Verb  Function
 /0.9/{account}/authcheck                            GET        `Testing Credentials`_
 ==================================================  =========  ==============================================
 
-App API
--------
+Resources API
+-------------
 
 ==================================================  =========  ==============================================
 URL                                                 HTTP Verb  Function
@@ -50,14 +50,6 @@ URL                                                 HTTP Verb  Function
 /0.9/{account}/apps/{appname}                       GET        `Showing Apps`_
 /0.9/{account}/apps/{appname}                       PUT        `Updating Apps`_
 /0.9/{account}/apps/{appname}                       DELETE     `Deleting Apps`_
-==================================================  =========  ==============================================
-
-Services API
-------------
-
-==================================================  =========  ==============================================
-URL                                                 HTTP Verb  Function
-==================================================  =========  ==============================================
 /0.9/{account}/apps/{appname}/services              POST       `Creating Services`_
 /0.9/{account}/apps/{appname}/services/{service}    GET        `Showing Services`_
 /0.9/{account}/apps/{appname}/services/{service}    PUT        `Updating Services`_
@@ -637,14 +629,22 @@ Testing Credentials
         HTTP/1.1 204 NO CONTENT
         Content-Type: application/json; charset=UTF-8
 
-.. _`app-api`:
+.. _`resources-api`:
 
-App API
-=======
+Resources API
+=============
 
-The app resource defines web applications that can be hosted on the 30loops
-platform. Every app needs to attach a repository. It can't be created with out
-it. For a description of all fields of the app resource, see `App Resource`_.
+There are two types of resources. Apps and services. A service is always
+attached to an app. Currently there are the following services available on
+30loops:
+
+- :ref:`Repository resource <repository-resource-api>`
+- :ref:`PostgreSQL resource <postgres-resource-api>`
+- :ref:`Worker resource <worker-resource-api>`
+- :ref:`MongoDB resource <mongodb-resource-api>`
+
+A detailed description of each service can be found in the
+`Resource Types`_ section. The following labels are currently recognized:
 
 .. _`Listing Aps`:
 
@@ -687,24 +687,24 @@ Listing Apps
                         "rel": "item"
                     },
                     "mongodb": {
-                        "href": "https://api.30loops.net/0.9/30loops/apps/None/services/mongodb",
+                        "href": "https://api.30loops.net/0.9/30loops/apps/thirtyblog/services/mongodb",
                         "rel": "related"
                     },
                     "name": "thirtyblog",
                     "postgres": {
-                        "href": "https://api.30loops.net/0.9/30loops/apps/None/services/postgres",
+                        "href": "https://api.30loops.net/0.9/30loops/apps/thirtyblog/services/postgres",
                         "rel": "related"
                     },
                     "published": true,
                     "region": "eu-nl",
                     "repo_commit": "HEAD",
                     "repository": {
-                        "href": "https://api.30loops.net/0.9/30loops/apps/None/services/repository",
+                        "href": "https://api.30loops.net/0.9/30loops/apps/thirtyblog/services/repository",
                         "rel": "related"
                     },
                     "variant": "python",
                     "worker": {
-                        "href": "https://api.30loops.net/0.9/30loops/apps/None/services/worker",
+                        "href": "https://api.30loops.net/0.9/30loops/apps/thirtyblog/services/worker",
                         "rel": "related"
                     }
                 }
@@ -906,70 +906,6 @@ Sending a ``DELETE`` request to the URI of a resource deletes it.
     information associated with this resource has been removed on the server
     side.
 
-App Resource
-------------
-
-Resource Fields
-~~~~~~~~~~~~~~~
-
-**label** (static, default=app)
-  The unique label of this resource.
-
-**variants** (default=python)
-  - static
-  - python
-
-**name** (identifier)
-  The name of this app as identified by the 30loops platform.
-
-**region** (default=ams1)
-  The region where to deploy the app to. See the documentation about zones for
-  more information.
-
-**instances** (default=1)
-  Specify the amount of instances you wish to use for this app. It
-  defaults to 1 backend. The backends are deployed in the region that you
-  specified during app creation.
-
-**repo_commit** (default=HEAD)
-  Specify which commit you want to deploy. When deploying an app, this commit
-  will be checked out.
-
-**dns_record** (read-only)
-  The dns record under the 30loops.net domain that we provide for your app.
-
-**cname_records** (optional)
-  A list of cname records that are used to configure the load balancer. Cnames
-  are optional. We create as a default a record for your app under the
-  30loops.net domain. You should point those cname records to the dns record we
-  provide.
-
-.. code-block:: js
-
-    "cname_records": [
-        {"record": "cname.example.org"}
-    ]
-
-**envvars** (optional)
-  Set environment variables that are available within the app instance context.
-
-.. _`service-api`:
-
-Services API
-============
-
-There are two types of resources. Apps and services. A service is always
-attached to an app. Currently there are the following services available on
-30loops:
-
-- :ref:`Repository resource <repository-resource-api>`
-- :ref:`PostgreSQL resource <postgres-resource-api>`
-- :ref:`Worker resource <worker-resource-api>`
-- :ref:`MongoDB resource <mongodb-resource-api>`
-
-A detailed description of each service can be found in the
-`Service Types`_ section. The following labels are currently recognized:
-
 .. _`Creating Services`:
 
 Creating Service
@@ -1119,8 +1055,57 @@ Deleting Services
 
         HTTP/1.0 204 NO CONTENT
 
-Service Types
-=============
+Resource Types
+==============
+
+.. _app-resource-api:
+
+App Resource
+------------
+
+Resource Fields
+~~~~~~~~~~~~~~~
+
+**label** (static, default=app)
+  The unique label of this resource.
+
+**variants** (default=python)
+  - static
+  - python
+
+**name** (identifier)
+  The name of this app as identified by the 30loops platform.
+
+**region** (default=ams1)
+  The region where to deploy the app to. See the documentation about zones for
+  more information.
+
+**instances** (default=1)
+  Specify the amount of instances you wish to use for this app. It
+  defaults to 1 backend. The backends are deployed in the region that you
+  specified during app creation.
+
+**repo_commit** (default=HEAD)
+  Specify which commit you want to deploy. When deploying an app, this commit
+  will be checked out.
+
+**dns_record** (read-only)
+  The dns record under the 30loops.net domain that we provide for your app.
+
+**cname_records** (optional)
+  A list of cname records that are used to configure the load balancer. Cnames
+  are optional. We create as a default a record for your app under the
+  30loops.net domain. You should point those cname records to the dns record we
+  provide.
+
+.. code-block:: js
+
+    "cname_records": [
+        {"record": "cname.example.org"}
+    ]
+
+**envvars** (optional)
+  Set environment variables that are available within the app instance context.
 
 .. _repository-resource-api:
 
@@ -1255,9 +1240,9 @@ Actions API
 ===========
 
 To interact with the physical state of your apps and services you can use the
-actions API. While the :ref:`App API <app-api>` and :ref:`Services API
-<service-api>` focuses on the configuration part of your resources, the actions
-API manipulates the physical state.
+actions API. While the :ref:`Resources API <resources-api>` focuses on the
+configuration part of your resources, the actions API manipulates the physical
+state.
 
 Every request to the actions API creates a *logbook* that can be polled for the
 progress of the action. The logbook contains the current status of the action,
