@@ -6,17 +6,16 @@ Platform basics
 ===============
 
 On 30loops, you create an app for each of your web applications you want to
-deploy. You can connect several services to your app. These services are called
-resources. Each resource is a component of your app, for example a database, a
-worker or a MongoDB server.
+deploy. You can connect several services to your app. Every app or service is
+a resource on 30loops.
 
-You can create, modify or delete apps and resources using our client or the
+You can create, modify or delete apps and services using our client or the
 REST api. We will connect them together, and provide the required architecture
 around them.
 
 Working on the platform consists mainly of two tasks:
 
-#) Creating, editing and deleting apps and resources
+#) Creating, editing and deleting apps and services
 
    You can manipulate the configuration of your apps. This can be done by
    sending valid JSON messages to the API.
@@ -38,7 +37,8 @@ A list of all the terms used in these manuals:
   representation of your application that you want to deploy.
 - **App instance**: A webserver or application server with a copy of your code,
   connected to our loadbalancers
-- **Resource**: A service that can be connected to an app.
+- **Service**: A service that can be connected to an app.
+- **Resource**: An app or a service.
 - **Repository**: A pointer to your code repository in your favorite VCS.
 - **Worker**: A bare server with no webserver or appserver running, created to
   run arbitrary processes or background tasks.
@@ -51,16 +51,11 @@ Resources
 
 On 30loops, every service is called a resource. Examples of resources are
 databases, applications and repositories. A resource is represented as a json
-message, and each resource has several keys and values. The resources are
-described in detail in the :doc:`REST API guide <rest_api>`.
+message, and each resource has several keys and values. The services are
+described in detail in the :doc:`REST API guide <rest_api>`. Apps function as
+containers for other resources too. You can attach several services to an app.
 
 A resource has at least the following fields:
-
-**name**
-  The name is a unique identifier. Each resource must have a unique name
-  together with the label for this account, eg: You can have an app and a
-  repository that both have the name ``blog``, but not two apps or two
-  repositories.
 
 **label**
   A resource has a label. This label describes the service. At this moment we
@@ -68,11 +63,18 @@ A resource has at least the following fields:
 
   - app
   - repository
-  - database
+  - postgres
+  - worker
 
 **variant**
   A resource can have a variant. That could be ``git`` or ``mercurial`` for
   repositories or ``python`` and ``static`` for apps.
+
+An app has additionaly the following fields:
+
+**name**
+  The name is a unique identifier. Each app must have a unique name
+  for this account.
 
 Apps on 30loops
 ---------------
@@ -112,20 +114,20 @@ your code, but they are not running Nginx or an app server. You can use them to
 run Celery, cronjobs or any other custom process you define. They are not
 connected to the load balancers.
 
-Additional Resources
-~~~~~~~~~~~~~~~~~~~~
+Additional services
+~~~~~~~~~~~~~~~~~~~
 
-You can connect several resources to your app. In this example there is a
-database connected, but you can also connect other resources, eg: a MongoDB
+You can connect several services to your app. In this example there is a
+database connected, but you can also connect other services, eg: a MongoDB
 database
 
-We are working on implementing more resources. If your required resource is not
+We are working on implementing more services. If your required resource is not
 listed, please drop us an email.
 
 Workflow
 --------
 
-When using 30loops for your web apps, the workflow will look like this:
+When using 30loops for the first time, the workflow will look like this:
 
 .. image:: images/create-workflow.png
    :align: center
@@ -149,7 +151,7 @@ Our platform will then perform the following steps:
 - Fetch your changed code
 - Create a new bundle of your app
 - Build new instances (in parallel with the current running ones)
-- Point the load balancers to the new instances
+- Point the load balancers to the new instances when the deploy was succesful.
 
 So a deployment does not involve any downtime. Your old version keeps running
 until the new instances are ready.
@@ -173,10 +175,19 @@ zone you want to run your app.
 Regions
 -------
 
+30loops.net is cloud platform independent. That enables us to provision
+apps in different regions. When creating the app, you have to specify the
+region you want your app to be in. Currently we support the following regions:
+
+**eu-nl**
+  Based in the Netherlands we provide our first region on top of cloudvps_.
+
+.. _cloudvps: https://www.cloudvps.nl/
+
 Application layout
 ------------------
 
-We tried to give you as much freedom as possible in setting up your repository
+We try to give you as much freedom as possible in setting up your repository
 structure. To make a successful deploy we need to know a few things though.
 
 You have to specify the project root. This is a relative path from the root of
@@ -197,9 +208,18 @@ For example the following directory layout is possible::
          +--> blog
               +--> ..
 
+    # project root == ./django_project
+
+or::
+
+    +--> README.rst
+    +--> app.py
+
+    # project root == ./
+
 You configure the project root among other things by supplying a runtime
 configuration file named ``thirty.ini`` in the root of your repository. Like
-that, eg: the appserver and the ``djangocmd`` and ``runcmd`` action, know which
+that, eg: the appserver and the ``djangocmd``/``runcmd`` actions, know which
 directory hosts your actual project. See :ref:`runtime-configuration-label` for
 more information.
 
@@ -265,7 +285,7 @@ sections. This is an example config file.
 Currently this file can contain three different sections:
 
 - **environment**: Configure the general python runtime environment.
-- **wsgi**: Configure your generic wsgi application.
+- **wsgi**: Configure your wsgi application.
 - **django**: Configure your django application.
 
 Every app needs an ``environment`` section, and then depending on your app, you
@@ -283,11 +303,11 @@ options available:
   soon.
 
 **root** (default: .)
-  You have to specify the root directory of your app relative to the root
+  You have to specify the project root directory of your app relative to the root
   directory of your repository. If your repository looks like this::
 
     +--> setup.py
-    +--> project      # This contains the root of your application.
+    +--> project      # This contains the project root of your application.
 
   the root would look like this::
 
@@ -314,7 +334,6 @@ options available:
 **systempackages** (unsupported!)
   Specify packages to be installed in your instances. The packages must be available
   in the standard Ubuntu Precise repositories.
-
 
 **Example**
 
@@ -428,15 +447,15 @@ string.
     export VIRTUAL_ENV="/app/env"
     export STATIC_ROOT="/app/static"
     export MEDIA_ROOT="/app/media"
-    export DB_PORT="9999"
     export LABEL="app"
     export PORT="800"
     export PATH="/app/env/bin:/bin:/usr/bin"
-    export DATABASE_USERNAME="30loops-database-thirtyblog"
-    export DATABASE_NAME="30loops-database-thirtyblog"
-    export DATABASE_HOST="pg.30loops.net"
-    export DATABASE_PASSWORD="ZjBmNDEyMWJj"
-    export DATABASE_URL="postgres://30loops-database-thirtyblog:ZjBmNDEyMWJj@192.168.0.53:9999/30loops-database-thirtyblog"
+    export POSTGRES_USERNAME="30loops-database-thirtyblog"
+    export POSTGRES_NAME="30loops-database-thirtyblog"
+    export POSTGRES_HOST="pg.30loops.net"
+    export POSTGRES_PORT="9999"
+    export POSTGRES_PASSWORD="ZjBmNDEyMWJj"
+    export POSTGRES_URL="postgres://30loops-database-thirtyblog:ZjBmNDEyMWJj@192.168.0.53:9999/30loops-database-thirtyblog"
     export DJANGO_SETTINGS_MODULE="settings"
     export PROJECT_ROOT="thirtyblog"
     export DJANGO_ROOT="thirtyblog"
@@ -463,15 +482,15 @@ Add to your script the following line.
         {'VIRTUAL_ENV': '/app/env'},
         {'STATIC_ROOT': '/app/static'},
         {'MEDIA_ROOT': '/app/media'},
-        {'DATABASE_PORT': '9999'},
         {'LABEL': 'app'},
         {'PORT': '8000'},
         {'PATH': '/app/env/bin:/bin:/usr/bin'},
-        {'DATABASE_USER': '30loops-app-thirtyblog'},
-        {'DATABASE_NAME': '30loops-app-thirtyblog-production'},
-        {'DATABASE_HOST': 'pg.30loops.net'},
-        {'DATABASE_PASSWORD': 'ZjBmNDEyMWJj'},
-        {'DATABASE_URL': 'postgres://30loops-database-thirtyblog:ZjBmNDEyMWJj@192.168.0.53:9999/30loops-database-thirtyblog'},
+        {'POSTGRES_USER': '30loops-app-thirtyblog'},
+        {'POSTGRES_NAME': '30loops-app-thirtyblog-production'},
+        {'POSTGRES_HOST': 'pg.30loops.net'},
+        {'POSTGRES_PORT': '9999'},
+        {'POSTGRES_PASSWORD': 'ZjBmNDEyMWJj'},
+        {'POSTGRES_URL': 'postgres://30loops-database-thirtyblog:ZjBmNDEyMWJj@192.168.0.53:9999/30loops-database-thirtyblog'},
         {'DJANGO_SETTINGS_MODULE': 'settings'},
         {'PROJECT_ROOT': 'thirtyblog'},
         {'DJANGO_ROOT': 'thirtyblog'},

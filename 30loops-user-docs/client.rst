@@ -142,11 +142,7 @@ resource.
     $ thirty list
 
     cherryon30loops
-        repository: cherryon30loops
-        database: 30loops-db-cherryon30loops
     website
-        repository: website
-        database: 30loops-database-website
 
 show
 ----
@@ -175,7 +171,7 @@ the details of all resources associated to this app.
         name: cherryon30loops
         variant: git
         location: git://github.com/30loops/cherrypy-on-30loops.git
-    database
+    postgres
         name: 30loops-db-cherryon30loops
         variant: postgres
         username: 30loops-db-cherryon30loops
@@ -225,8 +221,7 @@ Create a new app.
 
 ``--repository REPOSITORY``
   Specify an existing repository to connect to this app. You reference
-  repositories by their name. If you want to use this option, as a current
-  limitation, you still have to specify a location.
+  repositories by their name.
 
 ``--region REGION``
   The region of this app (defaults to ams1).
@@ -236,54 +231,23 @@ Create a new app.
   one instance as a default.
 
 ``--no-db``
-  Don't create a database for this app. As a default each app gets created
-  already with a database. Use this option if you don't need a database, eg for
+  Don't create a postgres for this app. As a default each app gets created
+  already with a postgres. Use this option if you don't need a postgres, eg for
   static apps.
 
 ``--variant VARIANT``
   The variant of this app (default: python).
 
-create ``<app>.repository``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    thirty create <app>.repository [--name <name>] [--ssh-key SSH_KEY]
-                                    <location>
-
-Create a new repository and attach it to <app>
-
-**Example**
-
-.. code-block:: bash
-
-    $ thirty create cherryon30loops.repository git://github.com/30loops/cherrypy-on-30loops.git --name cherrypyon30loops
-
-**Required Arguments**
-
-``<location>``
-  URI of the repository location.
-
-**Optional Arguments**
-
-``--name <name>``
-  Custom name of the repository resource (will be generated automatically from
-  the repository URI otherwise).
-
-``--ssh-key SSH_KEY``
-  SSH key (password-less) for a SSH protected repository. The full path to the
-  key file must be provided.
-
-create ``<app>.database``
+create ``<app>.postgres``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Example**
 
 .. code-block:: bash
 
-    $ thirty create <app>.database
+    $ thirty create <app>.postgres
 
-Create a new database resource for this app. No arguments are required.
+Create a new postgres resource for this app. No arguments are required.
 
 create ``<app>.worker``
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -314,7 +278,7 @@ create ``<app>.mongodb``
 
     $ thirty create <app>.mongodb
 
-Create a MongoDB database for this app. No arguments are required
+Create a MongoDB postgres for this app. No arguments are required
 
 .. _client-update-label:
 
@@ -380,8 +344,7 @@ update ``<app>.repository``
 
 ::
 
-    thirty update <app>.repository [--name <repository>]
-                                    [--location LOCATION] [--ssh-key KEY]
+    thirty update <app>.repository [--location LOCATION] [--ssh-key KEY]
 
 Update the configuration of a repository.
 
@@ -392,9 +355,6 @@ Update the configuration of a repository.
     $ thirty update cherryon30loops.repository --key ~/new_key.pub
 
 **Optional Arguments**
-
-``--name <repository>``
-  Name of the repository to update (if not specified, <app>  will be used).
 
 ``--location LOCATION``
   Update URI of the repository.
@@ -448,7 +408,7 @@ delete
 Delete a resource. ``<resource>`` can be one of the following:
 
 - ``<app>``: Delete an app.
-- ``<app>.database``: Delete a database.
+- ``<app>.postgres``: Delete a postgres postgres.
 - ``<app>.mongodb``" Delete a mongodb.
 - ``<app>.repository``: Delete a repository.
 - ``<app>.worker``: Delete a worker.
@@ -667,35 +627,35 @@ restore
 
 ::
 
-    thirty restore <app>.database <location>
+    thirty restore <app>.postgres <location>
 
-Restores a database from a specified URL. The current database will be deleted,
-and a new database will be created and restored from the specified database 
+Restores a postgres from a specified URL. The current postgres will be deleted,
+and a new postgres will be created and restored from the specified postgres 
 dump.
 
-The command we use internally to restore the database is:
+The command we use internally to restore the postgres is:
 
 .. code-block:: bash
 
-    pg_restore --clean --no-acl --no-owner -d <database>
+    pg_restore --clean --no-acl --no-owner -d <postgres>
 
-To make sure the database is restored correctly, you should dump your database
+To make sure the postgres is restored correctly, you should dump your postgres
 with the following command:
 
 .. code-block:: bash
 
-    pg_dump -Fc --no-acl --no-owner <database> > <dumpfile>
+    pg_dump -Fc --no-acl --no-owner <postgres> > <dumpfile>
 
 **Example:**
 
 .. code-block:: bash
 
-    thirty restoredb cherrypyon30loops http://mywebpage.com/database.dump
+    thirty restoredb cherrypyon30loops http://mywebpage.com/postgres.dump
 
 **Required Arguments:**
 
 ``<location>``
-  The location of the database dump file.
+  The location of the postgres dump file.
 
 restart
 -------
