@@ -183,6 +183,8 @@ the details of all resources associated to this app.
         password: MWRjZWViY2Rk
         port: 9999
 
+.. _client-create-label:
+
 create
 ------
 
@@ -313,6 +315,8 @@ create ``<app>.mongodb``
     $ thirty create <app>.mongodb
 
 Create a MongoDB database for this app. No arguments are required
+
+.. _client-update-label:
 
 update
 ------
