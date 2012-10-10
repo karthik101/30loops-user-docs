@@ -178,7 +178,7 @@ htmlhelp_basename = '30loopsUserDocumentationdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', '30loopsUserDocumentation.tex', u'30loops User Documentation Documentation',
+  ('index', '30loopsUserDocumentation.tex', u'30loops User Documentation',
    u'Christo Buschek', 'manual'),
 ]
 
@@ -211,7 +211,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', '30loopsuserdocumentation', u'30loops User Documentation Documentation',
+    ('index', '30loopsuserdocumentation', u'30loops User Documentation',
      [u'Christo Buschek'], 1)
     ]
 sys.path.append(os.path.abspath('_themes'))
