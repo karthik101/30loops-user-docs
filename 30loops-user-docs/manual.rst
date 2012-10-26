@@ -567,6 +567,42 @@ media files from the path ``/media/``. The path locations on the instance are
 ``/app/static`` and ``/app/media`` respectively. You have to configure your
 app accordingly if needed.
 
+Private repositories
+====================
+
+30loops uses a pull mechanism to fetch your code from the repository. So it needs
+to be able to access the repository. There are two ways to connect to private 
+repositories:
+
+*Use a deployment key*
+  To add a deployment key to your application, you need to update the repository
+  resource on 30loops. For example:
+
+.. code-block:: bash
+
+    thirty update appname.repository --ssh-key ~/.ssh/id_rsa
+
+  This will upload the private key (that should have access to the repository) to
+  the app definition. We recommend to use a dedicated SSH key per repository. More
+  information on how to do this on Github can be found on 
+  https://help.github.com/articles/managing-deploy-keys.
+
+*Use HTTP basic authentication*
+  The second option is to use HTTP basic authentication. Make sure your repository
+  is accessible over HTTPS. To use HTTP basic authentication, your repository URL
+  needs to be formed in the following format:
+
+    https://username:password@github.com/username/repository.git
+
+  So to update your application with the correct URL, you can do:
+
+.. code-block:: bash
+
+    thirty update appname.repository --location https://username:password@github.com/username/repository.git
+
+  After this command you can deploy your application. The username and password will 
+  be sent over HTTPS, so they are encrypted.
+
 Postinstall hook
 ================
 

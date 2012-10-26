@@ -389,7 +389,7 @@ Update the configuration of a repository.
 
 .. code-block:: bash
 
-    $ thirty update cherryon30loops.repository --key ~/new_key.pub
+    $ thirty update cherryon30loops.repository --ssh-key ~/.ssh/id_rsa
 
 **Optional Arguments**
 
@@ -400,7 +400,7 @@ Update the configuration of a repository.
   Update URI of the repository.
 
 ``--ssh-key KEY``
-  SSH key for a non-public repository (specify full path).
+  Private SSH key for a non-public repository (specify full path).
 
 update ``<app>.worker``
 ~~~~~~~~~~~~~~~~~~~~~~~
