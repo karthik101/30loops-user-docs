@@ -578,9 +578,9 @@ repositories:
   To add a deployment key to your application, you need to update the repository
   resource on 30loops. For example:
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    thirty update appname.repository --ssh-key ~/.ssh/id_rsa
+    $ thirty update appname.repository --ssh-key ~/.ssh/id_rsa
 
   This will upload the private key (that should have access to the repository) to
   the app definition. We recommend to use a dedicated SSH key per repository. More
@@ -592,13 +592,13 @@ repositories:
   is accessible over HTTPS. To use HTTP basic authentication, your repository URL
   needs to be formed in the following format:
 
-    https://username:password@github.com/username/repository.git
+    ``https://username:password@github.com/username/repository.git``
 
   So to update your application with the correct URL, you can do:
 
-.. code-block:: bash
+  .. code-block:: bash
 
-    thirty update appname.repository --location https://username:password@github.com/username/repository.git
+    $ thirty update appname.repository --location https://username:password@github.com/username/repository.git
 
   After this command you can deploy your application. The username and password will 
   be sent over HTTPS, so they are encrypted.
