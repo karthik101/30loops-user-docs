@@ -578,8 +578,6 @@ repositories:
   To add a deployment key to your application, you need to update the repository
   resource on 30loops. For example:
 
-  .. code-block:: bash
-
     $ thirty update appname.repository --ssh-key ~/.ssh/id_rsa
 
   This will upload the private key (that should have access to the repository) to
@@ -595,8 +593,6 @@ repositories:
     ``https://username:password@github.com/username/repository.git``
 
   So to update your application with the correct URL, you can do:
-
-  .. code-block:: bash
 
     $ thirty update appname.repository --location https://username:password@github.com/username/repository.git
 
