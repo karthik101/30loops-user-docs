@@ -5,7 +5,7 @@ Quickstart guide
 This quickstart guide will help to get up and running in no time. The first
 part will walk you through an app creation and deploy, the second part will
 discuss the first part and give more explanations.  We will configure and
-deploy an example app you can find in our `sample apps on github`_. Its a very
+deploy an example app you can find in our `sample apps on github`_. It's a very
 simple CherryPy application. If you followed the short instructions right after
 account registration, then the first part won't contain much new information.
 You might want to skip right away to :ref:`part 2 <quickstart-part2>`.
@@ -39,10 +39,9 @@ Creating an app
 
 .. code-block:: bash
 
-    $ thirty create cherryonloops git://github.com/30loops/cherrypy-on-30loops.git
+    $ thirty create quickstart git://github.com/30loops/cherrypy-on-30loops.git
 
-This will create an app configuration named ``cherryonloops`` and a repository
-configuration named ``cherryonloops``. The app is now defined. We will continue
+This will create an app configuration named ``quickstart``. The app is now defined. We will continue
 with deploying the newly created app.
 
 Deploying an app
@@ -52,7 +51,7 @@ Deploying an app is quite simple and fast, just run the following command:
 
 .. code-block:: bash
 
-    $ thirty deploy cherryonloops
+    $ thirty deploy quickstart
 
 After a succesfull deploy, your application will be available on the specified
 DNS record.
@@ -113,21 +112,21 @@ To see the configuration of the newly created app, use the following command:
 
 .. code-block:: bash
 
-    $ thirty show cherryonloops
+    $ thirty show quickstart
 
 It will output something like:
 
 .. code-block:: bash
 
-    name: cherryonloops
+    name: quickstart
     variant: python
-    region: ams1
+    region: eu-nl
     published: false
     instances: 1
     repo_commit: HEAD
-    dns_record: 30loops-app-cherryonloops.30loops.net
+    dns_record: 30loops-app-quickstart.30loops.net
     repository
-        name: cherryonloops
+        name: quickstart
         variant: git
         location: git://github.com/30loops/cherrypy-on-30loops.git
 
@@ -136,9 +135,9 @@ databse you should run the following command.
 
 .. code-block:: bash
 
-    $ thirty create cherryonloops.database
+    $ thirty create quickstart.postgres
 
-This will configure 30loops to provide your app with a database. You can change
+This will configure 30loops to provide your app with a PostgreSQL database. You can change
 your configuration later using the ``update`` command. See the :ref:`client
 documentation <client-update-label>` for mroe information on that.
 
@@ -153,7 +152,7 @@ Deploying your application is again quite easy.
 
 .. code-block:: bash
 
-    $ thirty deploy cherryonloops
+    $ thirty deploy quickstart
 
 This will start the deployment. The deployment will create a new app bundle
 with your requirements, and pull the source code from your application. It will
@@ -162,7 +161,7 @@ don't exist yet.
 
 The runtime of your application is described in a file, ``thirty.ini`` that is
 part of your repository. It describes stuff like the root of your repository or
-the wsgi entrypoint of your application. The ``cherryonloops`` example comes
+the wsgi entrypoint of your application. The ``quickstart`` example comes
 with such a file already. You can find more information in :ref:`manual
 <runtime-configuration-label>`. This is how the ``thirty.ini`` for this example
 app looks like::
@@ -181,7 +180,7 @@ when your requirements change.
 
 .. code-block:: bash
 
-    $ thirty -c deploy cherryonloops.
+    $ thirty -c deploy quickstart
 
 ``deploy`` is a so called action. In contrary to ``create`` or ``show``,
 ``deploy`` manipulates teh physical aspect of your application. There are many
@@ -202,7 +201,7 @@ that is provided to you. If you forgot the dns record, run a
 
 .. code-block:: bash
 
-    $ thrity show cherryonloops
+    $ thrity show quickstart
 
 to look it up again.
 
@@ -220,9 +219,8 @@ you want to go live with your app read the section on :ref:`the free tier
 Additional support
 ==================
 
-If you have any questions, please log in on http://help.30loops.net and
-submit a ticket. You can also chat with us on #30loops at irc.freenode.net or
-mail us at support@30loops.net.
+If you have any questions, please mail us at support@30loops.net. You can also 
+chat with us on #30loops at irc.freenode.net. See you there!
 
 .. _`sample apps on github`: https://30loops.github.com
 .. _`pip website`: http://www.pip-installer.org/en/latest/requirements.html
